@@ -37,6 +37,7 @@ const config: Config = {
         juz: {
           green: {
             DEFAULT: "#11C153",
+            ish: "#c5f3b3",
           },
         },
         background: "hsl(var(--background))",
