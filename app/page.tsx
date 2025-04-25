@@ -1,30 +1,28 @@
 "use client"
 
-import Link from "next/link"
 import Image from "next/image"
+import { Fragment } from "react"
 
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
-import { atomWithStorage } from "jotai/utils"
-import { useAtom } from "jotai"
 import { useWorldAuth } from "@radish-la/world-auth"
+import { useAtomExplainerConfirmed } from "@/lib/atoms/user"
 
-import { FaRegLemon } from "react-icons/fa"
-
-import LemonIcon from "@/components/LemonIcon"
 import WheelSpin from "@/components/WheelSpin"
+import LemonButton from "@/components/LemonButton"
+import HomeNavigation from "./HomeNavigation"
 
 import asset_limoncito from "@/assets/limoncito.png"
-
-const atomIsConfirmed = atomWithStorage("isConfirmed", false)
+import asset_skaterboi from "@/assets/skaterboi.png"
+import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
 export default function PageHome() {
   const { toast } = useToast()
 
-  const [isConfirmed, setIsConfirmed] = useAtom(atomIsConfirmed)
-  const { user, signIn, isConnected } = useWorldAuth({
+  const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
+  const { signIn, isConnected } = useWorldAuth({
     onWrongEnvironment() {
       toast.error({
-        title: "Only available World App",
+        title: "Only available in World App",
       })
     },
   })
@@ -44,27 +42,28 @@ export default function PageHome() {
 
   return (
     <section>
-      <nav className="border-b h-[4.5rem] px-5 flex gap-4 bg-white top-0 sticky z-10">
-        <Link href="/profile" className="flex items-center gap-2">
-          <figure className="size-10 bg-black rounded-full overflow-hidden" />
-          <div>
-            <p className="font-semibold text-lg">
-              {user?.username || "Profile"}
-            </p>
-            <p className="text-xs -mt-1">
-              {isConnected ? "Manage profile" : "Connect wallet"}
-            </p>
-          </div>
-        </Link>
+      <HomeNavigation />
 
-        <div className="flex-grow" />
+      <nav className="px-5">
+        <Tabs asChild defaultValue="active">
+          <Fragment>
+            <TabsList className="border-b border-b-black/5">
+              <TabsTrigger
+                className="border-b-2 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
+                value="active"
+              >
+                <button>Play</button>
+              </TabsTrigger>
 
-        <button className="flex items-center gap-2">
-          <LemonIcon className="size-9">
-            <FaRegLemon className="text-xl" />
-          </LemonIcon>
-          <span className="text-xl font-semibold">0 JUZ</span>
-        </button>
+              <TabsTrigger
+                className="border-b-2 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
+                value="everything"
+              >
+                <button>Leaderboard</button>
+              </TabsTrigger>
+            </TabsList>
+          </Fragment>
+        </Tabs>
       </nav>
 
       <div className="px-4 mt-12 mb-12 ">
@@ -83,28 +82,51 @@ export default function PageHome() {
             items={["React", "Javascript", "Crypto"]}
           />
         </div>
-        {isConfirmed ? null : (
-          <div
-            style={{
-              filter: "drop-shadow(3px 3px 0 black)",
-            }}
-            className="border-[3px] mt-14 bg-white border-black p-4 rounded-2xl"
-          >
+        {true ? (
+          <div className="border-3 bg-gradient-to-r from-juz-green-lime/0 via-juz-green-lime/0 to-juz-green-lime/70 relative overflow-hidden mt-14 shadow-3d-lg border-black p-4 !pr-0 rounded-2xl">
+            <div className="pr-40">
+              <h1 className="text-xl font-semibold">
+                Can you answer <br />
+                the trivia?
+              </h1>
+
+              <p className="mt-2 text-xs max-w-xs">
+                Get a lucky spin every 24 hours. Make it to the top of the board
+                and earn your reward as the smartest player!
+              </p>
+
+              <nav className="flex mt-4">
+                <div className="bg-black py-2 px-4 rounded-lg text-white">
+                  <div className="text-xs">Next spin:</div>
+                  <div className="font-semibold -mt-0.5">12:34 H</div>
+                </div>
+              </nav>
+            </div>
+
+            <figure className="w-40 absolute -right-4 -top-8 -bottom-8">
+              <Image
+                fill
+                className="object-cover"
+                src={asset_skaterboi}
+                alt=""
+                placeholder="blur"
+              />
+            </figure>
+          </div>
+        ) : (
+          <div className="border-3 mt-14 shadow-3d-lg border-black p-4 rounded-2xl">
             <nav className="flex justify-between gap-6 items-start">
               <div>
                 <h1 className="text-xl font-semibold">How to play?</h1>
 
                 <p className="mt-2 text-xs max-w-xs">
-                  Spin the wheel. Get a daily random topic, answer a question
-                  about it and earn JUZ!
+                  Spin the wheel. Get a daily random topic, answer a trivia
+                  about that topic and earn JUZ!
                 </p>
 
-                <button
-                  onClick={handleConfirmExplainer}
-                  className="px-6 shadow-[3px_3px_black] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] mt-4 rounded-xl bg-gradient-to-bl font-semibold from-[#00FF60] to-juz-green-ish border-[3px] border-black py-2"
-                >
-                  LETS GO
-                </button>
+                <LemonButton onClick={handleConfirmExplainer}>
+                  {isConnected ? "GOT IT" : "LETS GO"}
+                </LemonButton>
               </div>
 
               <figure className="max-w-28">

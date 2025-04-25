@@ -4,6 +4,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select"
+import { cn } from "@/lib/utils"
 
 type SelectElement = {
   value: string
@@ -14,9 +15,11 @@ export default function MainSelect({
   children,
   value,
   options,
+  showSelectedItem = true,
   ...props
 }: Omit<Parameters<typeof Select>[0], "children"> & {
   options: SelectElement[]
+  showSelectedItem?: boolean
   children: (selected: SelectElement | null) => JSX.Element
 }) {
   const selected = options.find((o) => o.value === value) || null
@@ -26,6 +29,7 @@ export default function MainSelect({
       <SelectContent>
         {options.map((option) => (
           <SelectItem
+            className={cn(showSelectedItem || "[&_.CheckMark]:hidden pr-5")}
             key={`select-option-${option.value}-${option.label}`}
             value={option.value}
           >

@@ -7,11 +7,8 @@ export default function LemonIcon({
 }: PropsWithChildren<{ className?: string }>) {
   return (
     <button
-      style={{
-        filter: "drop-shadow(2px 2px 0 black)",
-      }}
       className={cn(
-        "size-10 border-2 text-black border-black rounded-full relative grid place-items-center",
+        "size-10 shadow-3d border-2 text-black border-black rounded-full relative grid place-items-center",
         className
       )}
     >

@@ -6,7 +6,7 @@ export default function PageProfile() {
     <section className="min-h-screen">
       <nav className="border-b bg-white top-0 sticky z-10">
         <TopBar
-          className="py-0 px-5"
+          className="py-0 gap-5 px-5"
           startAdornment={<RouteBackButton />}
           title="Buy and sell NFTs"
         />

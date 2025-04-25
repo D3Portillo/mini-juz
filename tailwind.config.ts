@@ -12,6 +12,14 @@ const config: Config = {
       fontFamily: {
         title: "var(--font-display)",
       },
+      borderWidth: {
+        3: "3px",
+      },
+      boxShadow: {
+        "3d-bottom": "0px 2px var(--tw-shadow-color, black)",
+        "3d": "2px 2px var(--tw-shadow-color, black)",
+        "3d-lg": "3px 3px var(--tw-shadow-color, black)",
+      },
       width: { "2px": "2px" },
       zIndex: {
         "1": "1",
@@ -37,6 +45,7 @@ const config: Config = {
         juz: {
           green: {
             DEFAULT: "#11C153",
+            lime: "#00FF60",
             ish: "#c5f3b3",
           },
         },

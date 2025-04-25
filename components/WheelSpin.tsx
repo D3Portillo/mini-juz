@@ -1,10 +1,10 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Image from "next/image"
 
 import { motion, useAnimationControls } from "framer-motion"
-import { cn } from "@/lib/utils"
+import { cn, noOp } from "@/lib/utils"
 
 import asset_bg from "@/assets/spin-bg.svg"
 import asset_control from "@/assets/spin-control.svg"
@@ -29,9 +29,28 @@ export default function WheelSpin({
   const [isSpinning, setSpinning] = useState(false)
   const [rotation, setRotation] = useState(0)
 
+  const spinAudioRef = useRef<HTMLAudioElement | null>(null)
+  const bellAudioRef = useRef<HTMLAudioElement | null>(null)
+
+  useEffect(() => {
+    spinAudioRef.current = new Audio("/spin.mp3")
+    spinAudioRef.current.load() // Preload it
+
+    bellAudioRef.current = new Audio("/bell.mp3")
+    bellAudioRef.current.volume = 0.5
+    bellAudioRef.current.load()
+  }, [])
+
+  const playSound = (type: "spin" | "bell") => {
+    if (type === "spin") {
+      spinAudioRef.current?.play().catch(noOp)
+    } else bellAudioRef.current?.play().catch(noOp)
+  }
+
   const spinWheel = () => {
     if (isSpinning) return // prevent overlap
     setSpinning(true)
+    playSound("spin")
 
     const resultIndex = Math.floor(Math.random() * 3)
     const segmentAngle = 120
@@ -53,6 +72,7 @@ export default function WheelSpin({
       })
       .then(() => {
         setSpinning(false)
+        playSound("bell")
 
         const segmentRotations = nextRotation / 60 // half segments
         const selectedIndex = Math.floor(segmentRotations) % items.length
