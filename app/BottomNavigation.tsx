@@ -6,7 +6,6 @@ import { Fragment } from "react"
 
 import { IoGameController, IoStorefront } from "react-icons/io5"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { profile } from "console"
 import { FaGem, FaLemon } from "react-icons/fa"
 
 const PLAY_ROUTE = {

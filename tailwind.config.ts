@@ -48,6 +48,9 @@ const config: Config = {
             lime: "#00FF60",
             ish: "#c5f3b3",
           },
+          red: {
+            DEFAULT: "#FF3131",
+          },
         },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

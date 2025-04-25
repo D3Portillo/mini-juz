@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { Fragment } from "react"
+import { Fragment, useEffect, useState } from "react"
 
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { useWorldAuth } from "@radish-la/world-auth"
@@ -14,12 +14,14 @@ import HomeNavigation from "./HomeNavigation"
 import asset_limoncito from "@/assets/limoncito.png"
 import asset_skaterboi from "@/assets/skaterboi.png"
 import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
+import ModalGame from "./ModalGame"
 
 export default function PageHome() {
   const { toast } = useToast()
 
-  const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
-  const { signIn, isConnected } = useWorldAuth({
+  const [showGame, setShowGame] = useState(null as { topic?: string } | null)
+  const [, setIsConfirmed] = useAtomExplainerConfirmed()
+  const { signIn, isMiniApp, isConnected, reklesslySetUser } = useWorldAuth({
     onWrongEnvironment() {
       toast.error({
         title: "Only available in World App",
@@ -40,8 +42,25 @@ export default function PageHome() {
     setIsConfirmed(true)
   }
 
+  useEffect(() => {
+    if (isMiniApp) return
+    if (process.env.NODE_ENV === "development") {
+      // Dev user in non-world app
+      reklesslySetUser({
+        username: "Limoncito",
+        walletAddress: "0xB6594a5EdDA3E0D910Fb57db7a86350A9821327a",
+      })
+    }
+  }, [isMiniApp])
+
   return (
     <section>
+      <ModalGame
+        open={Boolean(showGame?.topic)}
+        onOpenChange={() => {
+          setShowGame(null)
+        }}
+      />
       <HomeNavigation />
 
       <nav className="px-5">
@@ -73,11 +92,7 @@ export default function PageHome() {
             onClick={() => {
               if (!isConnected) signIn()
             }}
-            onItemSelected={(item) => {
-              toast.success({
-                title: `Selected topic: ${item}`,
-              })
-            }}
+            onItemSelected={(topic) => setShowGame({ topic })}
             size="min(calc(95vw - 2rem), 24rem)"
             items={["React", "Javascript", "Crypto"]}
           />

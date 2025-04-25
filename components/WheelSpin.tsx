@@ -133,6 +133,8 @@ export default function WheelSpin({
               width: "50%",
               textAlign: "center",
               transform: "rotate(30deg)",
+              textShadow:
+                "-2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, 0 -2px 0 white, 0 2px 0 white, -2px 0 0 white, 2px 0 0 white",
             }}
           >
             {items[0]}
@@ -147,6 +149,8 @@ export default function WheelSpin({
               width: "50%",
               textAlign: "center",
               transform: "rotate(145deg)",
+              textShadow:
+                "-2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, 0 -2px 0 white, 0 2px 0 white, -2px 0 0 white, 2px 0 0 white",
             }}
           >
             {items[1]}
@@ -160,6 +164,8 @@ export default function WheelSpin({
               width: "60%",
               textAlign: "center",
               transform: "rotate(265deg) translateY(-200%)",
+              textShadow:
+                "-2px -2px 0 white, 2px -2px 0 white, -2px 2px 0 white, 2px 2px 0 white, 0 -2px 0 white, 0 2px 0 white, -2px 0 0 white, 2px 0 0 white",
             }}
           >
             {items[2]}
