@@ -2,20 +2,25 @@
 
 import { useState } from "react"
 import Image from "next/image"
+
 import { motion, useAnimationControls } from "framer-motion"
+import { cn } from "@/lib/utils"
 
 import asset_bg from "@/assets/spin-bg.svg"
 import asset_control from "@/assets/spin-control.svg"
-import { cn } from "@/lib/utils"
 
 type SpinWheelProps = {
   size?: string | number
+  enableSpin?: boolean
   items: [string, string, string]
   onItemSelected?: (item: string) => void
+  onClick?: () => void
 }
 
 export default function WheelSpin({
   items,
+  onClick,
+  enableSpin,
   onItemSelected,
   size = 300,
 }: SpinWheelProps) {
@@ -59,7 +64,10 @@ export default function WheelSpin({
     <div
       role="button"
       className="relative group select-none cursor-pointer"
-      onClick={spinWheel}
+      onClick={() => {
+        onClick?.()
+        if (enableSpin) spinWheel()
+      }}
       style={{ width: size, height: size }}
     >
       <figure className="relative size-full object-cover">

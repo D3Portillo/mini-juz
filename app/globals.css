@@ -75,3 +75,7 @@ body {
 strong {
   @apply font-semibold;
 }
+
+ol.fixed.top-6 {
+  @apply mt-[3.25rem];
+}
