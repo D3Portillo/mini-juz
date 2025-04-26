@@ -64,8 +64,12 @@ export default function PageHome() {
       <ModalGame
         topic={showGame?.topic}
         open={Boolean(showGame?.topic)}
-        onOpenChange={() => {
+        onOpenChange={(isOpen) => {
           setShowGame(null)
+          if (!isConfirmed && !isOpen) {
+            // Set to confirmed when finalizing the first game
+            setIsConfirmed(true)
+          }
         }}
       />
       <HomeNavigation />
@@ -103,9 +107,9 @@ export default function PageHome() {
         </Tabs>
 
         {hearts > 0 ? null : (
-          <div className="mt-4 animate-in fade-in slide-in-from-top-5 flex items-center justify-between text-sm border border-juz-red/15 bg-gradient-to-bl px-4 py-2 rounded-full from-juz-red/15 to-red-100">
-            <span>No hearts left to play</span>
-            <button className="underline font-medium underline-offset-2">
+          <div className="mt-4 animate-in fade-in slide-in-from-top-5 flex items-center justify-between text-sm bg-black text-white px-4 py-2 rounded-full">
+            <span>😢 No hearts left to play</span>
+            <button className="font-medium -mt-0.5 underline underline-offset-2">
               Refill now
             </button>
           </div>
@@ -136,10 +140,7 @@ export default function PageHome() {
         {isConfirmed ? (
           <div className="border-3 bg-gradient-to-r from-juz-green-lime/0 via-juz-green-lime/0 to-juz-green-lime/70 relative overflow-hidden mt-14 shadow-3d-lg border-black p-4 !pr-0 rounded-2xl">
             <div className="pr-36">
-              <h1 className="text-xl font-semibold">
-                Can you answer <br />
-                the trivia?
-              </h1>
+              <h1 className="text-xl font-semibold">Daily hearts refill</h1>
 
               <p className="mt-2 text-xs max-w-xs">
                 Get a full-hearts refill every 24 hours. Make it to the top and
@@ -171,8 +172,8 @@ export default function PageHome() {
                 <h1 className="text-xl font-semibold">How to play?</h1>
 
                 <p className="mt-2 text-xs max-w-xs">
-                  Spin the wheel. Get a daily random topic, answer a trivia
-                  about that topic and earn JUZ!
+                  Spin the wheel. Get daily random topics, play a trivia
+                  mini-game and earn JUZ!
                 </p>
 
                 <LemonButton onClick={handleConfirmExplainer}>
