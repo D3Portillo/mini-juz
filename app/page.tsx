@@ -2,10 +2,14 @@
 
 import Image from "next/image"
 import { Fragment, useEffect, useState } from "react"
+import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { useWorldAuth } from "@radish-la/world-auth"
-import { useAtomExplainerConfirmed } from "@/lib/atoms/user"
+import { useAtomExplainerConfirmed, usePlayerHearts } from "@/lib/atoms/user"
+import { useUserTopics } from "@/lib/atoms/topics"
+
+import { FaHeart, FaHeartBroken } from "react-icons/fa"
 
 import WheelSpin from "@/components/WheelSpin"
 import LemonButton from "@/components/LemonButton"
@@ -13,14 +17,16 @@ import HomeNavigation from "./HomeNavigation"
 
 import asset_limoncito from "@/assets/limoncito.png"
 import asset_skaterboi from "@/assets/skaterboi.png"
-import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 import ModalGame from "./ModalGame"
 
 export default function PageHome() {
   const { toast } = useToast()
 
+  const [hearts] = usePlayerHearts()
+  const { gameTopics, shuffleTopics } = useUserTopics()
+
   const [showGame, setShowGame] = useState(null as { topic?: string } | null)
-  const [, setIsConfirmed] = useAtomExplainerConfirmed()
+  const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
   const { signIn, isMiniApp, isConnected, reklesslySetUser } = useWorldAuth({
     onWrongEnvironment() {
       toast.error({
@@ -56,6 +62,7 @@ export default function PageHome() {
   return (
     <section>
       <ModalGame
+        topic={showGame?.topic}
         open={Boolean(showGame?.topic)}
         onOpenChange={() => {
           setShowGame(null)
@@ -64,55 +71,84 @@ export default function PageHome() {
       <HomeNavigation />
 
       <nav className="px-5">
-        <Tabs asChild defaultValue="active">
+        <Tabs asChild defaultValue="play">
           <Fragment>
-            <TabsList className="border-b border-b-black/5">
+            <TabsList className="border-b flex items-center border-b-black/5">
               <TabsTrigger
-                className="border-b-2 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
-                value="active"
+                className="border-b-2 flex items-center gap-4 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
+                value="play"
               >
-                <button>Play</button>
+                Play
               </TabsTrigger>
 
               <TabsTrigger
                 className="border-b-2 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
-                value="everything"
+                value="leaderboard"
               >
-                <button>Leaderboard</button>
+                Leaderboard
               </TabsTrigger>
+
+              <div className="flex-grow" />
+
+              <button className="flex text-xl items-center gap-1">
+                {hearts > 0 ? (
+                  <FaHeart className="text-juz-green animate-zelda-pulse" />
+                ) : (
+                  <FaHeartBroken />
+                )}
+                <strong className="font-semibold text-lg">x{hearts}</strong>
+              </button>
             </TabsList>
           </Fragment>
         </Tabs>
+
+        {hearts > 0 ? null : (
+          <div className="mt-4 animate-in fade-in slide-in-from-top-5 flex items-center justify-between text-sm border border-juz-red/15 bg-gradient-to-bl px-4 py-2 rounded-full from-juz-red/15 to-red-100">
+            <span>No hearts left to play</span>
+            <button className="underline font-medium underline-offset-2">
+              Refill now
+            </button>
+          </div>
+        )}
       </nav>
 
       <div className="px-4 mt-12 mb-12 ">
         <div className="size-full overflow-clip grid place-items-center">
           <WheelSpin
-            enableSpin={isConnected}
+            enableSpin={isConnected && hearts > 0}
             onClick={() => {
-              if (!isConnected) signIn()
+              if (!isConnected) return signIn()
+              if (hearts <= 0) {
+                return toast.error({
+                  title: "No hearts left to play",
+                })
+              }
             }}
-            onItemSelected={(topic) => setShowGame({ topic })}
+            onItemSelected={(topic) => {
+              setShowGame({ topic })
+              setTimeout(shuffleTopics, 250)
+            }}
             size="min(calc(95vw - 2rem), 24rem)"
-            items={["React", "Javascript", "Crypto"]}
+            items={gameTopics}
           />
         </div>
-        {true ? (
+
+        {isConfirmed ? (
           <div className="border-3 bg-gradient-to-r from-juz-green-lime/0 via-juz-green-lime/0 to-juz-green-lime/70 relative overflow-hidden mt-14 shadow-3d-lg border-black p-4 !pr-0 rounded-2xl">
-            <div className="pr-40">
+            <div className="pr-36">
               <h1 className="text-xl font-semibold">
                 Can you answer <br />
                 the trivia?
               </h1>
 
               <p className="mt-2 text-xs max-w-xs">
-                Get a lucky spin every 24 hours. Make it to the top of the board
-                and earn your reward as the smartest player!
+                Get a full-hearts refill every 24 hours. Make it to the top and
+                earn rewards for being the smartest player!
               </p>
 
               <nav className="flex mt-4">
                 <div className="bg-black py-2 px-4 rounded-lg text-white">
-                  <div className="text-xs">Next spin:</div>
+                  <div className="text-xs">Next refill:</div>
                   <div className="font-semibold -mt-0.5">12:34 H</div>
                 </div>
               </nav>

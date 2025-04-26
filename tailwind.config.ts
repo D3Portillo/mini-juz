@@ -41,6 +41,9 @@ const config: Config = {
         "3": ".03",
         "7": ".07",
       },
+      animation: {
+        "zelda-pulse": "zelda-pulse 1s infinite ease-in-out",
+      },
       colors: {
         juz: {
           green: {

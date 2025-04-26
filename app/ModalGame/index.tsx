@@ -1,23 +1,48 @@
 "use client"
 
+import { useEffect, useMemo, useRef, useState } from "react"
+import { Drawer, DrawerContent } from "@worldcoin/mini-apps-ui-kit-react"
+import useSWR from "swr"
+
 import LemonButton from "@/components/LemonButton"
+
+import { usePlayerHearts } from "@/lib/atoms/user"
 import { useTimer } from "@/lib/time"
 import { cn, noOp } from "@/lib/utils"
-import { Drawer, DrawerContent } from "@worldcoin/mini-apps-ui-kit-react"
-import { useEffect, useRef, useState } from "react"
+
+import { GiDiceTarget } from "react-icons/gi"
 import { FaHeart, FaHeartBroken } from "react-icons/fa"
 import { MdOutlineExitToApp } from "react-icons/md"
+import { generateQuestionsForTopic } from "@/actions/questions"
 
 const TOTAL_QUESTIONS = 5
 const PER_QUESTION_TIME = 10 // seconds
 export default function ModalGame({
   open,
   onOpenChange,
-}: Pick<React.ComponentProps<typeof Drawer>, "open" | "onOpenChange">) {
+  topic,
+}: Pick<React.ComponentProps<typeof Drawer>, "open" | "onOpenChange"> & {
+  topic?: string
+}) {
+  const [hearts, setHearts] = usePlayerHearts()
   const { elapsedTime, restart, stop } = useTimer(PER_QUESTION_TIME)
 
+  const gameStartedTimestamp = useMemo(() => {
+    // Key used to reset question fetching and make each
+    // request from same topics fresh with swr
+    return Date.now()
+  }, [open])
+
+  const { data: questions = [], isLoading } = useSWR(
+    open ? `questions.${topic || ""}.${gameStartedTimestamp}` : null,
+    async () => {
+      if (!topic) return []
+      const questions = await generateQuestionsForTopic(topic, TOTAL_QUESTIONS)
+      return questions
+    }
+  )
+
   const [currentQuestion, setCurrentQuestion] = useState(1)
-  const [heartPoints, setHeartPoints] = useState(3)
   const [isAnswered, setIsAnswered] = useState(false)
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
 
@@ -31,7 +56,8 @@ export default function ModalGame({
     audioAssets.current[type].play().catch(noOp)
   }
 
-  const correctOptionIndex = 1
+  const QUESTION = questions?.[currentQuestion - 1]
+  const correctOptionIndex = QUESTION?.correctOptionIndex
 
   function handleContinue() {
     if (currentQuestion >= TOTAL_QUESTIONS) {
@@ -39,7 +65,7 @@ export default function ModalGame({
       return onOpenChange?.(false)
     }
 
-    if (heartPoints <= 0) {
+    if (hearts <= 0) {
       // Terminate game
       return onOpenChange?.(false)
     }
@@ -53,7 +79,6 @@ export default function ModalGame({
   useEffect(() => {
     if (open) {
       // Reset state when the modal opens
-      setHeartPoints(3)
       setIsAnswered(false)
       setSelectedOption(null)
       setCurrentQuestion(1)
@@ -64,7 +89,7 @@ export default function ModalGame({
   }, [open])
 
   const triggerFailure = () => {
-    setHeartPoints((prev) => Math.max(prev - 1, 0))
+    setHearts((prev) => Math.max(prev - 1, 0))
     playAsset("failure")
   }
 
@@ -72,13 +97,18 @@ export default function ModalGame({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="p-5">
         <nav className="flex justify-between items-center">
-          <div className="flex text-xl items-center gap-2">
+          <div className="flex text-xl items-center gap-1">
             {Array.from({ length: 3 }).map((_, index) => {
-              const isActive = index < heartPoints
+              const isActive = index < hearts
+              const isLastActiveHeart = index === hearts - 1
+
               return isActive ? (
                 <FaHeart
                   key={`h.active.${index}`}
-                  className="text-juz-green drop-shadow"
+                  className={cn(
+                    isLastActiveHeart && "animate-zelda-pulse",
+                    "text-juz-green drop-shadow"
+                  )}
                 />
               ) : (
                 <FaHeartBroken
@@ -96,55 +126,63 @@ export default function ModalGame({
 
         <div className="grid place-items-center gap-4 mt-12">
           <div className="bg-juz-green-lime/10 text-sm px-3 py-0.5 rounded-full font-semibold text-black border-2 border-juz-green-lime">
-            React
+            {topic || "General Knowledge"}
           </div>
-          <h2 className="text-2xl min-h-[7rem] font-medium text-center">
-            What is the primary purpose of the useState hook in React?
+          <h2 className="text-2xl min-h-20 font-medium text-center">
+            {QUESTION?.question}
           </h2>
         </div>
 
-        <div className="mt-12 flex gap-3 w-full flex-col">
-          {[
-            "To manage component state",
-            "To handle side effects",
-            "To create class components",
-          ].map((option, itemIndex) => {
-            const isCorrectOption = itemIndex === correctOptionIndex
-            const isSelected = selectedOption === itemIndex
-            const isWrongOption =
-              (isAnswered && isSelected && !isCorrectOption) ||
-              (isAnswered && selectedOption === null)
-            const isCorrectAnswer = isAnswered && isSelected && isCorrectOption
+        {isLoading ? (
+          <div className="flex-grow p-4 !pb-12 text-center flex flex-col items-center justify-center gap-6">
+            <GiDiceTarget className="text-6xl scale-125" />
 
-            return (
-              <button
-                onClick={() => {
-                  if (isAnswered) return
+            <p className="text-sm max-w-xs">
+              Buckle up! We are preparing the trivia for you...
+            </p>
+          </div>
+        ) : (
+          <div className="mt-12 flex gap-3 w-full flex-col">
+            {(QUESTION?.options || []).map((option, itemIndex) => {
+              const isCorrectOption = itemIndex === correctOptionIndex
+              const isSelected = selectedOption === itemIndex
+              const isWrongOption =
+                (isAnswered && isSelected && !isCorrectOption) ||
+                (isAnswered && selectedOption === null)
+              const isCorrectAnswer =
+                isAnswered && isSelected && isCorrectOption
 
-                  setIsAnswered(true)
-                  setSelectedOption(itemIndex)
-                  if (isCorrectOption) {
-                    playAsset("success")
-                  } else triggerFailure()
-                }}
-                key={`option-${option}`}
-                className={cn(
-                  "border-2 border-black",
-                  "text-sm font-medium py-3 px-4 whitespace-nowrap rounded-full",
-                  isCorrectAnswer &&
-                    "bg-gradient-to-bl from-juz-green-ish to-juz-green-lime",
-                  isWrongOption && "bg-gradient-to-bl from-juz-red/20 to-red-50"
-                )}
-              >
-                {option}
-              </button>
-            )
-          })}
-        </div>
+              return (
+                <button
+                  onClick={() => {
+                    if (isAnswered) return
+
+                    setIsAnswered(true)
+                    setSelectedOption(itemIndex)
+                    if (isCorrectOption) {
+                      playAsset("success")
+                    } else triggerFailure()
+                  }}
+                  key={`option-${option}`}
+                  className={cn(
+                    "border-2 border-black",
+                    "text-sm font-medium py-3 px-4 whitespace-nowrap rounded-full",
+                    isCorrectAnswer &&
+                      "bg-gradient-to-bl from-juz-green-ish to-juz-green-lime",
+                    isWrongOption &&
+                      "bg-gradient-to-bl from-juz-red/20 to-red-50"
+                  )}
+                >
+                  {option}
+                </button>
+              )
+            })}
+          </div>
+        )}
 
         <div className="flex-grow" />
 
-        {isAnswered ? (
+        {isLoading ? null : isAnswered ? (
           <LemonButton onClick={handleContinue} className="py-3 rounded-full">
             Continue
           </LemonButton>
