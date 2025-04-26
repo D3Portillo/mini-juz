@@ -32,8 +32,6 @@ export const useUserTopics = () => {
     })
   }
 
-  console.debug({ lastUpdated, topics })
-
   useEffect(() => {
     clearTimeout(timer)
     // User topics are updated every 24 hours

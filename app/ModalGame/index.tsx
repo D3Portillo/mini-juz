@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { Drawer, DrawerContent } from "@worldcoin/mini-apps-ui-kit-react"
 import useSWR from "swr"
 
@@ -8,12 +8,13 @@ import LemonButton from "@/components/LemonButton"
 
 import { usePlayerHearts } from "@/lib/atoms/user"
 import { useTimer } from "@/lib/time"
-import { cn, noOp } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 import { GiDiceTarget } from "react-icons/gi"
 import { FaHeart, FaHeartBroken } from "react-icons/fa"
 import { MdOutlineExitToApp } from "react-icons/md"
 import { generateQuestionsForTopic } from "@/actions/questions"
+import { useAudioMachine } from "@/lib/sounds"
 
 const TOTAL_QUESTIONS = 5
 const PER_QUESTION_TIME = 10 // seconds
@@ -25,6 +26,7 @@ export default function ModalGame({
   topic?: string
 }) {
   const [hearts, setHearts] = usePlayerHearts()
+  const { playSound } = useAudioMachine(["success", "failure"])
   const { elapsedTime, restart, stop } = useTimer(PER_QUESTION_TIME)
 
   const gameStartedTimestamp = useMemo(() => {
@@ -45,16 +47,6 @@ export default function ModalGame({
   const [currentQuestion, setCurrentQuestion] = useState(1)
   const [isAnswered, setIsAnswered] = useState(false)
   const [selectedOption, setSelectedOption] = useState<number | null>(null)
-
-  const audioAssets = useRef({
-    success: new Audio("/success.mp3"),
-    failure: new Audio("/error.mp3"),
-  })
-
-  const playAsset = (type: "success" | "failure") => {
-    audioAssets.current[type].currentTime = 0 // Reset to start
-    audioAssets.current[type].play().catch(noOp)
-  }
 
   const QUESTION = questions?.[currentQuestion - 1]
   const correctOptionIndex = QUESTION?.correctOptionIndex
@@ -90,7 +82,7 @@ export default function ModalGame({
 
   const triggerFailure = () => {
     setHearts((prev) => Math.max(prev - 1, 0))
-    playAsset("failure")
+    playSound("failure")
   }
 
   return (
@@ -100,13 +92,15 @@ export default function ModalGame({
           <div className="flex text-xl items-center gap-1">
             {Array.from({ length: 3 }).map((_, index) => {
               const isActive = index < hearts
-              const isLastActiveHeart = index === hearts - 1
+              const isLastItemIndex = index === 2
+              const isAnimatedHeart =
+                index === hearts - 1 || (isLastItemIndex && hearts > 3)
 
               return isActive ? (
                 <FaHeart
                   key={`h.active.${index}`}
                   className={cn(
-                    isLastActiveHeart && "animate-zelda-pulse",
+                    isAnimatedHeart && "animate-zelda-pulse",
                     "text-juz-green drop-shadow"
                   )}
                 />
@@ -160,7 +154,7 @@ export default function ModalGame({
                     setIsAnswered(true)
                     setSelectedOption(itemIndex)
                     if (isCorrectOption) {
-                      playAsset("success")
+                      playSound("success")
                     } else triggerFailure()
                   }}
                   key={`option-${option}`}

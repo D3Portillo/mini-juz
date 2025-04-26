@@ -1,5 +1,7 @@
 import { useAtom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
+import { ONE_DAY_IN_MS } from "@/lib/constants"
+import { useUserTopics } from "./topics"
 
 const atomIsExplainerConfirmed = atomWithStorage(
   "juz.isExplainerConfirmed",
@@ -13,3 +15,12 @@ export const useAtomExplainerConfirmed = () => useAtom(atomIsExplainerConfirmed)
 
 const atomPlayerHearts = atomWithStorage("juz.totalPlayerHearts", 3)
 export const usePlayerHearts = () => useAtom(atomPlayerHearts)
+
+export const useNextRefillTime = () => {
+  const { lastUpdated } = useUserTopics()
+
+  return {
+    lastUpdated,
+    nextRefill: lastUpdated + ONE_DAY_IN_MS,
+  }
+}
