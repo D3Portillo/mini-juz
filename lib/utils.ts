@@ -5,4 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export const generateUUID = () => {
+  return crypto.randomUUID().replace(/-/g, "")
+}
+
 export function noOp() {}

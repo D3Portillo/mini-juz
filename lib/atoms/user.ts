@@ -13,13 +13,18 @@ const atomIsExplainerConfirmed = atomWithStorage(
  */
 export const useAtomExplainerConfirmed = () => useAtom(atomIsExplainerConfirmed)
 
-const atomPlayerHearts = atomWithStorage("juz.totalPlayerHearts", 3)
+const INITIAL_PLAYER_HEARTS = 3
+const atomPlayerHearts = atomWithStorage(
+  "juz.totalPlayerHearts",
+  INITIAL_PLAYER_HEARTS
+)
 export const usePlayerHearts = () => {
   const [hearts, setHearts] = useAtom(atomPlayerHearts)
 
   return {
     hearts,
     setHearts,
+    refill: () => setHearts(INITIAL_PLAYER_HEARTS),
     removeHeart: () => setHearts((current) => Math.max(current - 1, 0)),
   }
 }

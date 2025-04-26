@@ -6,7 +6,6 @@ import dynamic from "next/dynamic"
 import { WorldAppProvider } from "@radish-la/world-auth"
 import { Rubik, Sora } from "next/font/google"
 
-import { Toaster } from "@/components/ui/sonner"
 import { Toaster as WorldToaster } from "@worldcoin/mini-apps-ui-kit-react"
 import MainLayout from "./MainLayout"
 import { validator } from "./session"
@@ -26,6 +25,7 @@ const fontSora = Sora({
 export const metadata: Metadata = {
   title: "JUZ Mini App",
   description: "Learn, share, create and earn with Lemon",
+  metadataBase: new URL("https://mini-juz.vercel.app"),
 }
 
 const ErudaProvider = dynamic(
@@ -46,15 +46,6 @@ export default function RootLayout({
         className={`${fontRubik.variable} ${fontSora.variable} ${fontRubik.className} antialiased`}
       >
         <WorldToaster duration={2_500} />
-        <Toaster
-          theme="light"
-          style={{ zIndex: 55 }}
-          position="top-center"
-          toastOptions={{
-            className: "!rounded-xl",
-          }}
-          swipeDirections={["left", "top", "right", "bottom"]}
-        />
         <WorldAppProvider appName="JUZ by Lemon" withValidator={validator}>
           <ErudaProvider>
             <MainLayout>{children}</MainLayout>

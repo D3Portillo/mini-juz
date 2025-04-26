@@ -1,7 +1,7 @@
 "use client"
 
 import HeartsVisualizer from "@/app/ModalGame/HeartsVisualizer"
-import { usePlayerHearts } from "@/lib/atoms/user"
+
 import {
   AlertDialog,
   AlertDialogClose,
@@ -11,17 +11,51 @@ import {
   AlertDialogHeader,
   AlertDialogTrigger,
   Button,
+  useToast,
 } from "@worldcoin/mini-apps-ui-kit-react"
+
+import { executeWorldPyment } from "@/actions/payments"
+import { usePlayerHearts } from "@/lib/atoms/user"
+import { useWorldAuth } from "@radish-la/world-auth"
 
 export default function DialogHearts({
   trigger,
 }: {
   trigger?: React.ReactNode
 }) {
-  const { hearts } = usePlayerHearts()
+  const { toast } = useToast()
+  const { user, signIn } = useWorldAuth()
+  const { hearts, refill } = usePlayerHearts()
   const isHeartFull = hearts >= 3
 
-  function handleRefill() {}
+  async function handleRefill() {
+    let initiatorAddress = user?.walletAddress
+    if (!initiatorAddress) {
+      const incomingUser = await signIn()
+      if (!incomingUser) {
+        return toast.error({
+          title: "Connect your wallet to continue",
+        })
+      }
+      initiatorAddress = incomingUser.walletAddress
+    }
+
+    const result = await executeWorldPyment({
+      amount: 2.5, // 2.5 WLD
+      initiatorAddress,
+      paymentDescription: `Confirm to refill a total of ${
+        3 - hearts
+      } hearts in JUZ Mini App`,
+    })
+
+    if (result) {
+      refill()
+      return toast.success({
+        title: "Hearts refilled",
+        content: "Now you can play trivia games",
+      })
+    }
+  }
 
   return (
     <AlertDialog>

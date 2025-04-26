@@ -119,7 +119,7 @@ export default function ModalGame({
 
         {isLoading ? (
           <div className="flex-grow p-4 !pb-12 text-center flex flex-col items-center justify-center gap-6">
-            <GiDiceTarget className="text-6xl scale-125" />
+            <GiDiceTarget className="text-6xl transform animate-[bounce_3s_infinite]" />
 
             <p className="text-sm max-w-xs">
               Buckle up! We are preparing the trivia for you...
