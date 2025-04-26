@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { Fragment, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
@@ -13,18 +13,23 @@ import { FaHeart, FaHeartBroken } from "react-icons/fa"
 
 import WheelSpin from "@/components/WheelSpin"
 import LemonButton from "@/components/LemonButton"
-import HomeNavigation from "./HomeNavigation"
-
+import LeaderBoard from "@/components/LeaderBoard"
+import DialogHearts from "@/components/DialogHearts"
 import DailyRefill from "@/components/banners/DailyRefill"
+
 import asset_limoncito from "@/assets/limoncito.png"
 
+import HomeNavigation from "./HomeNavigation"
 import ModalGame from "./ModalGame"
-import LeaderBoard from "@/components/LeaderBoard"
 
+const MANAGE_HEARTS_TRIGGER_ID = "manage-hearts"
+
+// TODO: Add sentinel to watch for "pending games"
+// so we avoid "cheaters" that close app or "force" to exit the trivia window
 export default function PageHome() {
   const { toast } = useToast()
 
-  const [hearts] = usePlayerHearts()
+  const { hearts } = usePlayerHearts()
   const { gameTopics, shuffleTopics, isEmpty } = useUserTopics()
 
   const [showGame, setShowGame] = useState(null as { topic?: string } | null)
@@ -48,6 +53,10 @@ export default function PageHome() {
     }
 
     setIsConfirmed(true)
+  }
+
+  function openHeartsDialog() {
+    document.getElementById(MANAGE_HEARTS_TRIGGER_ID)?.click()
   }
 
   useEffect(() => {
@@ -95,14 +104,21 @@ export default function PageHome() {
 
             <div className="flex-grow" />
 
-            <button className="flex text-xl items-center gap-1">
-              {hearts > 0 ? (
-                <FaHeart className="text-juz-green animate-zelda-pulse" />
-              ) : (
-                <FaHeartBroken />
-              )}
-              <strong className="font-semibold text-lg">x{hearts}</strong>
-            </button>
+            <DialogHearts
+              trigger={
+                <button
+                  id={MANAGE_HEARTS_TRIGGER_ID}
+                  className="flex text-xl items-center gap-1"
+                >
+                  {hearts > 0 ? (
+                    <FaHeart className="text-juz-green animate-zelda-pulse" />
+                  ) : (
+                    <FaHeartBroken />
+                  )}
+                  <strong className="font-semibold text-lg">x{hearts}</strong>
+                </button>
+              }
+            />
           </TabsList>
         </nav>
 
@@ -111,22 +127,21 @@ export default function PageHome() {
             {hearts > 0 ? null : (
               <div className="mt-4 animate-in fade-in slide-in-from-top-5 flex items-center justify-between text-sm bg-black text-white px-4 py-2 rounded-full">
                 <span>😢 No hearts left to play</span>
-                <button className="font-medium -mt-0.5 underline underline-offset-2">
+                <button
+                  onClick={openHeartsDialog}
+                  className="font-medium -mt-0.5 underline underline-offset-2"
+                >
                   Refill now
                 </button>
               </div>
             )}
 
-            <div className="size-full mt-12 overflow-clip grid place-items-center">
+            <div className="size-full rounded-full mt-12 overflow-clip grid place-items-center">
               <WheelSpin
                 enableSpin={isConnected && hearts > 0 && !isEmpty}
                 onClick={() => {
                   if (!isConnected) return signIn()
-                  if (hearts <= 0) {
-                    return toast.error({
-                      title: "No hearts left to play",
-                    })
-                  }
+                  if (hearts <= 0) openHeartsDialog()
                 }}
                 onItemSelected={(topic) => {
                   setShowGame({ topic })

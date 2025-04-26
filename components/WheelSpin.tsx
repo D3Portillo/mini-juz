@@ -26,7 +26,7 @@ export default function WheelSpin({
   size = 300,
 }: SpinWheelProps) {
   const controls = useAnimationControls()
-  const { playSound } = useAudioMachine(["bell", "wheelSpin"])
+  const { playSound } = useAudioMachine(["bell", "wheelSpin", "failure"])
 
   const [isSpinning, setSpinning] = useState(false)
   const [rotation, setRotation] = useState(0)
@@ -71,6 +71,7 @@ export default function WheelSpin({
       onClick={() => {
         onClick?.()
         if (enableSpin) spinWheel()
+        else playSound("failure")
       }}
       style={{ width: size, height: size }}
     >

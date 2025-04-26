@@ -14,7 +14,15 @@ const atomIsExplainerConfirmed = atomWithStorage(
 export const useAtomExplainerConfirmed = () => useAtom(atomIsExplainerConfirmed)
 
 const atomPlayerHearts = atomWithStorage("juz.totalPlayerHearts", 3)
-export const usePlayerHearts = () => useAtom(atomPlayerHearts)
+export const usePlayerHearts = () => {
+  const [hearts, setHearts] = useAtom(atomPlayerHearts)
+
+  return {
+    hearts,
+    setHearts,
+    removeHeart: () => setHearts((current) => Math.max(current - 1, 0)),
+  }
+}
 
 export const useNextRefillTime = () => {
   const { lastUpdated } = useUserTopics()

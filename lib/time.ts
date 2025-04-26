@@ -18,7 +18,7 @@ export function useTimer(timeInSeconds: number) {
       } else {
         setElapsedTime(diff)
       }
-    }, 500)
+    }, 250)
   }
 
   const stop = () => {

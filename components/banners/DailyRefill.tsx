@@ -53,8 +53,8 @@ function formatCountdown(secondsLeft: number): string {
   const hours = Math.floor(secondsLeft / 3600)
   const minutes = Math.floor((secondsLeft % 3600) / 60)
   const seconds = secondsLeft % 60
-  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+  return `${String(hours).padStart(2, "0")}h ${String(minutes).padStart(
     2,
     "0"
-  )}:${String(seconds).padStart(2, "0")} H`
+  )}m ${String(seconds).padStart(2, "0")}s`
 }

@@ -15,9 +15,13 @@ import { FaHeart, FaHeartBroken } from "react-icons/fa"
 import { MdOutlineExitToApp } from "react-icons/md"
 import { generateQuestionsForTopic } from "@/actions/questions"
 import { useAudioMachine } from "@/lib/sounds"
+import HeartsVisualizer from "./HeartsVisualizer"
 
 const TOTAL_QUESTIONS = 5
 const PER_QUESTION_TIME = 10 // seconds
+
+// TODO: Store user last 10 questions answered for a topic
+// And pass them to the generation function to avoid duplicates
 export default function ModalGame({
   open,
   onOpenChange,
@@ -25,7 +29,7 @@ export default function ModalGame({
 }: Pick<React.ComponentProps<typeof Drawer>, "open" | "onOpenChange"> & {
   topic?: string
 }) {
-  const [hearts, setHearts] = usePlayerHearts()
+  const { hearts, removeHeart } = usePlayerHearts()
   const { playSound } = useAudioMachine(["success", "failure"])
   const { elapsedTime, restart, stop } = useTimer(PER_QUESTION_TIME)
 
@@ -50,6 +54,7 @@ export default function ModalGame({
 
   const QUESTION = questions?.[currentQuestion - 1]
   const correctOptionIndex = QUESTION?.correctOptionIndex
+  const isGameOver = currentQuestion >= TOTAL_QUESTIONS
 
   function handleContinue() {
     if (currentQuestion >= TOTAL_QUESTIONS) {
@@ -68,6 +73,14 @@ export default function ModalGame({
     setSelectedOption(null)
   }
 
+  function handleForceExit() {
+    if (!isGameOver) {
+      // If user exits before game over we remove one heart
+      removeHeart()
+    }
+    onOpenChange?.(false)
+  }
+
   useEffect(() => {
     if (open) {
       // Reset state when the modal opens
@@ -81,7 +94,7 @@ export default function ModalGame({
   }, [open])
 
   const triggerFailure = () => {
-    setHearts((prev) => Math.max(prev - 1, 0))
+    removeHeart()
     playSound("failure")
   }
 
@@ -89,31 +102,8 @@ export default function ModalGame({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="p-5">
         <nav className="flex justify-between items-center">
-          <div className="flex text-xl items-center gap-1">
-            {Array.from({ length: 3 }).map((_, index) => {
-              const isActive = index < hearts
-              const isLastItemIndex = index === 2
-              const isAnimatedHeart =
-                index === hearts - 1 || (isLastItemIndex && hearts > 3)
-
-              return isActive ? (
-                <FaHeart
-                  key={`h.active.${index}`}
-                  className={cn(
-                    isAnimatedHeart && "animate-zelda-pulse",
-                    "text-juz-green drop-shadow"
-                  )}
-                />
-              ) : (
-                <FaHeartBroken
-                  key={`h.inactive.${index}`}
-                  className="text-black/35"
-                />
-              )
-            })}
-          </div>
-
-          <button onClick={() => onOpenChange?.(false)} className="text-2xl">
+          <HeartsVisualizer hearts={hearts} />
+          <button onClick={handleForceExit} className="text-2xl">
             <MdOutlineExitToApp />
           </button>
         </nav>
