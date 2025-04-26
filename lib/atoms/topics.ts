@@ -12,10 +12,13 @@ const atomUserTopics = atomWithStorage("juz.atomUserTopics", {
   lastUpdated: 0,
 })
 
+let timer: NodeJS.Timeout | undefined
 export const useUserTopics = () => {
   const [{ lastUpdated, topics }, setData] = useAtom(atomUserTopics)
 
   async function fetchTopics() {
+    console.debug("Fetching fresh topics")
+
     const newTopics = await generateTopicList({
       omitted: topics.filter(() => {
         // Russian roulette to remove 30% of the topics
@@ -29,10 +32,14 @@ export const useUserTopics = () => {
     })
   }
 
+  console.debug({ lastUpdated, topics })
+
   useEffect(() => {
-    if (lastUpdated > Date.now() + ONE_DAY_IN_MS) {
-      console.debug("Refreshing topics")
-      fetchTopics()
+    clearTimeout(timer)
+    // User topics are updated every 24 hours
+    if (lastUpdated > Date.now() + ONE_DAY_IN_MS || lastUpdated === 0) {
+      timer = setTimeout(fetchTopics, 250)
+      // 250ms delay to avoid too many requests
     }
   }, [lastUpdated])
 
