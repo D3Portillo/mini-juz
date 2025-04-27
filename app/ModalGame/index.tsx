@@ -11,7 +11,6 @@ import { useTimer } from "@/lib/time"
 import { cn } from "@/lib/utils"
 
 import { GiDiceTarget } from "react-icons/gi"
-import { FaHeart, FaHeartBroken } from "react-icons/fa"
 import { MdOutlineExitToApp } from "react-icons/md"
 import { generateQuestionsForTopic } from "@/actions/questions"
 import { useAudioMachine } from "@/lib/sounds"
@@ -74,8 +73,9 @@ export default function ModalGame({
   }
 
   function handleForceExit() {
-    if (!isGameOver) {
-      // If user exits before game over we remove one heart
+    if (!isGameOver && !isAnswered) {
+      // If user exits in the middle of a game
+      // Remove a heart
       removeHeart()
     }
     onOpenChange?.(false)
@@ -119,7 +119,7 @@ export default function ModalGame({
 
         {isLoading ? (
           <div className="flex-grow p-4 !pb-12 text-center flex flex-col items-center justify-center gap-6">
-            <GiDiceTarget className="text-6xl transform animate-[bounce_3s_infinite]" />
+            <GiDiceTarget className="text-7xl transform animate-[bounce_3s_infinite]" />
 
             <p className="text-sm max-w-xs">
               Buckle up! We are preparing the trivia for you...

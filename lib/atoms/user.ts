@@ -24,7 +24,11 @@ export const usePlayerHearts = () => {
   return {
     hearts,
     setHearts,
-    refill: () => setHearts(INITIAL_PLAYER_HEARTS),
+    refill: () => {
+      if (hearts < INITIAL_PLAYER_HEARTS) {
+        setHearts(INITIAL_PLAYER_HEARTS)
+      }
+    },
     removeHeart: () => setHearts((current) => Math.max(current - 1, 0)),
   }
 }

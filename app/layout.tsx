@@ -3,12 +3,11 @@ import "./globals.css"
 
 import type { Metadata } from "next"
 import dynamic from "next/dynamic"
-import { WorldAppProvider } from "@radish-la/world-auth"
 import { Rubik, Sora } from "next/font/google"
 
 import { Toaster as WorldToaster } from "@worldcoin/mini-apps-ui-kit-react"
+import WorldProvider from "@/components/world-provider"
 import MainLayout from "./MainLayout"
-import { validator } from "./session"
 
 const fontRubik = Rubik({
   subsets: [],
@@ -46,11 +45,11 @@ export default function RootLayout({
         className={`${fontRubik.variable} ${fontSora.variable} ${fontRubik.className} antialiased`}
       >
         <WorldToaster duration={2_500} />
-        <WorldAppProvider appName="JUZ by Lemon" withValidator={validator}>
+        <WorldProvider>
           <ErudaProvider>
             <MainLayout>{children}</MainLayout>
           </ErudaProvider>
-        </WorldAppProvider>
+        </WorldProvider>
       </body>
     </html>
   )

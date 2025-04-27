@@ -24,21 +24,13 @@ export default function DialogHearts({
   trigger?: React.ReactNode
 }) {
   const { toast } = useToast()
-  const { user, signIn } = useWorldAuth()
+  const { user, signIn, isConnected } = useWorldAuth()
   const { hearts, refill } = usePlayerHearts()
   const isHeartFull = hearts >= 3
 
   async function handleRefill() {
-    let initiatorAddress = user?.walletAddress
-    if (!initiatorAddress) {
-      const incomingUser = await signIn()
-      if (!incomingUser) {
-        return toast.error({
-          title: "Connect your wallet to continue",
-        })
-      }
-      initiatorAddress = incomingUser.walletAddress
-    }
+    const initiatorAddress = user?.walletAddress
+    if (!initiatorAddress) return signIn()
 
     const result = await executeWorldPyment({
       amount: 2.5, // 2.5 WLD
@@ -84,7 +76,9 @@ export default function DialogHearts({
               <Button>Okie dokie</Button>
             </AlertDialogClose>
           ) : (
-            <Button onClick={handleRefill}>Refill now</Button>
+            <Button onClick={handleRefill}>
+              {isConnected ? "Refill now" : "Connect wallet"}
+            </Button>
           )}
         </AlertDialogFooter>
       </AlertDialogContent>

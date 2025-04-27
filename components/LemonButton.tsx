@@ -10,7 +10,7 @@ export default function LemonButton({
     <button
       {...(pros as any)}
       className={cn(
-        "px-6 shadow-3d-lg active:shadow-none active:translate-x-[3px] active:translate-y-[3px] mt-4 rounded-xl bg-gradient-to-bl font-semibold from-juz-green-lime to-juz-green-ish border-3 border-black py-2",
+        "px-6 shadow-3d-lg active:shadow-none active:translate-x-[3px] active:translate-y-[3px] rounded-xl bg-gradient-to-bl font-semibold from-juz-green-lime to-juz-green-ish border-3 border-black py-2",
         className
       )}
     >

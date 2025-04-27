@@ -2,7 +2,6 @@
 
 import Link from "next/link"
 
-import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { useRouter } from "next/navigation"
 
@@ -13,15 +12,7 @@ import MainSelect from "@/components/MainSelect"
 
 export default function HomeNavigation() {
   const router = useRouter()
-  const { toast } = useToast()
-
-  const { user, signIn, signOut, isConnected } = useWorldAuth({
-    onWrongEnvironment() {
-      toast.error({
-        title: "Only available in World App",
-      })
-    },
-  })
+  const { user, signIn, signOut, isConnected } = useWorldAuth()
 
   const PROFILE = (
     <button
@@ -32,7 +23,7 @@ export default function HomeNavigation() {
         style={{
           backgroundImage: `url(${user?.profilePictureUrl || "/marble.png"})`,
         }}
-        className="size-10 object-cover bg-center bg-black/3 border-2 shadow-3d-bottom border-black rounded-full overflow-hidden"
+        className="size-10 bg-cover bg-center bg-black/3 border-2 shadow-3d-bottom border-black rounded-full overflow-hidden"
       />
       <div>
         <p className="font-semibold text-lg">{user?.username || "Profile"}</p>

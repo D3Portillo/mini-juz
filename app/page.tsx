@@ -31,16 +31,10 @@ export default function PageHome() {
 
   const { hearts } = usePlayerHearts()
   const { gameTopics, shuffleTopics, isEmpty } = useUserTopics()
+  const { signIn, isMiniApp, isConnected, reklesslySetUser } = useWorldAuth()
 
   const [showGame, setShowGame] = useState(null as { topic?: string } | null)
   const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
-  const { signIn, isMiniApp, isConnected, reklesslySetUser } = useWorldAuth({
-    onWrongEnvironment() {
-      toast.error({
-        title: "Only available in World App",
-      })
-    },
-  })
 
   async function handleConfirmExplainer() {
     if (!isConnected) {
@@ -165,7 +159,10 @@ export default function PageHome() {
                       mini-game and earn JUZ!
                     </p>
 
-                    <LemonButton onClick={handleConfirmExplainer}>
+                    <LemonButton
+                      className="mt-4"
+                      onClick={handleConfirmExplainer}
+                    >
                       {isConnected ? "GOT IT" : "LETS GO"}
                     </LemonButton>
                   </div>
