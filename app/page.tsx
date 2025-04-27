@@ -81,8 +81,9 @@ export default function PageHome() {
         <HomeNavigation />
 
         <nav className="px-5">
-          <TabsList className="border-b flex items-center border-b-black/5">
+          <TabsList className="border-b flex items-center border-b-black/3">
             <TabsTrigger
+              id="play-tab"
               className="border-b-2 flex items-center gap-4 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
               value="play"
             >

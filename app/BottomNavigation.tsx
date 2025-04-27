@@ -89,7 +89,13 @@ function NavItem({
       className="grid place-items-center p-1 pt-2 h-14 rounded-none text-black/70 !bg-transparent data-[state=active]:text-juz-green"
       value={route.value}
     >
-      <Link href={route.href}>
+      <Link
+        onClick={() => {
+          // Focus on the play tab when navigating to the play route
+          ;(document.querySelector("#play-tab") as any)?.focus()
+        }}
+        href={route.href}
+      >
         <div className="size-5 grid place-items-center place-content-center">
           {icon}
         </div>
