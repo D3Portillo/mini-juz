@@ -1,25 +1,44 @@
 "use client"
 
 import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
-import RouteBackButton from "@/components/RouteBackButton"
-import LemonButton from "@/components/LemonButton"
+
+import { useState } from "react"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { executeWorldPyment } from "@/actions/payments"
+
+import { FaChevronDown } from "react-icons/fa"
+
+import RouteBackButton from "@/components/RouteBackButton"
+import LemonButton from "@/components/LemonButton"
+import MainSelect from "@/components/MainSelect"
+
+import { CURRENCY_TOKENS } from "@/lib/atoms/token"
 
 export default function PageProfile() {
   const { toast } = useToast()
   const { signIn, user } = useWorldAuth()
+  const [payingToken, setPayingToken] = useState(CURRENCY_TOKENS.WLD)
+
+  // @ts-ignore
+  const isJUZPayment = payingToken.value === CURRENCY_TOKENS.JUZ.value
 
   async function handleBuyHearts(amount: number, cost: number) {
+    let isSuccess = false
     if (!user?.walletAddress) return signIn()
 
-    const result = await executeWorldPyment({
-      amount: cost, // in WLD
-      initiatorAddress: user.walletAddress,
-      paymentDescription: `Confirm to buy a Pack of ${amount} hearts in JUZ Mini App`,
-    })
+    if (isJUZPayment) {
+      // TODO: Handle JUZ payment
+    } else {
+      const result = await executeWorldPyment({
+        amount: cost, // in WLD
+        initiatorAddress: user.walletAddress,
+        paymentDescription: `Confirm to buy a Pack of ${amount} hearts in JUZ Mini App`,
+      })
 
-    if (result) {
+      isSuccess = Boolean(result)
+    }
+
+    if (isSuccess) {
       // TODO: Add and store hearts to user
       return toast.success({
         title: "Pack of hearts purchased",
@@ -45,7 +64,6 @@ export default function PageProfile() {
   }
 
   // TODO: There must be a total limit of hearts holding per user
-
   return (
     <section className="min-h-screen">
       <nav className="border-b bg-white top-0 sticky z-10">
@@ -56,34 +74,61 @@ export default function PageProfile() {
         />
       </nav>
 
-      <div className="flex [&_strong]:font-medium px-4 mt-5 mb-12 flex-col gap-4">
-        <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
-          <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
-            <div className="text-5xl">🍋</div>
-          </figure>
+      <div className="flex [&_strong]:font-medium px-4 mt-2 mb-12 flex-col gap-4">
+        <nav className="flex px-1 items-center justify-between gap-2">
+          <MainSelect
+            value={payingToken.value}
+            options={Object.values(CURRENCY_TOKENS)}
+            onValueChange={(value) => {
+              setPayingToken((CURRENCY_TOKENS as any)[value])
+            }}
+          >
+            <button className="flex outline-none py-2 items-center">
+              <figure
+                style={{
+                  backgroundImage: `url(/token/${payingToken?.value}.png)`,
+                }}
+                className="size-6 scale-105 bg-cover bg-center bg-black/80 shrink-0 rounded-full"
+              />
+              <strong className="ml-2.5">{payingToken.label}</strong>
+              <FaChevronDown className="ml-1 scale-105" />
+            </button>
+          </MainSelect>
 
           <div>
-            <h2 className="font-medium text-xl">
-              JUZ Master <span className="text-juz-orange">NFT</span>
-            </h2>
-
-            <p className="text-sm opacity-70">
-              Get an exclusive early adopter NFT in <strong>worldchain</strong>{" "}
-              your first purchase.
-            </p>
-
-            <p className="text-sm mt-2 opacity-70">
-              <strong>300 JUZ</strong> to your account.
-            </p>
-
-            <LemonButton
-              onClick={handleBuyJUZ}
-              className="py-3 rounded-full text-base w-full mt-5"
-            >
-              Buy for 10 WLD
-            </LemonButton>
+            Balance: <strong>42 {payingToken.label}</strong>
           </div>
-        </section>
+        </nav>
+
+        {isJUZPayment ? null : (
+          <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
+            <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
+              <div className="text-5xl">🍋</div>
+            </figure>
+
+            <div>
+              <h2 className="font-medium text-xl">
+                JUZ Master <span className="text-juz-orange">NFT</span>
+              </h2>
+
+              <p className="text-sm opacity-70">
+                Get an exclusive early adopter NFT in{" "}
+                <strong>worldchain</strong> your first purchase.
+              </p>
+
+              <p className="text-sm mt-2 opacity-70">
+                <strong>300 JUZ</strong> to your account.
+              </p>
+
+              <LemonButton
+                onClick={handleBuyJUZ}
+                className="py-3 rounded-full text-base w-full mt-5"
+              >
+                Buy for 10 WLD
+              </LemonButton>
+            </div>
+          </section>
+        )}
 
         <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
           <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
@@ -101,10 +146,17 @@ export default function PageProfile() {
             </p>
 
             <LemonButton
-              onClick={() => handleBuyHearts(5, 3)}
+              onClick={() =>
+                handleBuyHearts(
+                  5,
+                  isJUZPayment
+                    ? 7 // JUZ
+                    : 3 // WLD
+                )
+              }
               className="py-3 rounded-full text-base w-full mt-5"
             >
-              Buy for 3 WLD
+              Buy for {isJUZPayment ? 7 : 3} {payingToken.label}
             </LemonButton>
           </div>
         </section>
@@ -125,10 +177,37 @@ export default function PageProfile() {
             </p>
 
             <LemonButton
-              onClick={() => handleBuyHearts(10, 5)}
+              onClick={() =>
+                handleBuyHearts(
+                  10,
+                  isJUZPayment
+                    ? 12 // JUZ
+                    : 5 // WLD
+                )
+              }
               className="py-3 rounded-full text-base w-full mt-5"
             >
-              Buy for 5 WLD
+              Buy for {isJUZPayment ? 10 : 5} {payingToken.label}
+            </LemonButton>
+          </div>
+        </section>
+
+        <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
+          <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
+            <div className="text-5xl mt-1">🛡️</div>
+          </figure>
+
+          <div>
+            <h2 className="font-medium text-xl">Last resort</h2>
+
+            <p className="text-sm text-black/70">
+              <strong className="text-juz-orange">(In game item)</strong> Use a
+              shield to give your <strong>last heart</strong> a second chance in
+              the trivia. Item will expire after use.
+            </p>
+
+            <LemonButton className="py-3 rounded-full text-base w-full mt-5">
+              Buy for {isJUZPayment ? 2 : 0.5} {payingToken.label}
             </LemonButton>
           </div>
         </section>

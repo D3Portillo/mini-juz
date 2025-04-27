@@ -62,11 +62,9 @@ export default function ProfileMenu() {
         },
       ]}
     >
-      {() => (
-        <button className="text-xl outline-none p-2">
-          <HiDotsHorizontal className="scale-125" />
-        </button>
-      )}
+      <button className="text-xl outline-none p-2">
+        <HiDotsHorizontal className="scale-125" />
+      </button>
     </MainSelect>
   )
 }

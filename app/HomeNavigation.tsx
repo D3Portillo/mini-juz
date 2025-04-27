@@ -56,19 +56,25 @@ export default function HomeNavigation() {
             },
           ]}
         >
-          {() => PROFILE}
+          {PROFILE}
         </MainSelect>
       ) : (
         PROFILE
       )}
-      <div className="flex-grow" />
 
-      <Link href="/rewards" className="flex items-center gap-2">
-        <LemonIcon className="size-9">
-          <FaRegLemon className="text-xl" />
-        </LemonIcon>
-        <span className="text-xl font-semibold">0 JUZ</span>
-      </Link>
+      <div className="flex-grow" />
+      <JUZCounter />
     </nav>
+  )
+}
+
+export function JUZCounter() {
+  return (
+    <Link href="/rewards" className="flex items-center gap-2">
+      <LemonIcon className="size-9">
+        <FaRegLemon className="text-xl" />
+      </LemonIcon>
+      <span className="text-xl font-semibold">0 JUZ</span>
+    </Link>
   )
 }

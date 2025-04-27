@@ -23,5 +23,21 @@ export const ALL_TOKENS = {
   },
 } as const
 
+export const LEMON_TOKENS = {
+  JUZ: {
+    label: "JUZ",
+    value: "JUZ",
+  },
+  veJUZ: {
+    label: "veJUZ",
+    value: "veJUZ",
+  },
+} as const
+
+export const CURRENCY_TOKENS = {
+  JUZ: LEMON_TOKENS.JUZ,
+  WLD: WLD_TOKEN,
+} as const
+
 export const atomToken = atom(WLD_TOKEN)
 export const useTokenAtom = () => useAtom(atomToken)

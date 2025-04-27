@@ -2,18 +2,21 @@
 
 import { Fragment } from "react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
+
 import { TopBar } from "@worldcoin/mini-apps-ui-kit-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
-import { useRouter } from "next/navigation"
 
 import { FaArrowRight, FaRegLemon } from "react-icons/fa"
 
+import { JUZCounter } from "@/app/HomeNavigation"
 import RouteBackButton from "@/components/RouteBackButton"
 import LemonButton from "@/components/LemonButton"
+import ReusableDialog from "@/components/ReusableDialog"
+import LemonIcon from "@/components/LemonIcon"
 
 import asset_running from "@/assets/running.png"
 import asset_frog from "@/assets/frog.png"
-import LemonIcon from "@/components/LemonIcon"
 
 export default function PageRewards() {
   const router = useRouter()
@@ -22,9 +25,10 @@ export default function PageRewards() {
     <section className="min-h-screen">
       <nav className="border-b border-black/15 bg-white top-0 sticky z-10">
         <TopBar
-          className="py-0 gap-5 px-5"
+          className="py-0 gap-5 px-5 [&_.text-lg]:text-left"
           startAdornment={<RouteBackButton />}
-          title="Boost your rewards"
+          endAdornment={<JUZCounter />}
+          title="Reward boost"
         />
       </nav>
 
@@ -52,15 +56,22 @@ export default function PageRewards() {
 
           <div className="-mt-8 px-5">
             <TabsContent asChild value="lock">
-              <div>
+              <div className="mb-12">
                 <h2 className="font-medium text-xl">JUZ Locking</h2>
 
                 <div className="flex justify-between items-start gap-4">
                   <div className="mt-2 text-sm max-w-xs">
                     <p>
-                      Earn veJUZ by locking JUZ for a period of time. In the
-                      future veJUZ can be used for goverance, access reward
-                      pools or airdrops
+                      Earn{" "}
+                      <LockedJuzExplainer
+                        trigger={
+                          <button className="underline underline-offset-2 font-medium">
+                            veJUZ
+                          </button>
+                        }
+                      />{" "}
+                      by locking JUZ for a period of time. In the future veJUZ
+                      can be used for goverance, access reward pools or airdrops
                     </p>
 
                     <LemonButton
@@ -77,7 +88,7 @@ export default function PageRewards() {
                   </figure>
                 </div>
 
-                <div className="mt-8 mb-12 border-3 border-black shadow-3d rounded-2xl p-6">
+                <div className="mt-8 border-3 border-black shadow-3d-lg rounded-2xl p-6">
                   <h2 className="font-semibold text-xl">
                     Lock JUZ. Get veJUZ 🍋
                   </h2>
@@ -150,13 +161,33 @@ export default function PageRewards() {
 
                   <div className="mt-3 text-center text-sm">
                     By locking <strong>24 JUZ</strong> for{" "}
-                    <strong>6 months</strong> you will get an estimated value of{" "}
-                    <strong className="underline underline-offset-2">
-                      4 veJUZ
-                    </strong>
-                    .
+                    <strong>6 months</strong> you will receive an estimated{" "}
+                    <LockedJuzExplainer
+                      trigger={
+                        <button className="underline font-semibold underline-offset-2">
+                          4 veJUZ.
+                        </button>
+                      }
+                    />
                   </div>
                 </div>
+
+                <section className="p-4 bg-gradient-to-br from-juz-green-lime/5 to-juz-green-lime/0 mt-5 rounded-2xl border-3 border-black shadow-3d-lg">
+                  <nav className="flex items-center justify-between">
+                    <p className="font-semibold text-xl">Earned veJUZ</p>
+
+                    <span className="rounded-full text-sm font-semibold text-center bg-juz-orange/10 border-2 border-juz-orange text-black py-1 px-3">
+                      🔥 32% APR
+                    </span>
+                  </nav>
+
+                  <nav className="flex mt-1 items-end justify-between gap-2">
+                    <p className="text-4xl font-semibold">32.5</p>
+                    <button className="underline font-medium underline-offset-2">
+                      Claim
+                    </button>
+                  </nav>
+                </section>
               </div>
             </TabsContent>
 
@@ -186,5 +217,22 @@ export default function PageRewards() {
         </Fragment>
       </Tabs>
     </section>
+  )
+}
+
+function LockedJuzExplainer({ trigger }: { trigger: JSX.Element }) {
+  return (
+    <ReusableDialog title="What's veJUZ?" trigger={trigger}>
+      <p>
+        Vote-Escrowed JUZ (<strong>veJUZ</strong>) is a protocol token that can
+        be obtained by locking JUZ for period of time. The longer you lock, the
+        greater the earning potential.
+      </p>
+
+      <p>
+        <strong>veJUZ</strong> is summed up to your total JUZ balance and can be
+        used to vote in future governance proposals and earn rewards.
+      </p>
+    </ReusableDialog>
   )
 }

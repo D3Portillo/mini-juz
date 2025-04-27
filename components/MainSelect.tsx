@@ -20,12 +20,14 @@ export default function MainSelect({
 }: Omit<Parameters<typeof Select>[0], "children"> & {
   options: SelectElement[]
   showSelectedItem?: boolean
-  children: (selected: SelectElement | null) => JSX.Element
+  children: ((selected: SelectElement | null) => JSX.Element) | JSX.Element
 }) {
   const selected = options.find((o) => o.value === value) || null
   return (
     <Select value={value} {...props}>
-      <SelectTrigger asChild>{children(selected)}</SelectTrigger>
+      <SelectTrigger asChild>
+        {typeof children === "function" ? children(selected) : children}
+      </SelectTrigger>
       <SelectContent>
         {options.map((option) => (
           <SelectItem
