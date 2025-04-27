@@ -22,6 +22,7 @@ const atomPlayerHearts = atomWithStorage(
 const DEFAULT_REFILL_STATE = {
   zeroHeartsTimestamp: 0,
   isClaimed: false,
+  isInitialState: true,
 }
 
 const atomHeartsRefill = atomWithStorage(
@@ -30,7 +31,7 @@ const atomHeartsRefill = atomWithStorage(
 )
 
 export const usePlayerHearts = () => {
-  const [{ isClaimed, zeroHeartsTimestamp }, setHeartsRefill] =
+  const [{ isClaimed, zeroHeartsTimestamp, isInitialState }, setHeartsRefill] =
     useAtom(atomHeartsRefill)
   const [hearts, setHearts] = useAtom(atomPlayerHearts)
 
@@ -45,6 +46,7 @@ export const usePlayerHearts = () => {
       setHeartsRefill({
         zeroHeartsTimestamp: Date.now(),
         isClaimed: false,
+        isInitialState: false,
       })
     }
   }
@@ -58,7 +60,12 @@ export const usePlayerHearts = () => {
     hearts,
     nextRefillTime: NEXT_REFILL_TIME < 1 ? null : NEXT_REFILL_TIME,
     canBeRefilled:
-      NEXT_REFILL_TIME < 1 || isClaimed ? false : Date.now() > NEXT_REFILL_TIME,
+      NEXT_REFILL_TIME < 1 || isClaimed
+        ? false
+        : Date.now() > NEXT_REFILL_TIME ||
+          // Can be claimed if user has no hearts and
+          // its first time to get cached state
+          (isInitialState && hearts < 1),
     setHearts,
     removeHeart,
     isRefillClaimed: isClaimed,
