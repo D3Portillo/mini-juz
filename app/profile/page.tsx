@@ -52,12 +52,12 @@ export default function PageProfile() {
         <hr className="mt-4" />
 
         <div className="grid grid-cols-2 gap-4">
-          <section className="p-4 rounded-2xl border-2 border-black shadow-3d-lg">
+          <section className="p-4 rounded-2xl border-3 border-black shadow-3d-lg">
             <h2 className="text-sm">Games played</h2>
             <p className="text-2xl font-semibold">245</p>
           </section>
 
-          <section className="p-4 rounded-2xl border-2 border-black shadow-3d-lg">
+          <section className="p-4 rounded-2xl border-3 border-black shadow-3d-lg">
             <h2 className="text-sm">Games won</h2>
             <p className="text-2xl font-semibold">42</p>
           </section>
@@ -69,7 +69,7 @@ export default function PageProfile() {
               style={{
                 backgroundImage: `url(${asset_bg.src})`,
               }}
-              className="border-2 grid gap-1 pt-4 pb-3 place-items-center rounded-2xl bg-cover bg-center bg-black/90 border-black shadow-3d-lg"
+              className="border-3 grid gap-1 pt-4 pb-3 place-items-center rounded-2xl bg-cover bg-center bg-black/90 border-black shadow-3d-lg"
             >
               <h2 className="font-semibold text-6xl text-juz-green-lime">
                 245

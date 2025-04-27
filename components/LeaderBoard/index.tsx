@@ -17,7 +17,7 @@ export default function LeaderBoard() {
 
       <hr className="mt-10 mb-5" />
 
-      <div className="p-5 gap-4 font-semibold rounded-2xl shadow-3d-lg border-2 border-black">
+      <div className="p-5 gap-4 font-semibold rounded-2xl shadow-3d-lg border-3 border-black">
         <nav className="flex items-center justify-between">
           <span className="text-2xl text-juz-green">#32</span>
 

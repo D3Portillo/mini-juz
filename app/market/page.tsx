@@ -57,7 +57,7 @@ export default function PageProfile() {
       </nav>
 
       <div className="flex [&_strong]:font-medium px-4 mt-5 mb-12 flex-col gap-4">
-        <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d-lg">
+        <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
           <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
             <div className="text-5xl">🍋</div>
           </figure>
@@ -85,7 +85,7 @@ export default function PageProfile() {
           </div>
         </section>
 
-        <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d-lg">
+        <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
           <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
             <div className="text-5xl mt-1">🖤</div>
           </figure>
@@ -109,7 +109,7 @@ export default function PageProfile() {
           </div>
         </section>
 
-        <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d-lg">
+        <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
           <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
             <div className="text-5xl">❤️‍🔥</div>
           </figure>
