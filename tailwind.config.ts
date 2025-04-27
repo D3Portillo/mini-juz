@@ -46,6 +46,9 @@ const config: Config = {
       },
       colors: {
         juz: {
+          orange: {
+            DEFAULT: "#FF7110",
+          },
           green: {
             DEFAULT: "#11C153",
             lime: "#00FF60",
