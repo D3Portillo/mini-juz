@@ -18,26 +18,51 @@ const atomPlayerHearts = atomWithStorage(
   "juz.totalPlayerHearts",
   INITIAL_PLAYER_HEARTS
 )
-export const usePlayerHearts = () => {
-  const [hearts, setHearts] = useAtom(atomPlayerHearts)
 
-  return {
-    hearts,
-    setHearts,
-    refill: () => {
-      if (hearts < INITIAL_PLAYER_HEARTS) {
-        setHearts(INITIAL_PLAYER_HEARTS)
-      }
-    },
-    removeHeart: () => setHearts((current) => Math.max(current - 1, 0)),
-  }
+const DEFAULT_REFILL_STATE = {
+  zeroHeartsTimestamp: 0,
+  isClaimed: false,
 }
 
-export const useNextRefillTime = () => {
-  const { lastUpdated } = useUserTopics()
+const atomHeartsRefill = atomWithStorage(
+  "juz.heartsRefill",
+  DEFAULT_REFILL_STATE
+)
+
+export const usePlayerHearts = () => {
+  const [{ isClaimed, zeroHeartsTimestamp }, setHeartsRefill] =
+    useAtom(atomHeartsRefill)
+  const [hearts, setHearts] = useAtom(atomPlayerHearts)
+
+  const removeHeart = () => setHearts((h) => Math.max(h - 1, 0))
+
+  const refill = (opts?: { isForcedRefill?: boolean }) => {
+    if (hearts < INITIAL_PLAYER_HEARTS) {
+      setHearts(INITIAL_PLAYER_HEARTS)
+    }
+
+    if (!opts?.isForcedRefill) {
+      setHeartsRefill({
+        zeroHeartsTimestamp: Date.now(),
+        isClaimed: false,
+      })
+    }
+  }
+
+  const NEXT_REFILL_TIME = zeroHeartsTimestamp
+    ? zeroHeartsTimestamp + ONE_DAY_IN_MS
+    : 0
 
   return {
-    lastUpdated,
-    nextRefill: lastUpdated + ONE_DAY_IN_MS,
+    refill,
+    hearts,
+    nextRefillTime: NEXT_REFILL_TIME < 1 ? null : NEXT_REFILL_TIME,
+    canBeRefilled:
+      NEXT_REFILL_TIME < 1 || isClaimed ? false : Date.now() > NEXT_REFILL_TIME,
+    setHearts,
+    removeHeart,
+    isRefillClaimed: isClaimed,
+    // Force null when invalid timestamp
+    zeroHeartsTimestamp: zeroHeartsTimestamp || null,
   }
 }

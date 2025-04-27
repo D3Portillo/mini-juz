@@ -3,16 +3,19 @@
 import { useMemo } from "react"
 import Image from "next/image"
 
-import { useNextRefillTime } from "@/lib/atoms/user"
+import { FaArrowRight } from "react-icons/fa"
 import { useTimer } from "@/lib/time"
+import { openHeartsDialog } from "@/lib/utils"
+import { usePlayerHearts } from "@/lib/atoms/user"
 
 import asset_skaterboi from "@/assets/skaterboi.png"
 
 export default function DailyRefill() {
-  const { nextRefill } = useNextRefillTime()
+  const { nextRefillTime, canBeRefilled } = usePlayerHearts()
+
   const secondsToNextRefill = useMemo(() => {
-    return Math.floor((nextRefill - Date.now()) / 1000)
-  }, [nextRefill])
+    return nextRefillTime ? Math.floor((nextRefillTime - Date.now()) / 1000) : 0
+  }, [nextRefillTime])
 
   const { elapsedTime } = useTimer(secondsToNextRefill)
 
@@ -26,14 +29,28 @@ export default function DailyRefill() {
           rewards for being the smartest player!
         </p>
 
-        <nav className="flex mt-4">
-          <div className="bg-black py-2 px-4 rounded-lg text-white">
-            <div className="text-xs">Time to refill</div>
-            <div className="font-semibold -mt-0.5 tabular-nums">
-              {formatCountdown(secondsToNextRefill - elapsedTime)}
-            </div>
-          </div>
-        </nav>
+        {nextRefillTime ? (
+          <nav className="flex mt-4">
+            {canBeRefilled ? (
+              <button
+                onClick={openHeartsDialog}
+                className="bg-black h-14 flex items-center justify-center gap-3 px-5 rounded-lg text-white"
+              >
+                <strong className="font-semibold">Refill now</strong>
+                <FaArrowRight />
+              </button>
+            ) : (
+              <div className="bg-black h-14 py-2.5 px-4 rounded-lg text-white">
+                <div className="text-xs">Time to refill</div>
+                <div className="font-semibold -mt-0.5 tabular-nums">
+                  {formatCountdown(secondsToNextRefill - elapsedTime)}
+                </div>
+              </div>
+            )}
+          </nav>
+        ) : (
+          <div className="my-2" />
+        )}
       </div>
 
       <figure className="w-40 absolute -right-4 -top-8 -bottom-8">

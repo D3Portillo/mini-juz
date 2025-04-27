@@ -8,6 +8,7 @@ import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { useAtomExplainerConfirmed, usePlayerHearts } from "@/lib/atoms/user"
 import { useUserTopics } from "@/lib/atoms/topics"
+import { openHeartsDialog } from "@/lib/utils"
 
 import { FaHeart, FaHeartBroken } from "react-icons/fa"
 
@@ -19,10 +20,9 @@ import DailyRefill from "@/components/banners/DailyRefill"
 
 import asset_limoncito from "@/assets/limoncito.png"
 
+import { MANAGE_HEARTS_TRIGGER_ID } from "@/lib/constants"
 import HomeNavigation from "./HomeNavigation"
 import ModalGame from "./ModalGame"
-
-const MANAGE_HEARTS_TRIGGER_ID = "manage-hearts"
 
 // TODO: Add sentinel to watch for "pending games"
 // so we avoid "cheaters" that close app or "force" to exit the trivia window
@@ -47,10 +47,6 @@ export default function PageHome() {
     }
 
     setIsConfirmed(true)
-  }
-
-  function openHeartsDialog() {
-    document.getElementById(MANAGE_HEARTS_TRIGGER_ID)?.click()
   }
 
   useEffect(() => {

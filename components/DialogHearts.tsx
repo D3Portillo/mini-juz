@@ -25,10 +25,10 @@ export default function DialogHearts({
 }) {
   const { toast } = useToast()
   const { user, signIn, isConnected } = useWorldAuth()
-  const { hearts, refill } = usePlayerHearts()
+  const { hearts, refill, canBeRefilled: canBeFreeRefilled } = usePlayerHearts()
   const isHeartFull = hearts >= 3
 
-  async function handleRefill() {
+  async function handlePaidRefill() {
     const initiatorAddress = user?.walletAddress
     if (!initiatorAddress) return signIn()
 
@@ -41,12 +41,20 @@ export default function DialogHearts({
     })
 
     if (result) {
-      refill()
+      refill({ isForcedRefill: true })
       return toast.success({
         title: "Hearts refilled",
         content: "Now you can play trivia games",
       })
     }
+  }
+
+  function handleFreeRefill() {
+    refill()
+    toast.success({
+      title: "Yeah. Hearts refilled",
+      content: "Bring me Thanos!",
+    })
   }
 
   return (
@@ -76,8 +84,14 @@ export default function DialogHearts({
               <Button>Okie dokie</Button>
             </AlertDialogClose>
           ) : (
-            <Button onClick={handleRefill}>
-              {isConnected ? "Refill now" : "Connect wallet"}
+            <Button
+              onClick={canBeFreeRefilled ? handleFreeRefill : handlePaidRefill}
+            >
+              {isConnected
+                ? canBeFreeRefilled
+                  ? "Get free refill"
+                  : "Refill now"
+                : "Connect wallet"}
             </Button>
           )}
         </AlertDialogFooter>
