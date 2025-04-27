@@ -2,7 +2,7 @@ export default function LeaderBoard() {
   return (
     <section className="px-4 mt-4 mb-10 flex flex-col gap-2">
       <div className="flex h-12 whitespace-nowrap px-5 gap-4 font-semibold rounded-2xl border-2 shadow-3d border-black items-center bg-gradient-to-bl from-juz-green-lime to-juz-green-ish">
-        <div className="w-16">#</div>
+        <div className="w-12">#</div>
         <div className="flex-grow">User</div>
         <div className="w-24">Earned JUZ</div>
       </div>
@@ -11,7 +11,11 @@ export default function LeaderBoard() {
         <PlayerData key={`mock-p-${i}`} position={i + 1} />
       ))}
 
-      <hr className="my-6" />
+      <p className="max-w-xs mt-2 text-sm mx-auto text-center">
+        It can take a while to update the leaderboard. Thanks for your patience!
+      </p>
+
+      <hr className="mt-10 mb-5" />
 
       <div className="p-5 gap-4 font-semibold rounded-2xl shadow-3d-lg border-2 border-black">
         <nav className="flex items-center justify-between">
@@ -34,7 +38,7 @@ export default function LeaderBoard() {
 function PlayerData({ position = 1 }: { position?: number }) {
   return (
     <div className="flex h-14 whitespace-nowrap px-5 gap-4 font-semibold rounded-xl border-2 shadow-3d border-black items-center bg-juz-green-ish/20 even:bg-juz-green-ish/3">
-      <div className="w-16">{position}</div>
+      <div className="w-12">{position}</div>
       <div className="flex-grow">deca.242</div>
       <div className="w-24 text-end">424</div>
     </div>

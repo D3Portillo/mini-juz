@@ -122,7 +122,7 @@ export default function ModalGame({
             <GiDiceTarget className="text-7xl transform animate-[bounce_3s_infinite]" />
 
             <p className="text-sm max-w-xs">
-              Buckle up! We are preparing the trivia for you...
+              Buckle up! We are cooking the trivia for you...
             </p>
           </div>
         ) : (

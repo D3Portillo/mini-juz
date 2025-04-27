@@ -81,7 +81,7 @@ export default function PageProfile() {
               onClick={() => router.push("/rewards")}
               className="py-3.5 mt-1 flex items-center justify-between rounded-full"
             >
-              <span className="text-base">Stake my JUZ</span>
+              <span className="text-base">Lock my JUZ</span>
               <FaArrowRight className="text-lg" />
             </LemonButton>
           </Fragment>

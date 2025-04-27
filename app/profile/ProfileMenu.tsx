@@ -15,28 +15,46 @@ export default function ProfileMenu() {
     const address = user?.walletAddress
     if (address) {
       copy(address)
-      toast.success({
+      return toast.success({
         title: "Copied to clipboard",
       })
-    } else {
-      toast.error({
-        title: "No address found",
-      })
     }
+
+    toast.error({
+      title: "No address found",
+    })
+  }
+
+  function handleViewTxs() {
+    const address = user?.walletAddress
+    if (address) {
+      window.open(`https://worldscan.org/address/${address}`, "_blank")
+      return
+    }
+    toast.error({
+      title: "No address found",
+    })
   }
 
   return (
     <MainSelect
+      value="NONE" // Dummy value to trigger the select
       showSelectedItem={false}
       onValueChange={(value) => {
         if (value === "disconnect") {
           signOut()
+        } else if (value === "view-txs") {
+          handleViewTxs()
         } else handleCopyAddress()
       }}
       options={[
         {
           label: "Copy address",
           value: "copy-address",
+        },
+        {
+          label: "View in WorldScan",
+          value: "view-txs",
         },
         {
           label: "Disconnect",

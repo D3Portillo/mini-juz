@@ -38,6 +38,7 @@ export default function HomeNavigation() {
     <nav className="border-b h-[4.5rem] px-5 flex gap-4 bg-white top-0 sticky z-10">
       {isConnected ? (
         <MainSelect
+          value="NONE" // Dummy value to trigger the select
           showSelectedItem={false}
           onValueChange={(value) => {
             if (value === "disconnect") {

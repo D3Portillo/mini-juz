@@ -1,23 +1,65 @@
-import { TopBar } from "@worldcoin/mini-apps-ui-kit-react"
+"use client"
+
+import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import RouteBackButton from "@/components/RouteBackButton"
-import { FaHeart } from "react-icons/fa"
 import LemonButton from "@/components/LemonButton"
+import { useWorldAuth } from "@radish-la/world-auth"
+import { executeWorldPyment } from "@/actions/payments"
 
 export default function PageProfile() {
+  const { toast } = useToast()
+  const { signIn, user } = useWorldAuth()
+
+  async function handleBuyHearts(amount: number, cost: number) {
+    if (!user?.walletAddress) return signIn()
+
+    const result = await executeWorldPyment({
+      amount: cost, // in WLD
+      initiatorAddress: user.walletAddress,
+      paymentDescription: `Confirm to buy a Pack of ${amount} hearts in JUZ Mini App`,
+    })
+
+    if (result) {
+      // TODO: Add and store hearts to user
+      return toast.success({
+        title: "Pack of hearts purchased",
+      })
+    }
+  }
+
+  async function handleBuyJUZ() {
+    if (!user?.walletAddress) return signIn()
+
+    const result = await executeWorldPyment({
+      amount: 10, // 10 WLD
+      initiatorAddress: user.walletAddress,
+      paymentDescription: "Confirm to buy the JUZ Master NFT in JUZ Mini App",
+    })
+
+    if (result) {
+      // TODO: Add and store hearts to user
+      return toast.success({
+        title: "Long live the Master of JUZ",
+      })
+    }
+  }
+
+  // TODO: There must be a total limit of hearts holding per user
+
   return (
     <section className="min-h-screen">
       <nav className="border-b bg-white top-0 sticky z-10">
         <TopBar
           className="py-0 gap-5 px-5"
           startAdornment={<RouteBackButton />}
-          title="Buy collectibles"
+          title="Level up your profile"
         />
       </nav>
 
       <div className="flex [&_strong]:font-medium px-4 mt-5 mb-12 flex-col gap-4">
         <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d-lg">
-          <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-bl from-juz-green-lime to-juz-green-ish rounded-full">
-            <div className="text-5xl">🧃</div>
+          <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
+            <div className="text-5xl">🍋</div>
           </figure>
 
           <div>
@@ -31,18 +73,21 @@ export default function PageProfile() {
             </p>
 
             <p className="text-sm mt-2 opacity-70">
-              <strong>300 JUZ</strong> to stake or level up your profile.
+              <strong>300 JUZ</strong> to your account.
             </p>
 
-            <LemonButton className="py-3 rounded-full text-base w-full mt-5">
+            <LemonButton
+              onClick={handleBuyJUZ}
+              className="py-3 rounded-full text-base w-full mt-5"
+            >
               Buy for 10 WLD
             </LemonButton>
           </div>
         </section>
 
         <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d-lg">
-          <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-bl from-juz-green-lime to-juz-green-ish rounded-full">
-            <div className="text-5xl">🖤</div>
+          <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
+            <div className="text-5xl mt-1">🖤</div>
           </figure>
 
           <div>
@@ -55,15 +100,18 @@ export default function PageProfile() {
               points.
             </p>
 
-            <LemonButton className="py-3 rounded-full text-base w-full mt-5">
+            <LemonButton
+              onClick={() => handleBuyHearts(5, 3)}
+              className="py-3 rounded-full text-base w-full mt-5"
+            >
               Buy for 3 WLD
             </LemonButton>
           </div>
         </section>
 
         <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d-lg">
-          <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-bl from-juz-green-lime to-juz-green-ish rounded-full">
-            <div className="text-5xl">😍</div>
+          <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
+            <div className="text-5xl">❤️‍🔥</div>
           </figure>
 
           <div>
@@ -76,7 +124,10 @@ export default function PageProfile() {
               heart points.
             </p>
 
-            <LemonButton className="py-3 rounded-full text-base w-full mt-5">
+            <LemonButton
+              onClick={() => handleBuyHearts(10, 5)}
+              className="py-3 rounded-full text-base w-full mt-5"
+            >
               Buy for 5 WLD
             </LemonButton>
           </div>
