@@ -51,21 +51,20 @@ export const usePlayerHearts = () => {
     }
   }
 
-  const NEXT_REFILL_TIME = zeroHeartsTimestamp
+  const nextRefillTime = zeroHeartsTimestamp
     ? zeroHeartsTimestamp + ONE_DAY_IN_MS
-    : 0
+    : null
 
   return {
     refill,
     hearts,
-    nextRefillTime: NEXT_REFILL_TIME < 1 ? null : NEXT_REFILL_TIME,
-    canBeRefilled:
-      NEXT_REFILL_TIME < 1 || isClaimed
-        ? false
-        : Date.now() > NEXT_REFILL_TIME ||
-          // Can be claimed if user has no hearts and
-          // its first time to get cached state
-          (isInitialState && hearts < 1),
+    nextRefillTime,
+    canBeRefilled: isClaimed
+      ? false
+      : (nextRefillTime && Date.now() > nextRefillTime) ||
+        // Refill can be claimed if user has no hearts and
+        // its first time to get cached state
+        (isInitialState && hearts < 1),
     setHearts,
     removeHeart,
     isRefillClaimed: isClaimed,
