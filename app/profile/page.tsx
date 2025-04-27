@@ -1,5 +1,6 @@
 "use client"
 
+import { Fragment } from "react"
 import { TopBar } from "@worldcoin/mini-apps-ui-kit-react"
 import { useRouter } from "next/navigation"
 import { useWorldAuth } from "@radish-la/world-auth"
@@ -11,7 +12,6 @@ import { FaArrowRight } from "react-icons/fa"
 import ProfileMenu from "./ProfileMenu"
 
 import asset_bg from "@/assets/bg.png"
-import { Fragment } from "react"
 
 export default function PageProfile() {
   const router = useRouter()
