@@ -11,7 +11,7 @@ import { useTimer } from "@/lib/time"
 import { cn } from "@/lib/utils"
 
 import { GiDiceTarget } from "react-icons/gi"
-import { MdOutlineExitToApp } from "react-icons/md"
+import { MdError, MdOutlineExitToApp } from "react-icons/md"
 import { generateQuestionsForTopic } from "@/actions/questions"
 import { useAudioMachine } from "@/lib/sounds"
 import HeartsVisualizer from "./HeartsVisualizer"
@@ -38,7 +38,13 @@ export default function ModalGame({
     return Date.now()
   }, [open])
 
-  const { data: questions = [], isLoading } = useSWR(
+  const {
+    data: questions = [],
+    isLoading: isFetching,
+    isValidating,
+    mutate,
+    error: isError,
+  } = useSWR(
     open ? `questions.${topic || ""}.${gameStartedTimestamp}` : null,
     async () => {
       if (!topic) return []
@@ -46,6 +52,8 @@ export default function ModalGame({
       return questions
     }
   )
+
+  const isLoading = isFetching || isValidating
 
   const [currentQuestion, setCurrentQuestion] = useState(1)
   const [isAnswered, setIsAnswered] = useState(false)
@@ -93,6 +101,10 @@ export default function ModalGame({
     }
   }, [open])
 
+  useEffect(() => {
+    if (isError) playSound("failure")
+  }, [isError])
+
   const triggerFailure = () => {
     removeHeart()
     playSound("failure")
@@ -109,15 +121,30 @@ export default function ModalGame({
         </nav>
 
         <div className="grid place-items-center gap-4 mt-12">
-          <div className="bg-juz-green-lime/10 text-sm px-3 py-0.5 rounded-full font-semibold text-black border-2 border-juz-green-lime">
-            {topic || "General Knowledge"}
-          </div>
+          {isError ? null : (
+            <div className="bg-juz-green-lime/10 text-sm px-3 py-0.5 rounded-full font-semibold text-black border-2 border-juz-green-lime">
+              {topic || "General Knowledge"}
+            </div>
+          )}
           <h2 className="text-2xl min-h-20 font-medium text-center">
             {QUESTION?.question}
           </h2>
         </div>
 
-        {isLoading ? (
+        {isError ? (
+          <div className="flex-grow p-4 !pb-12 text-center flex flex-col items-center justify-center gap-6">
+            <MdError className="text-7xl" />
+
+            <p className="text-sm max-w-xs">Something wrong occurred</p>
+
+            <button
+              onClick={() => mutate([])}
+              className="bg-black -mt-3 text-white px-4 rounded-full py-1"
+            >
+              Retry
+            </button>
+          </div>
+        ) : isLoading ? (
           <div className="flex-grow p-4 !pb-12 text-center flex flex-col items-center justify-center gap-6">
             <GiDiceTarget className="text-7xl transform animate-[bounce_3s_infinite]" />
 
@@ -166,7 +193,7 @@ export default function ModalGame({
 
         <div className="flex-grow" />
 
-        {isLoading ? null : isAnswered ? (
+        {isLoading || isError ? null : isAnswered ? (
           <LemonButton onClick={handleContinue} className="py-3 rounded-full">
             Continue
           </LemonButton>

@@ -29,28 +29,24 @@ export default function DailyRefill() {
           rewards for being the smartest player!
         </p>
 
-        {nextRefillTime ? (
-          <nav className="flex mt-4">
-            {canBeRefilled ? (
-              <button
-                onClick={openHeartsDialog}
-                className="bg-black h-14 flex items-center justify-center gap-3 px-5 rounded-lg text-white"
-              >
-                <strong className="font-semibold">Refill now</strong>
-                <FaArrowRight />
-              </button>
-            ) : (
-              <div className="bg-black h-14 py-2.5 px-4 rounded-lg text-white">
-                <div className="text-xs">Time to refill</div>
-                <div className="font-semibold -mt-0.5 tabular-nums">
-                  {formatCountdown(secondsToNextRefill - elapsedTime)}
-                </div>
+        <nav className="flex mt-4">
+          {canBeRefilled ? (
+            <button
+              onClick={openHeartsDialog}
+              className="bg-black h-14 flex items-center justify-center gap-3 px-5 rounded-lg text-white"
+            >
+              <strong className="font-semibold">Refill now</strong>
+              <FaArrowRight />
+            </button>
+          ) : secondsToNextRefill ? (
+            <div className="bg-black h-14 py-2.5 px-4 rounded-lg text-white">
+              <div className="text-xs">Time to refill</div>
+              <div className="font-semibold -mt-0.5 tabular-nums">
+                {formatCountdown(secondsToNextRefill - elapsedTime)}
               </div>
-            )}
-          </nav>
-        ) : (
-          <div className="my-2" />
-        )}
+            </div>
+          ) : null}
+        </nav>
       </div>
 
       <figure className="w-40 absolute -right-4 -top-8 -bottom-8">
