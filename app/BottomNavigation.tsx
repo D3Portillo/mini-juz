@@ -47,6 +47,10 @@ export default function BottomNavigation() {
         <TabsList asChild>
           <nav className="w-full border-t shrink-0 [&_a]:shrink-0 z-2 sticky bottom-0 !bg-white rounded-none h-auto grid grid-cols-4">
             <NavItem
+              onClick={() => {
+                // Focus on the play tab when navigating to the play route
+                ;(document.querySelector("#play-tab") as any)?.focus()
+              }}
               route={ROUTES.play}
               icon={<IoGameController className="text-2xl" />}
             />
@@ -75,8 +79,10 @@ export default function BottomNavigation() {
 function NavItem({
   icon,
   route,
+  onClick,
 }: {
   icon: React.ReactNode
+  onClick?: () => void
   route: {
     href: string
     value: string
@@ -86,16 +92,11 @@ function NavItem({
   return (
     <TabsTrigger
       asChild
+      onClick={onClick}
       className="grid place-items-center p-1 pt-2 h-14 rounded-none text-black/70 !bg-transparent data-[state=active]:text-juz-green"
       value={route.value}
     >
-      <Link
-        onClick={() => {
-          // Focus on the play tab when navigating to the play route
-          ;(document.querySelector("#play-tab") as any)?.focus()
-        }}
-        href={route.href}
-      >
+      <Link href={route.href}>
         <div className="size-5 grid place-items-center place-content-center">
           {icon}
         </div>

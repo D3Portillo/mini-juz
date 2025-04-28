@@ -198,12 +198,13 @@ export default function PageProfile() {
           </figure>
 
           <div>
-            <h2 className="font-medium text-xl">Last resort</h2>
+            <h2 className="font-medium text-xl">
+              Last resort <span className="text-juz-orange">InGame</span>
+            </h2>
 
             <p className="text-sm text-black/70">
-              <strong className="text-juz-orange">(In game item)</strong> Use a
-              shield to give your <strong>last heart</strong> a second chance in
-              the trivia. Item will expire after use.
+              Use a shield to give your <strong>last heart</strong> a second
+              chance in the trivia. Item will expire after use.
             </p>
 
             <LemonButton className="py-3 rounded-full text-base w-full mt-5">
