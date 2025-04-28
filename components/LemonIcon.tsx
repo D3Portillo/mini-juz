@@ -6,7 +6,7 @@ export default function LemonIcon({
   className,
 }: PropsWithChildren<{ className?: string }>) {
   return (
-    <button
+    <figure
       className={cn(
         "size-10 shadow-3d border-2 text-black border-black rounded-full relative grid place-items-center",
         className
@@ -36,6 +36,6 @@ export default function LemonIcon({
           </linearGradient>
         </defs>
       </svg>
-    </button>
+    </figure>
   )
 }

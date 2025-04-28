@@ -63,18 +63,20 @@ export default function HomeNavigation() {
       )}
 
       <div className="flex-grow" />
-      <JUZCounter />
+      <JUZCounter asLink href="/rewards" />
     </nav>
   )
 }
 
-export function JUZCounter() {
+export function JUZCounter({ asLink = false, href = "", ...props }) {
+  const Container = asLink ? Link : "button"
+
   return (
-    <Link href="/rewards" className="flex items-center gap-2">
+    <Container {...props} href={href} className="flex items-center gap-2">
       <LemonIcon className="size-9">
         <FaRegLemon className="text-xl" />
       </LemonIcon>
       <span className="text-xl font-semibold">0 JUZ</span>
-    </Link>
+    </Container>
   )
 }

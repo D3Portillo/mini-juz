@@ -1,6 +1,6 @@
 "use client"
 
-import { Fragment } from "react"
+import { Fragment, type PropsWithChildren } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
@@ -27,7 +27,11 @@ export default function PageRewards() {
         <TopBar
           className="py-0 gap-5 px-5 [&_.text-lg]:text-left"
           startAdornment={<RouteBackButton />}
-          endAdornment={<JUZCounter />}
+          endAdornment={
+            <JUZDistributionModal>
+              <JUZCounter />
+            </JUZDistributionModal>
+          }
           title="Reward boost"
         />
       </nav>
@@ -232,6 +236,42 @@ function LockedJuzExplainer({ trigger }: { trigger: JSX.Element }) {
       <p>
         <strong>veJUZ</strong> is summed up to your total JUZ balance and can be
         used to vote in future governance proposals and earn rewards.
+      </p>
+    </ReusableDialog>
+  )
+}
+
+function JUZDistributionModal({ children }: PropsWithChildren) {
+  return (
+    <ReusableDialog trigger={children} title="JUZ Breakdown">
+      <p>
+        <nav className="flex justify-between gap-6 w-full">
+          <div className="w-32">
+            <strong className="text-juz-green">JUZ</strong>
+            <p className="text-xs opacity-75">Trivia earned + Bought</p>
+          </div>
+          <span className="text-xl mt-1 font-medium">242.00</span>
+        </nav>
+      </p>
+
+      <p>
+        <nav className="flex justify-between gap-6 w-full">
+          <div className="w-32">
+            <strong className="text-juz-orange">JUZ Locked</strong>
+            <p className="text-xs opacity-75">Balance in staking pools</p>
+          </div>
+          <span className="text-xl mt-1 font-medium">242.00</span>
+        </nav>
+      </p>
+
+      <p>
+        <nav className="flex justify-between gap-6 w-full">
+          <div className="w-32">
+            <strong className="text-black/70">veJUZ</strong>
+            <p className="text-xs opacity-75">Rewards earned from locking</p>
+          </div>
+          <span className="text-xl mt-1 font-medium">242.00</span>
+        </nav>
       </p>
     </ReusableDialog>
   )

@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from "react"
+import type { PropsWithChildren, ReactNode } from "react"
 
 import {
   AlertDialog,
@@ -18,7 +18,7 @@ export default function ReusableDialog({
   title,
 }: PropsWithChildren<{
   title: string
-  trigger?: JSX.Element
+  trigger?: JSX.Element | ReactNode
   closeText?: string
 }>) {
   return (
@@ -30,7 +30,7 @@ export default function ReusableDialog({
         </AlertDialogHeader>
 
         <AlertDialogDescription asChild>
-          <div className="mb-4 [&_strong]:font-medium [&_p]:mb-2">
+          <div className="mb-4 [&_strong]:font-medium [&_p:not(:last-child)]:mb-2">
             {children}
           </div>
         </AlertDialogDescription>
