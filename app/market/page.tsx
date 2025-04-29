@@ -12,17 +12,33 @@ import RouteBackButton from "@/components/RouteBackButton"
 import LemonButton from "@/components/LemonButton"
 import MainSelect from "@/components/MainSelect"
 
+import { useAccountBalances } from "@/lib/atoms/balances"
+import { shortifyDecimals } from "@/lib/numbers"
+import { usePlayerHearts } from "@/lib/atoms/user"
+
 import { CURRENCY_TOKENS } from "@/lib/atoms/token"
 
+const HEART_HOLDING_LIMIT = 25 // 25 hearts
 export default function PageProfile() {
   const { toast } = useToast()
   const { signIn, user } = useWorldAuth()
   const [payingToken, setPayingToken] = useState(CURRENCY_TOKENS.WLD)
 
+  const { hearts } = usePlayerHearts()
+  const { JUZ, WLD } = useAccountBalances(user?.walletAddress)
+
   // @ts-ignore
   const isJUZPayment = payingToken.value === CURRENCY_TOKENS.JUZ.value
 
   async function handleBuyHearts(amount: number, cost: number) {
+    if (hearts >= HEART_HOLDING_LIMIT) {
+      // In pro of buys - we only limit based on the amount of holding hearts
+      // not current + incoming hearts
+      return toast.error({
+        title: "Holding hearts limit reached",
+      })
+    }
+
     let isSuccess = false
     if (!user?.walletAddress) return signIn()
 
@@ -63,7 +79,6 @@ export default function PageProfile() {
     }
   }
 
-  // TODO: There must be a total limit of hearts holding per user
   return (
     <section className="min-h-screen">
       <nav className="border-b bg-white top-0 sticky z-10">
@@ -96,7 +111,11 @@ export default function PageProfile() {
           </MainSelect>
 
           <div>
-            Balance: <strong>42 {payingToken.label}</strong>
+            Balance:{" "}
+            <strong>
+              {shortifyDecimals((isJUZPayment ? JUZ : WLD).formatted, 4)}{" "}
+              {payingToken.label}
+            </strong>
           </div>
         </nav>
 

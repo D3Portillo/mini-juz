@@ -12,10 +12,12 @@ import { FaArrowRight } from "react-icons/fa"
 import ProfileMenu from "./ProfileMenu"
 
 import asset_bg from "@/assets/bg.png"
+import { useAccountGameData } from "@/lib/atoms/game"
 
 export default function PageProfile() {
   const router = useRouter()
   const { user, isConnected, signIn } = useWorldAuth()
+  const { played, won } = useAccountGameData()
 
   return (
     <section className="min-h-screen">
@@ -54,12 +56,12 @@ export default function PageProfile() {
         <div className="grid grid-cols-2 gap-4">
           <section className="p-4 rounded-2xl border-3 border-black shadow-3d-lg">
             <h2 className="text-sm">Games played</h2>
-            <p className="text-2xl font-semibold">245</p>
+            <p className="text-2xl font-semibold">{played}</p>
           </section>
 
           <section className="p-4 rounded-2xl border-3 border-black shadow-3d-lg">
             <h2 className="text-sm">Games won</h2>
-            <p className="text-2xl font-semibold">42</p>
+            <p className="text-2xl font-semibold">{won}</p>
           </section>
         </div>
 
@@ -74,7 +76,7 @@ export default function PageProfile() {
               <h2 className="font-semibold text-6xl text-juz-green-lime">
                 245
               </h2>
-              <p className="text-white">Total earned JUZ</p>
+              <p className="text-white">Total JUZ Balance</p>
             </section>
 
             <LemonButton

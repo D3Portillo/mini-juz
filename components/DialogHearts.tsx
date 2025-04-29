@@ -89,7 +89,7 @@ export default function DialogHearts({
             >
               {isConnected
                 ? canBeFreeRefilled
-                  ? "Get free refill"
+                  ? "Claim free refill"
                   : "Refill now"
                 : "Connect wallet"}
             </Button>

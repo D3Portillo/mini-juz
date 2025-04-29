@@ -9,6 +9,7 @@ import { useWorldAuth } from "@radish-la/world-auth"
 import { useAtomExplainerConfirmed, usePlayerHearts } from "@/lib/atoms/user"
 import { useUserTopics } from "@/lib/atoms/topics"
 import { openHeartsDialog } from "@/lib/utils"
+import { incrementGamesPlayed, incrementGamesWon } from "@/actions/game"
 
 import { FaHeart, FaHeartBroken } from "react-icons/fa"
 
@@ -31,10 +32,21 @@ export default function PageHome() {
 
   const { hearts } = usePlayerHearts()
   const { gameTopics, shuffleTopics, isEmpty } = useUserTopics()
-  const { signIn, isMiniApp, isConnected, reklesslySetUser } = useWorldAuth()
+  const { user, signIn, isMiniApp, isConnected, reklesslySetUser } =
+    useWorldAuth()
 
   const [showGame, setShowGame] = useState(null as { topic?: string } | null)
   const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
+
+  function addPlayedGame() {
+    const address = user?.walletAddress
+    if (address) incrementGamesPlayed(address)
+  }
+
+  function addGamesWon() {
+    const address = user?.walletAddress
+    if (address) incrementGamesWon(address)
+  }
 
   async function handleConfirmExplainer() {
     if (!isConnected) {
@@ -51,13 +63,6 @@ export default function PageHome() {
 
   useEffect(() => {
     if (isMiniApp) return
-    if (process.env.NODE_ENV === "development") {
-      // Dev user in non-world app
-      reklesslySetUser({
-        username: "Limoncito",
-        walletAddress: "0xB6594a5EdDA3E0D910Fb57db7a86350A9821327a",
-      })
-    }
   }, [isMiniApp])
 
   return (
@@ -66,6 +71,13 @@ export default function PageHome() {
         <ModalGame
           topic={showGame?.topic}
           open={Boolean(showGame?.topic)}
+          onGameWon={() => {
+            // TODO: Open a modal with the game results
+            addGamesWon()
+            toast.success({
+              title: "You won!",
+            })
+          }}
           onOpenChange={(isOpen) => {
             setShowGame(null)
             if (!isConfirmed && !isOpen) {
@@ -136,6 +148,7 @@ export default function PageHome() {
                 }}
                 onItemSelected={(topic) => {
                   setShowGame({ topic })
+                  addPlayedGame()
                   setTimeout(shuffleTopics, 250)
                 }}
                 size="min(calc(95vw - 2rem), 24rem)"

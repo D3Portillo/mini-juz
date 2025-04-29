@@ -99,9 +99,18 @@ export default function PageRewards() {
                   <nav className="flex items-center justify-between">
                     <p className="font-semibold text-xl">Earned veJUZ</p>
 
-                    <span className="rounded-full text-sm font-semibold text-center bg-juz-orange/10 border-2 border-juz-orange text-black py-1 px-3">
-                      🔥 32% APR
-                    </span>
+                    <ReusableDialog
+                      title="APR Breakdown"
+                      trigger={
+                        <button className="rounded-full text-sm font-semibold text-center bg-juz-orange/10 border-2 border-juz-orange text-black py-1 px-3">
+                          🔥 32% APR
+                        </button>
+                      }
+                    >
+                      APR is calculated based on the current veJUZ supply and
+                      the amount of JUZ locked in the pool. APR is variable and
+                      can change over time.
+                    </ReusableDialog>
                   </nav>
 
                   <nav className="flex mt-1 items-end justify-between gap-2">
@@ -170,7 +179,9 @@ function JUZDistributionModal({ children }: PropsWithChildren) {
         <nav className="flex justify-between gap-6 w-full">
           <div className="w-32">
             <strong className="text-black/70">veJUZ</strong>
-            <p className="text-xs opacity-75">Rewards earned from locking</p>
+            <p className="text-xs opacity-75">
+              Rewards claimed for JUZ Locking
+            </p>
           </div>
           <span className="text-xl mt-1 font-medium">242.00</span>
         </nav>

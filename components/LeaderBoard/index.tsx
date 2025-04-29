@@ -4,7 +4,7 @@ export default function LeaderBoard() {
       <div className="flex h-12 whitespace-nowrap px-5 gap-4 font-semibold rounded-2xl border-2 shadow-3d border-black items-center bg-gradient-to-bl from-juz-green-lime to-juz-green-ish">
         <div className="w-12">#</div>
         <div className="flex-grow">User</div>
-        <div className="w-24">Earned JUZ</div>
+        <div className="w-24">Total JUZ</div>
       </div>
 
       {Array.from({ length: 10 }).map((_, i) => (

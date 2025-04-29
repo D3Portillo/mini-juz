@@ -24,9 +24,11 @@ const PER_QUESTION_TIME = 10 // seconds
 export default function ModalGame({
   open,
   onOpenChange,
+  onGameWon,
   topic,
 }: Pick<React.ComponentProps<typeof Drawer>, "open" | "onOpenChange"> & {
   topic?: string
+  onGameWon?: () => void
 }) {
   const { hearts, removeHeart } = usePlayerHearts()
   const { playSound } = useAudioMachine(["success", "failure"])
@@ -61,11 +63,13 @@ export default function ModalGame({
 
   const QUESTION = questions?.[currentQuestion - 1]
   const correctOptionIndex = QUESTION?.correctOptionIndex
-  const isGameOver = currentQuestion >= TOTAL_QUESTIONS
+  const isGameFinished = currentQuestion >= TOTAL_QUESTIONS
+  const isGameWon = isGameFinished && selectedOption === correctOptionIndex
 
   function handleContinue() {
-    if (currentQuestion >= TOTAL_QUESTIONS) {
+    if (isGameFinished) {
       // Handle game termination and success
+      if (isGameWon) onGameWon?.()
       return onOpenChange?.(false)
     }
 
@@ -81,7 +85,7 @@ export default function ModalGame({
   }
 
   function handleForceExit() {
-    if (!isGameOver && !isAnswered) {
+    if (!isGameFinished && !isAnswered) {
       // If user exits in the middle of a game
       // Remove a heart
       removeHeart()
