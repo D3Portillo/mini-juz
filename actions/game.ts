@@ -7,7 +7,7 @@ const redis = Redis.fromEnv()
 
 const getPlayedGameKey = (address: Address) => `juz.games.played.${address}`
 const getWonGamesKey = (address: Address) => `juz.games.won.${address}`
-const getJUZEarnedKey = (address: Address) => `juz.games.earned.${address}`
+const getJUZEarnedKey = (address: Address) => `juz.earned.${address}`
 
 export const incrementGamesPlayed = async (address: Address) => {
   await redis.incr(getPlayedGameKey(address))

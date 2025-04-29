@@ -14,7 +14,6 @@ const QuestionListSchema = z.object({
   ),
 })
 
-// TODO: Sometimes there's more than 1 "good" answer - adjust this
 export const generateQuestionsForTopic = async (
   topic: string,
   amount: number,
@@ -32,6 +31,8 @@ Generate a list of ${amount} questions about "${topic}".
 - Options should be in English.
 - Options should be in the format: ["option1", "option2", "option3"]
 - Options should be short: 6 words max.
+- There can't be more than 1 correct answer in the options.
+- The correct answer should be in the options.
 
 ${
   history.length > 0
@@ -41,7 +42,7 @@ Please avoid asking the following questions:
 ${history.map((q, i) => `${i + 1}. ${q}\n`)}
 
 And avoid permutations in this questions - Like I don't want shit to be:
-- Asked before: What's longest river in the World?
+- Question to avoid: What's the longest river in the World?
 - And you say: What's the worlds largest river?
 
 Thanks.

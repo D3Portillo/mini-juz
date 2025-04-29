@@ -5,7 +5,7 @@ import { generateUUID } from "@/lib/utils"
 
 export async function POST(req: Request) {
   const address = req.headers.get("address") || ""
-  if (!isAddress(address)) return Response.json({ id: null })
+  if (!isAddress(address)) return Response.json({ uuid: null })
 
   const uuid = generateUUID()
   await createPaymentIntent(address, uuid)
