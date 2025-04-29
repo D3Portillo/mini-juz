@@ -16,7 +16,8 @@ const QuestionListSchema = z.object({
 
 export const generateQuestionsForTopic = async (
   topic: string,
-  amount: number
+  amount: number,
+  history: string[] = []
 ) => {
   const { object } = await generateObject({
     model: GPT4OMini,
@@ -30,6 +31,22 @@ Generate a list of ${amount} questions about "${topic}".
 - Options should be in English.
 - Options should be in the format: ["option1", "option2", "option3"]
 - Options should be short: 6 words max.
+
+${
+  history.length > 0
+    ? `
+--------------
+Please avoid asking the following questions:
+${history.map((q, i) => `${i + 1}. ${q}\n`)}
+
+And avoid permutations in this questions - Like I don't want shit to be:
+- Asked before: What's longest river in the World?
+- And you say: What's the worlds largest river?
+
+Thanks.
+`
+    : ""
+}
     `,
   })
 

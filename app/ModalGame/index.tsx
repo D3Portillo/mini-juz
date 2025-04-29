@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react"
 import { Drawer, DrawerContent } from "@worldcoin/mini-apps-ui-kit-react"
-import useSWR from "swr"
 
 import LemonButton from "@/components/LemonButton"
 
@@ -12,16 +11,16 @@ import { cn } from "@/lib/utils"
 
 import { GiDiceTarget } from "react-icons/gi"
 import { MdError, MdOutlineExitToApp } from "react-icons/md"
-import { generateQuestionsForTopic } from "@/actions/questions"
+
 import { useAudioMachine } from "@/lib/sounds"
-import HeartsVisualizer from "./HeartsVisualizer"
 import { useIsGameActive } from "@/lib/atoms/game"
+import { useGameQuestions, useQuestionHistory } from "./atoms"
+
+import HeartsVisualizer from "./HeartsVisualizer"
 
 const TOTAL_QUESTIONS = 5
 const PER_QUESTION_TIME = 10 // seconds
 
-// TODO: Store user last 10 questions answered for a topic
-// And pass them to the generation function to avoid duplicates
 export default function ModalGame({
   open,
   onOpenChange,
@@ -31,6 +30,7 @@ export default function ModalGame({
   topic?: string
   onGameWon?: (juzEarned: number) => void
 }) {
+  const { addQuestion } = useQuestionHistory(topic || null)
   const { hearts, removeHeart } = usePlayerHearts()
   const { playSound } = useAudioMachine(["success", "failure"])
   const { elapsedTime, restart, stop } = useTimer(PER_QUESTION_TIME)
@@ -59,12 +59,11 @@ export default function ModalGame({
     isValidating,
     mutate,
     error: isError,
-  } = useSWR(
+  } = useGameQuestions(
     open ? `questions.${topic || ""}.${gameStartedTimestamp}` : null,
-    async () => {
-      if (!topic) return []
-      const questions = await generateQuestionsForTopic(topic, TOTAL_QUESTIONS)
-      return questions
+    {
+      questionCount: TOTAL_QUESTIONS,
+      topic,
     }
   )
 
@@ -80,6 +79,9 @@ export default function ModalGame({
   const isGameWon = isGameFinished && selectedOption === correctOptionIndex
 
   function handleContinue() {
+    // Include question to user's history
+    if (QUESTION) addQuestion(QUESTION.question)
+
     if (isGameFinished) {
       // Handle game termination and success
       if (isGameWon) {
