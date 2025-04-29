@@ -1,4 +1,4 @@
-import { JUZDistributionModal } from "@/app/rewards/page"
+import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
 
 export default function LeaderBoard() {
   return (

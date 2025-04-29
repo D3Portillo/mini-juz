@@ -1,20 +1,20 @@
 "use client"
 
-import { Fragment, type PropsWithChildren } from "react"
+import { Fragment } from "react"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 
 import { TopBar } from "@worldcoin/mini-apps-ui-kit-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
-import { FaArrowRight, FaRegLemon } from "react-icons/fa"
+import { FaArrowRight } from "react-icons/fa"
 
 import { JUZCounter } from "@/app/HomeNavigation"
 import RouteBackButton from "@/components/RouteBackButton"
 import LemonButton from "@/components/LemonButton"
 import ReusableDialog from "@/components/ReusableDialog"
-import LemonIcon from "@/components/LemonIcon"
 import JuzLock, { LockedJuzExplainer } from "./JuzLock"
+import { JUZDistributionModal } from "./JuzDistributionModal"
 
 import asset_running from "@/assets/running.png"
 import asset_frog from "@/assets/frog.png"
@@ -149,43 +149,5 @@ export default function PageRewards() {
         </Fragment>
       </Tabs>
     </section>
-  )
-}
-
-export function JUZDistributionModal({ children }: PropsWithChildren) {
-  return (
-    <ReusableDialog trigger={children} title="JUZ Breakdown">
-      <p>
-        <nav className="flex justify-between gap-6 w-full">
-          <div className="w-32">
-            <strong className="text-juz-green">JUZ</strong>
-            <p className="text-xs opacity-75">Trivia earned + Bought</p>
-          </div>
-          <span className="text-xl mt-1 font-medium">242.00</span>
-        </nav>
-      </p>
-
-      <p>
-        <nav className="flex justify-between gap-6 w-full">
-          <div className="w-32">
-            <strong className="text-juz-orange">JUZ Locked</strong>
-            <p className="text-xs opacity-75">Balance in staking pools</p>
-          </div>
-          <span className="text-xl mt-1 font-medium">242.00</span>
-        </nav>
-      </p>
-
-      <p>
-        <nav className="flex justify-between gap-6 w-full">
-          <div className="w-32">
-            <strong className="text-black/70">veJUZ</strong>
-            <p className="text-xs opacity-75">
-              Rewards claimed for JUZ Locking
-            </p>
-          </div>
-          <span className="text-xl mt-1 font-medium">242.00</span>
-        </nav>
-      </p>
-    </ReusableDialog>
   )
 }
