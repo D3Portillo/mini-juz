@@ -9,6 +9,8 @@ import { FaRegLemon } from "react-icons/fa"
 
 import LemonIcon from "@/components/LemonIcon"
 import MainSelect from "@/components/MainSelect"
+import { useAccountBalances } from "@/lib/atoms/balances"
+import { shortifyDecimals } from "@/lib/numbers"
 
 export default function HomeNavigation() {
   const router = useRouter()
@@ -69,6 +71,8 @@ export default function HomeNavigation() {
 }
 
 export function JUZCounter({ asLink = false, href = "", ...props }) {
+  const { user } = useWorldAuth()
+  const { JUZ } = useAccountBalances(user?.walletAddress)
   const Container = asLink ? Link : "button"
 
   return (
@@ -76,7 +80,9 @@ export function JUZCounter({ asLink = false, href = "", ...props }) {
       <LemonIcon className="size-9">
         <FaRegLemon className="text-xl" />
       </LemonIcon>
-      <span className="text-xl font-semibold">0 JUZ</span>
+      <span className="text-xl font-semibold">
+        {shortifyDecimals(JUZ.formatted, 2)} JUZ
+      </span>
     </Container>
   )
 }

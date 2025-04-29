@@ -5,8 +5,9 @@ import type { Metadata } from "next"
 import dynamic from "next/dynamic"
 import { Rubik, Sora } from "next/font/google"
 
-import { Toaster as WorldToaster } from "@worldcoin/mini-apps-ui-kit-react"
 import WorldProvider from "@/components/world-provider"
+import { Toaster as WorldToaster } from "@worldcoin/mini-apps-ui-kit-react"
+import GameSentinel from "./GameSentinel"
 import MainLayout from "./MainLayout"
 
 const fontRubik = Rubik({
@@ -45,6 +46,7 @@ export default function RootLayout({
         className={`${fontRubik.variable} ${fontSora.variable} ${fontRubik.className} antialiased`}
       >
         <WorldToaster duration={2_500} />
+        <GameSentinel />
         <WorldProvider>
           <ErudaProvider>
             <MainLayout>{children}</MainLayout>

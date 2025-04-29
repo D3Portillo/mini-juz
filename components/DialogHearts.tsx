@@ -23,6 +23,9 @@ export default function DialogHearts({
 }: {
   trigger?: React.ReactNode
 }) {
+  // TODO: Add a nice animation of hearts being "refilled" when user gets
+  // a free or paid refill to make feel more like a game-experience
+
   const { toast } = useToast()
   const { user, signIn, isConnected } = useWorldAuth()
   const { hearts, refill, canBeRefilled: canBeFreeRefilled } = usePlayerHearts()

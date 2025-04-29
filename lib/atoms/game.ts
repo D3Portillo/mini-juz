@@ -1,6 +1,9 @@
 "use client"
 
+import { atomWithStorage } from "jotai/utils"
+import { useAtom } from "jotai"
 import useSWR from "swr"
+
 import { useWorldAuth } from "@radish-la/world-auth"
 import { getPlayerGameData } from "@/actions/game"
 
@@ -17,11 +20,16 @@ export const useAccountGameData = () => {
     }
   )
 
-  console.debug({ data })
-
   return {
     played: 0,
     won: 0,
     ...data,
   }
 }
+
+const atomIsGameActive = atomWithStorage(
+  "juz.isGameActive",
+  null as boolean | null
+)
+
+export const useisGameActive = () => useAtom(atomIsGameActive)

@@ -17,6 +17,7 @@ import { shortifyDecimals } from "@/lib/numbers"
 import { usePlayerHearts } from "@/lib/atoms/user"
 
 import { CURRENCY_TOKENS } from "@/lib/atoms/token"
+import { incrPlayerJUZEarned } from "@/actions/game"
 
 const HEART_HOLDING_LIMIT = 25 // 25 hearts
 export default function PageProfile() {
@@ -24,7 +25,7 @@ export default function PageProfile() {
   const { signIn, user } = useWorldAuth()
   const [payingToken, setPayingToken] = useState(CURRENCY_TOKENS.WLD)
 
-  const { hearts } = usePlayerHearts()
+  const { hearts, setHearts } = usePlayerHearts()
   const { JUZ, WLD } = useAccountBalances(user?.walletAddress)
 
   // @ts-ignore
@@ -55,7 +56,7 @@ export default function PageProfile() {
     }
 
     if (isSuccess) {
-      // TODO: Add and store hearts to user
+      setHearts(hearts + amount)
       return toast.success({
         title: "Pack of hearts purchased",
       })
@@ -63,16 +64,21 @@ export default function PageProfile() {
   }
 
   async function handleBuyJUZ() {
-    if (!user?.walletAddress) return signIn()
+    const address = user?.walletAddress
+    if (!address) return signIn()
 
     const result = await executeWorldPyment({
       amount: 10, // 10 WLD
-      initiatorAddress: user.walletAddress,
+      initiatorAddress: address,
       paymentDescription: "Confirm to buy the JUZ Master NFT in JUZ Mini App",
     })
 
     if (result) {
-      // TODO: Add and store hearts to user
+      // TODO: Handle NFT Minting
+      incrPlayerJUZEarned(
+        address,
+        300 // Add JUZ bought
+      )
       return toast.success({
         title: "Long live the Master of JUZ",
       })

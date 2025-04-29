@@ -1,13 +1,17 @@
+import { JUZDistributionModal } from "@/app/rewards/page"
+
 export default function LeaderBoard() {
   return (
     <section className="px-4 mt-4 mb-10 flex flex-col gap-2">
       <div className="flex h-12 whitespace-nowrap px-5 gap-4 font-semibold rounded-2xl border-2 shadow-3d border-black items-center bg-gradient-to-bl from-juz-green-lime to-juz-green-ish">
         <div className="w-12">#</div>
         <div className="flex-grow">User</div>
-        <div className="w-24">Total JUZ</div>
+        <div className="w-24 text-end">Total JUZ</div>
       </div>
 
       {Array.from({ length: 10 }).map((_, i) => (
+        // TODO: Data will be fetched from holding balance of JUZ ERC20 Token
+        // + balanceOf(veJUZ) + balance in staking pools
         <PlayerData key={`mock-p-${i}`} position={i + 1} />
       ))}
 
@@ -21,14 +25,16 @@ export default function LeaderBoard() {
         <nav className="flex items-center justify-between">
           <span className="text-2xl text-juz-green">#32</span>
 
-          <div className="bg-juz-green-lime text-sm px-3 py-0.5 rounded-full font-semibold text-black border-2 border-black">
-            242 JUZ
-          </div>
+          <JUZDistributionModal>
+            <button className="bg-juz-green-lime text-sm px-3 py-0.5 rounded-full font-semibold text-black border-2 border-black">
+              242 JUZ
+            </button>
+          </JUZDistributionModal>
         </nav>
 
         <nav className="flex mt-3 items-center gap-2">
           <figure className="size-8 bg-black rounded-full" />
-          <h2 className="font-semibold text-xl">deca.242 (You)</h2>
+          <h3 className="font-semibold text-xl">deca.242 (You)</h3>
         </nav>
       </div>
     </section>

@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
@@ -9,7 +9,11 @@ import { useWorldAuth } from "@radish-la/world-auth"
 import { useAtomExplainerConfirmed, usePlayerHearts } from "@/lib/atoms/user"
 import { useUserTopics } from "@/lib/atoms/topics"
 import { openHeartsDialog } from "@/lib/utils"
-import { incrementGamesPlayed, incrementGamesWon } from "@/actions/game"
+import {
+  incrementGamesPlayed,
+  incrementGamesWon,
+  incrPlayerJUZEarned,
+} from "@/actions/game"
 
 import { FaHeart, FaHeartBroken } from "react-icons/fa"
 
@@ -19,21 +23,18 @@ import LeaderBoard from "@/components/LeaderBoard"
 import DialogHearts from "@/components/DialogHearts"
 import DailyRefill from "@/components/banners/DailyRefill"
 
+import { MANAGE_HEARTS_TRIGGER_ID } from "@/lib/constants"
 import asset_limoncito from "@/assets/limoncito.png"
 
-import { MANAGE_HEARTS_TRIGGER_ID } from "@/lib/constants"
 import HomeNavigation from "./HomeNavigation"
 import ModalGame from "./ModalGame"
 
-// TODO: Add sentinel to watch for "pending games"
-// so we avoid "cheaters" that close app or "force" to exit the trivia window
 export default function PageHome() {
   const { toast } = useToast()
 
   const { hearts } = usePlayerHearts()
   const { gameTopics, shuffleTopics, isEmpty } = useUserTopics()
-  const { user, signIn, isMiniApp, isConnected, reklesslySetUser } =
-    useWorldAuth()
+  const { user, signIn, isConnected } = useWorldAuth()
 
   const [showGame, setShowGame] = useState(null as { topic?: string } | null)
   const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
@@ -41,11 +42,6 @@ export default function PageHome() {
   function addPlayedGame() {
     const address = user?.walletAddress
     if (address) incrementGamesPlayed(address)
-  }
-
-  function addGamesWon() {
-    const address = user?.walletAddress
-    if (address) incrementGamesWon(address)
   }
 
   async function handleConfirmExplainer() {
@@ -61,9 +57,22 @@ export default function PageHome() {
     setIsConfirmed(true)
   }
 
-  useEffect(() => {
-    if (isMiniApp) return
-  }, [isMiniApp])
+  function handleGameWon(wonJUZ: number) {
+    // TODO: Add a cute modal window that celebrates the win
+    const address = user?.walletAddress
+    if (address) {
+      incrementGamesWon(address)
+      incrPlayerJUZEarned(address, wonJUZ)
+    }
+    toast.success({
+      title: `Yaaaas! ${wonJUZ} JUZ Earned`,
+    })
+  }
+
+  // TODO: Add a explainer first modal window
+  // Where user "customizes" the first categories to play
+  // This saves us some time to prepare for initial question fetch +
+  // engage the user to understand the game logic
 
   return (
     <Tabs asChild defaultValue="play">
@@ -71,13 +80,7 @@ export default function PageHome() {
         <ModalGame
           topic={showGame?.topic}
           open={Boolean(showGame?.topic)}
-          onGameWon={() => {
-            // TODO: Open a modal with the game results
-            addGamesWon()
-            toast.success({
-              title: "You won!",
-            })
-          }}
+          onGameWon={handleGameWon}
           onOpenChange={(isOpen) => {
             setShowGame(null)
             if (!isConfirmed && !isOpen) {

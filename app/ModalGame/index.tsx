@@ -15,6 +15,7 @@ import { MdError, MdOutlineExitToApp } from "react-icons/md"
 import { generateQuestionsForTopic } from "@/actions/questions"
 import { useAudioMachine } from "@/lib/sounds"
 import HeartsVisualizer from "./HeartsVisualizer"
+import { useisGameActive } from "@/lib/atoms/game"
 
 const TOTAL_QUESTIONS = 5
 const PER_QUESTION_TIME = 10 // seconds
@@ -28,17 +29,29 @@ export default function ModalGame({
   topic,
 }: Pick<React.ComponentProps<typeof Drawer>, "open" | "onOpenChange"> & {
   topic?: string
-  onGameWon?: () => void
+  onGameWon?: (juzEarned: number) => void
 }) {
   const { hearts, removeHeart } = usePlayerHearts()
   const { playSound } = useAudioMachine(["success", "failure"])
   const { elapsedTime, restart, stop } = useTimer(PER_QUESTION_TIME)
+  const [, setIsGameActive] = useisGameActive()
+
+  // Used to track the total points earned
+  const gameStartHeartCount = useMemo(() => hearts, [open])
 
   const gameStartedTimestamp = useMemo(() => {
     // Key used to reset question fetching and make each
     // request from same topics fresh with swr
     return Date.now()
   }, [open])
+
+  const closeModal = () => {
+    onOpenChange?.(false)
+
+    // User exited or in game logic requested exit
+    // So we mark the game as not ACTIVE
+    setIsGameActive(false)
+  }
 
   const {
     data: questions = [],
@@ -69,14 +82,21 @@ export default function ModalGame({
   function handleContinue() {
     if (isGameFinished) {
       // Handle game termination and success
-      if (isGameWon) onGameWon?.()
-      return onOpenChange?.(false)
+      if (isGameWon) {
+        const pointsLostInGame = gameStartHeartCount - hearts
+        const MAX_JUZ = 3
+        const MIN_JUZ = 1
+        onGameWon?.(
+          // 1 JUZ for winning and lost 2 hearts
+          // 2 JUZ for losing 1 heart
+          // 3 JUZ for winning without losing any heart
+          Math.min(MAX_JUZ, Math.max(MIN_JUZ, MAX_JUZ - pointsLostInGame))
+        )
+      }
+      return closeModal()
     }
 
-    if (hearts <= 0) {
-      // Terminate game
-      return onOpenChange?.(false)
-    }
+    if (hearts <= 0) return closeModal()
 
     restart()
     setCurrentQuestion((current) => current + 1)
@@ -85,12 +105,12 @@ export default function ModalGame({
   }
 
   function handleForceExit() {
-    if (!isGameFinished && !isAnswered) {
+    if (!isGameFinished && !isAnswered && !isError) {
       // If user exits in the middle of a game
       // Remove a heart
       removeHeart()
     }
-    onOpenChange?.(false)
+    closeModal()
   }
 
   useEffect(() => {
@@ -100,6 +120,9 @@ export default function ModalGame({
       setSelectedOption(null)
       setCurrentQuestion(1)
       restart()
+
+      // Mark game as ACTIVE
+      setIsGameActive(true)
     } else {
       stop()
     }
@@ -116,7 +139,7 @@ export default function ModalGame({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="p-5">
+      <DrawerContent id="ModalGame" className="p-5">
         <nav className="flex justify-between items-center">
           <HeartsVisualizer hearts={hearts} />
           <button onClick={handleForceExit} className="text-2xl">

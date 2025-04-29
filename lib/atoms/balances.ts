@@ -7,7 +7,10 @@ import {
   erc20Abi,
   formatEther,
   http,
+  parseUnits,
 } from "viem"
+
+import { getPlayerJUZEarned } from "@/actions/game"
 import { worldchain } from "viem/chains"
 import { ZERO } from "@/lib/constants"
 
@@ -20,27 +23,41 @@ export const ADDRESS_WORLD_COIN =
   "0x2cFc85d8E48F8EAB294be644d9E25C3030863003" as const
 
 export const useAccountBalances = (address?: Address | null) => {
-  const { data: balance = ZERO } = useSWR(
+  const { data: balances = null } = useSWR(
     address ? `balance-${address}` : null,
     async () => {
-      if (!address) return ZERO
+      if (!address) return null
 
-      const result = await client.readContract({
-        abi: erc20Abi,
-        functionName: "balanceOf",
-        address: ADDRESS_WORLD_COIN,
-        args: [address as any],
-      })
+      const [WLD, JUZ] = await Promise.all([
+        client.readContract({
+          abi: erc20Abi,
+          functionName: "balanceOf",
+          address: ADDRESS_WORLD_COIN,
+          args: [address as any],
+        }),
+        getPlayerJUZEarned(address),
+      ])
 
-      return result
+      return {
+        WLD,
+        JUZ: parseUnits(`${JUZ}`, 18),
+      }
     },
     {
       refreshInterval: 5_000, // 5 seconds
     }
   )
 
+  const WLD = balances?.WLD || ZERO
+  const JUZ = balances?.JUZ || ZERO
+
   return {
-    WLD: { balance, formatted: formatEther(balance) },
-    JUZ: { balance: ZERO, formatted: "5" },
+    WLD: { balance: WLD, formatted: formatEther(WLD) },
+    JUZ: {
+      balance: JUZ,
+      formatted: formatEther(JUZ),
+      /** `true` if user has claimed this balance as ERC20 token */
+      isSynced: false,
+    },
   }
 }

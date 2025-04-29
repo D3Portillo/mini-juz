@@ -152,7 +152,7 @@ export default function PageRewards() {
   )
 }
 
-function JUZDistributionModal({ children }: PropsWithChildren) {
+export function JUZDistributionModal({ children }: PropsWithChildren) {
   return (
     <ReusableDialog trigger={children} title="JUZ Breakdown">
       <p>
