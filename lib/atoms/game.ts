@@ -32,4 +32,4 @@ const atomIsGameActive = atomWithStorage(
   null as boolean | null
 )
 
-export const useisGameActive = () => useAtom(atomIsGameActive)
+export const useIsGameActive = () => useAtom(atomIsGameActive)

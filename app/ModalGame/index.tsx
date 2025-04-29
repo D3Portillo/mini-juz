@@ -15,7 +15,7 @@ import { MdError, MdOutlineExitToApp } from "react-icons/md"
 import { generateQuestionsForTopic } from "@/actions/questions"
 import { useAudioMachine } from "@/lib/sounds"
 import HeartsVisualizer from "./HeartsVisualizer"
-import { useisGameActive } from "@/lib/atoms/game"
+import { useIsGameActive } from "@/lib/atoms/game"
 
 const TOTAL_QUESTIONS = 5
 const PER_QUESTION_TIME = 10 // seconds
@@ -34,7 +34,7 @@ export default function ModalGame({
   const { hearts, removeHeart } = usePlayerHearts()
   const { playSound } = useAudioMachine(["success", "failure"])
   const { elapsedTime, restart, stop } = useTimer(PER_QUESTION_TIME)
-  const [, setIsGameActive] = useisGameActive()
+  const [, setIsGameActive] = useIsGameActive()
 
   // Used to track the total points earned
   const gameStartHeartCount = useMemo(() => hearts, [open])

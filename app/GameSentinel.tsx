@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect } from "react"
-import { useisGameActive } from "@/lib/atoms/game"
+import { useIsGameActive } from "@/lib/atoms/game"
 import { usePlayerHearts } from "@/lib/atoms/user"
 
 export default function GameSentinel() {
-  const [isGameActive, setIsGameActive] = useisGameActive()
+  const [isGameActive, setIsGameActive] = useIsGameActive()
   const { removeHeart } = usePlayerHearts()
 
   useEffect(() => {
