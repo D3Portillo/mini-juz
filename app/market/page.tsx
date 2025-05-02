@@ -85,6 +85,8 @@ export default function PageProfile() {
     }
   }
 
+  const PAYING_LABEL = isJUZPayment ? "JUZ" : "WLD"
+
   return (
     <section className="min-h-screen">
       <nav className="border-b bg-white top-0 sticky z-10">
@@ -120,7 +122,7 @@ export default function PageProfile() {
             Balance:{" "}
             <strong>
               {shortifyDecimals((isJUZPayment ? JUZToken : WLD).formatted, 4)}{" "}
-              {payingToken.label.replace("Token", "")}
+              {PAYING_LABEL}
             </strong>
           </div>
         </nav>
@@ -181,7 +183,7 @@ export default function PageProfile() {
               }
               className="py-3 rounded-full text-base w-full mt-5"
             >
-              Buy for {isJUZPayment ? 7 : 3} {payingToken.label}
+              Buy for {isJUZPayment ? 7 : 3} {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>
@@ -212,7 +214,7 @@ export default function PageProfile() {
               }
               className="py-3 rounded-full text-base w-full mt-5"
             >
-              Buy for {isJUZPayment ? 10 : 5} {payingToken.label}
+              Buy for {isJUZPayment ? 10 : 5} {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>
@@ -233,7 +235,7 @@ export default function PageProfile() {
             </p>
 
             <LemonButton className="py-3 rounded-full text-base w-full mt-5">
-              Buy for {isJUZPayment ? 2 : 0.5} {payingToken.label}
+              Buy for {isJUZPayment ? 2 : 0.5} {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>

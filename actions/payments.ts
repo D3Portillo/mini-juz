@@ -17,6 +17,8 @@ export const executeWorldPyment = async ({
   paymentDescription: string
   amount: number
 }) => {
+  // TODO: Remove to call api for nonce instead
+  // We optimistically generate on frontend
   const res = await fetch("/api/initiate-payment", {
     method: "POST",
     headers: {

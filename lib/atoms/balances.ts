@@ -20,13 +20,14 @@ import {
 } from "@/lib/constants"
 import { useWorldAuth } from "@radish-la/world-auth"
 
-const client = createPublicClient({
+export const worldClient = createPublicClient({
   chain: worldchain,
   transport: http(),
 })
 
-const ABI_LOCKED_JUZ = parseAbi([
+export const ABI_LOCKED_JUZ = parseAbi([
   "function getLockData(address) external view returns ((uint256 lockedJUZ, uint256 unlockTime, uint256 lockTime, uint256 veJUZClaimed))",
+  "function getRewardData(address) external view returns (uint256 earned, uint256 claimable)",
 ])
 
 export const useAccountBalances = () => {
@@ -44,7 +45,7 @@ export const useAccountBalances = () => {
       } as const
 
       const [multicallResult, offchainJUZEarned] = await Promise.all([
-        client.multicall({
+        worldClient.multicall({
           contracts: [
             {
               ...ERC20_BALANCE,
@@ -86,7 +87,6 @@ export const useAccountBalances = () => {
       refreshInterval: 5_000, // 5 seconds
     }
   )
-  console.debug({ error, address, balances })
 
   const WLD = balances?.WLD || ZERO
   const JUZToken = balances?.JUZToken || ZERO
