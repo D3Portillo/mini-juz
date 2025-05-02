@@ -1,5 +1,5 @@
-import { completePaymentIntent, isValidPaymentIntent } from "@/lib/redis"
-import { type MiniAppPaymentSuccessPayload } from "@worldcoin/minikit-js"
+import type { MiniAppPaymentSuccessPayload } from "@worldcoin/minikit-js"
+import { completePaymentIntent } from "@/lib/redis"
 import { isAddress } from "viem"
 
 export async function POST(req: Request) {
@@ -9,11 +9,7 @@ export async function POST(req: Request) {
   const payload = (await req.json()) as MiniAppPaymentSuccessPayload
   const intentId = payload.reference
 
-  const isValidIntent = await isValidPaymentIntent(address, intentId)
-
-  if (!isValidIntent || payload?.from !== address) {
-    return Response.json({ success: false })
-  }
+  if (payload?.from !== address) return Response.json({ success: false })
 
   const response = await fetch(
     `https://developer.worldcoin.org/api/v2/minikit/transaction/${payload.transaction_id}?app_id=${process.env.APP_ID}`,

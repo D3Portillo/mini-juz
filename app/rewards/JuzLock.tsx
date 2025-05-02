@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { FaRegLemon } from "react-icons/fa"
 import { useWorldAuth } from "@radish-la/world-auth"
+import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 
 import { calculateVeJUZ, cn } from "@/lib/utils"
 import { useFormattedInputHandler } from "@/lib/input"
@@ -20,8 +21,9 @@ export default function JuzLock() {
   const inputHandler = useFormattedInputHandler()
   const [lockPeriod, setLockPeriod] = useState<string>(LOCK_1Y)
 
+  const { toast } = useToast()
   const { lock } = useLockJUZ(inputHandler.formattedValue)
-  const { user } = useWorldAuth()
+  const { isConnected, signIn } = useWorldAuth()
   const { JUZToken } = useAccountBalances()
 
   const isStakingZero = !(inputHandler.value > 0)
@@ -39,7 +41,12 @@ export default function JuzLock() {
   }
 
   async function handleLock() {
-    const result = await lock(getPeriodInWeeks(lockPeriod))
+    if (!isConnected) return signIn()
+    if (await lock(getPeriodInWeeks(lockPeriod))) {
+      toast.success({
+        title: "JUZ locked successfully",
+      })
+    }
   }
 
   return (
@@ -133,7 +140,7 @@ export default function JuzLock() {
         onClick={handleLock}
         className="text-base py-3 mt-6 bg-black text-white w-full"
       >
-        Confirm & Lock
+        {isConnected ? "Confirm & Lock" : "Connect Wallet"}
       </LemonButton>
 
       {isValidStaking ? (

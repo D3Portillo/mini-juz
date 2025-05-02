@@ -226,7 +226,7 @@ export default function PageProfile() {
 
           <div>
             <h2 className="font-medium text-xl">
-              Last resort <span className="text-juz-orange">InGame</span>
+              Last resort <span className="text-juz-orange">(Powerup)</span>
             </h2>
 
             <p className="text-sm text-black/70">

@@ -5,7 +5,7 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import useSWR from "swr"
 
-import { TopBar } from "@worldcoin/mini-apps-ui-kit-react"
+import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
 import { FaArrowRight } from "react-icons/fa"
@@ -21,7 +21,6 @@ import {
   ADDRESS_JUZ,
   ADDRESS_LOCK_CONTRACT,
   ADDRESS_VE_JUZ,
-  ZERO,
 } from "@/lib/constants"
 
 import JuzLock, { LockedJuzExplainer } from "./JuzLock"
@@ -31,10 +30,13 @@ import asset_running from "@/assets/running.png"
 import asset_frog from "@/assets/frog.png"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { shortifyDecimals } from "@/lib/numbers"
+import { MiniKit } from "@worldcoin/minikit-js"
 
 export default function PageRewards() {
+  const { toast } = useToast()
   const router = useRouter()
-  const { user } = useWorldAuth()
+
+  const { user, signIn } = useWorldAuth()
   const address = user?.walletAddress
 
   const { data: APR = 0 } = useSWR("apr", async () => {
@@ -78,6 +80,26 @@ export default function PageRewards() {
       refreshInterval: 3_000, // 3 seconds
     }
   )
+
+  async function claimRewards() {
+    if (!address) return signIn()
+    const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+      transaction: [
+        {
+          abi: ABI_LOCKED_JUZ,
+          address: ADDRESS_LOCK_CONTRACT,
+          functionName: "claimVeJUZ",
+          args: [],
+        },
+      ],
+    })
+
+    if (finalPayload.status === "success") {
+      toast.success({
+        title: "veJUZ claimed!",
+      })
+    }
+  }
 
   return (
     <section className="min-h-screen">
@@ -160,7 +182,11 @@ export default function PageRewards() {
                       title="APR Breakdown"
                       trigger={
                         <button className="rounded-full text-sm font-semibold text-center bg-juz-orange/10 border-2 border-juz-orange text-black py-1 px-3">
-                          🔥 {Number(APR).toFixed(2).replace(".00", "")}% APR
+                          🔥{" "}
+                          {Number(Math.max(9.56, APR))
+                            .toFixed(2)
+                            .replace(".00", "")}
+                          % APR
                         </button>
                       }
                     >
@@ -174,7 +200,10 @@ export default function PageRewards() {
                     <p className="text-4xl tabular-nums font-semibold">
                       {shortifyDecimals(claimable, claimable < 1e-3 ? 8 : 2)}
                     </p>
-                    <button className="underline font-medium underline-offset-2">
+                    <button
+                      onClick={claimRewards}
+                      className="underline font-medium underline-offset-2"
+                    >
                       Claim
                     </button>
                   </nav>

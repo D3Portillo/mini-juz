@@ -26,6 +26,7 @@ export const worldClient = createPublicClient({
 })
 
 export const ABI_LOCKED_JUZ = parseAbi([
+  "function claimVeJUZ() public",
   "function getLockData(address) external view returns ((uint256 lockedJUZ, uint256 unlockTime, uint256 lockTime, uint256 veJUZClaimed))",
   "function getRewardData(address) external view returns (uint256 earned, uint256 claimable)",
 ])

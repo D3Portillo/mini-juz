@@ -1,10 +1,12 @@
+import type { Address } from "viem"
+
 import {
   MiniKit,
   tokenToDecimals,
   Tokens,
   PayCommandInput,
 } from "@worldcoin/minikit-js"
-import type { Address } from "viem"
+import { generateUUID } from "@/lib/utils"
 
 const RECIPIENT = "0x05a700132Fb88D4F565453153E6b05F2049fCb45"
 
@@ -17,20 +19,9 @@ export const executeWorldPyment = async ({
   paymentDescription: string
   amount: number
 }) => {
-  // TODO: Remove to call api for nonce instead
-  // We optimistically generate on frontend
-  const res = await fetch("/api/initiate-payment", {
-    method: "POST",
-    headers: {
-      address: initiatorAddress,
-    },
-  })
+  if (!MiniKit.isInstalled()) return null
 
-  const { uuid } = await res.json()
-
-  // Terminate if uuid is not generated
-  if (!uuid) return null
-
+  const uuid = generateUUID()
   const payload: PayCommandInput = {
     reference: uuid,
     to: RECIPIENT,
@@ -42,8 +33,6 @@ export const executeWorldPyment = async ({
     ],
     description: paymentDescription,
   }
-
-  if (!MiniKit.isInstalled()) return null
 
   const { finalPayload } = await MiniKit.commandsAsync.pay(payload)
   if (finalPayload.status == "success") {

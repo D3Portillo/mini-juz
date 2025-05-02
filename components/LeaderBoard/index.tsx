@@ -10,8 +10,9 @@ export default function LeaderBoard() {
       </div>
 
       {Array.from({ length: 10 }).map((_, i) => (
-        // TODO: Data will be fetched from holding balance of JUZ ERC20 Token
-        // + balanceOf(veJUZ) + balance in staking pools
+        // TODO: Batched requests every 30min from a set of users
+        // that played the game in that time window
+        // cron + store participants in redis
         <PlayerData key={`mock-p-${i}`} position={i + 1} />
       ))}
 
