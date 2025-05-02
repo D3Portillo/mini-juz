@@ -14,7 +14,7 @@ const atomUserTopics = atomWithStorage("juz.atomUserTopics", {
 
 let timer: NodeJS.Timeout | undefined
 export const useUserTopics = () => {
-  const [{ lastUpdated, topics }, setData] = useAtom(atomUserTopics)
+  const [{ lastUpdated, topics = [] }, setData] = useAtom(atomUserTopics)
 
   async function fetchTopics() {
     console.debug("Fetching fresh topics")

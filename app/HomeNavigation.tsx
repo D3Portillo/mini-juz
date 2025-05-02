@@ -71,8 +71,7 @@ export default function HomeNavigation() {
 }
 
 export function JUZCounter({ asLink = false, href = "", ...props }) {
-  const { user } = useWorldAuth()
-  const { JUZ } = useAccountBalances(user?.walletAddress)
+  const { TotalJUZBalance } = useAccountBalances()
   const Container = asLink ? Link : "button"
 
   return (
@@ -81,7 +80,7 @@ export function JUZCounter({ asLink = false, href = "", ...props }) {
         <FaRegLemon className="text-xl" />
       </LemonIcon>
       <span className="text-xl font-semibold">
-        {shortifyDecimals(JUZ.formatted, 2)} JUZ
+        {shortifyDecimals(TotalJUZBalance.formatted, 2)} JUZ
       </span>
     </Container>
   )

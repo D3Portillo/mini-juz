@@ -2,9 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { MANAGE_HEARTS_TRIGGER_ID } from "./constants"
 
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+export const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs))
 
 export const generateUUID = () => {
   return crypto.randomUUID().replace(/-/g, "")
@@ -20,4 +18,18 @@ const MAX_LOCK_WEEKS = 52 // 1 year
 export function calculateVeJUZ(lockAmount: number, lockWeeks: number) {
   if (lockWeeks < 2 || lockWeeks > MAX_LOCK_WEEKS) return 0
   return lockAmount * (lockWeeks / MAX_LOCK_WEEKS)
+}
+
+export const serializeBigint = (v: any): any => {
+  return (
+    typeof v === "bigint" || typeof v === "number"
+      ? v.toString()
+      : Array.isArray(v)
+      ? v.map(serializeBigint)
+      : v && typeof v === "object"
+      ? Object.fromEntries(
+          Object.entries(v).map(([k, val]) => [k, serializeBigint(val)])
+        )
+      : v
+  ) as any
 }

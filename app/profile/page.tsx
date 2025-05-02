@@ -5,6 +5,7 @@ import { TopBar } from "@worldcoin/mini-apps-ui-kit-react"
 import { useRouter } from "next/navigation"
 import { useWorldAuth } from "@radish-la/world-auth"
 
+import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
 import RouteBackButton from "@/components/RouteBackButton"
 import LemonButton from "@/components/LemonButton"
 
@@ -13,11 +14,15 @@ import ProfileMenu from "./ProfileMenu"
 
 import asset_bg from "@/assets/bg.png"
 import { useAccountGameData } from "@/lib/atoms/game"
+import { useAccountBalances } from "@/lib/atoms/balances"
+import { shortifyDecimals } from "@/lib/numbers"
+import { MdOutlineArrowOutward } from "react-icons/md"
 
 export default function PageProfile() {
   const router = useRouter()
   const { user, isConnected, signIn } = useWorldAuth()
   const { played, won } = useAccountGameData()
+  const { TotalJUZBalance } = useAccountBalances()
 
   return (
     <section className="min-h-screen">
@@ -67,17 +72,20 @@ export default function PageProfile() {
 
         {isConnected ? (
           <Fragment>
-            <section
-              style={{
-                backgroundImage: `url(${asset_bg.src})`,
-              }}
-              className="border-3 grid gap-1 pt-4 pb-3 place-items-center rounded-2xl bg-cover bg-center bg-black/90 border-black shadow-3d-lg"
-            >
-              <h2 className="font-semibold text-6xl text-juz-green-lime">
-                245
-              </h2>
-              <p className="text-white">Total JUZ Balance</p>
-            </section>
+            <JUZDistributionModal>
+              <button
+                style={{
+                  backgroundImage: `url(${asset_bg.src})`,
+                }}
+                className="border-3 relative outline-none grid gap-1 pt-4 pb-3 place-items-center rounded-2xl bg-cover bg-center bg-black/90 border-black shadow-3d-lg"
+              >
+                <MdOutlineArrowOutward className="absolute text-2xl text-white top-3 right-3" />
+                <h2 className="font-semibold text-6xl text-juz-green-lime">
+                  {shortifyDecimals(TotalJUZBalance.formatted)}
+                </h2>
+                <p className="text-white">Total JUZ Balance</p>
+              </button>
+            </JUZDistributionModal>
 
             <LemonButton
               onClick={() => router.push("/rewards")}

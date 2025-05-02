@@ -26,7 +26,7 @@ export default function PageProfile() {
   const [payingToken, setPayingToken] = useState(CURRENCY_TOKENS.WLD)
 
   const { hearts, setHearts } = usePlayerHearts()
-  const { JUZ, WLD } = useAccountBalances(user?.walletAddress)
+  const { JUZToken, WLD } = useAccountBalances()
 
   // @ts-ignore
   const isJUZPayment = payingToken.value === CURRENCY_TOKENS.JUZ.value
@@ -119,8 +119,8 @@ export default function PageProfile() {
           <div>
             Balance:{" "}
             <strong>
-              {shortifyDecimals((isJUZPayment ? JUZ : WLD).formatted, 4)}{" "}
-              {payingToken.label}
+              {shortifyDecimals((isJUZPayment ? JUZToken : WLD).formatted, 4)}{" "}
+              {payingToken.label.replace("Token", "")}
             </strong>
           </div>
         </nav>

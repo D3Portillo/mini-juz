@@ -11,8 +11,7 @@ export default function WithDevAccount({
   const { isMiniApp, reklesslySetUser } = useWorldAuth()
 
   useEffect(() => {
-    if (!isMiniApp) return
-
+    if ((window as any).WorldApp) return
     if (process.env.NODE_ENV === "development") {
       // Inject development account when in local and not inside World app
       reklesslySetUser({

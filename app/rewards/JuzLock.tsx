@@ -2,14 +2,15 @@ import { useState } from "react"
 import { FaRegLemon } from "react-icons/fa"
 import { useWorldAuth } from "@radish-la/world-auth"
 
-import { useFormattedInputHandler } from "@/lib/input"
 import { calculateVeJUZ, cn } from "@/lib/utils"
+import { useFormattedInputHandler } from "@/lib/input"
+import { useAccountBalances } from "@/lib/atoms/balances"
+import { shortifyDecimals } from "@/lib/numbers"
 
 import LemonButton from "@/components/LemonButton"
 import LemonIcon from "@/components/LemonIcon"
 import ReusableDialog from "@/components/ReusableDialog"
-import { useAccountBalances } from "@/lib/atoms/balances"
-import { shortifyDecimals } from "@/lib/numbers"
+import { useLockJUZ } from "@/lib/atoms/lock"
 
 const LOCK_2W = "2W" as const
 const LOCK_1Y = "1Y" as const
@@ -19,8 +20,9 @@ export default function JuzLock() {
   const inputHandler = useFormattedInputHandler()
   const [lockPeriod, setLockPeriod] = useState<string>(LOCK_1Y)
 
+  const { lock } = useLockJUZ(inputHandler.formattedValue)
   const { user } = useWorldAuth()
-  const { JUZ } = useAccountBalances(user?.walletAddress)
+  const { JUZToken } = useAccountBalances()
 
   const isStakingZero = !(inputHandler.value > 0)
 
@@ -33,7 +35,11 @@ export default function JuzLock() {
     !isStakingZero && LOCKED_PERIODS.includes(lockPeriod as any)
 
   function handleMax() {
-    inputHandler.setValue(JUZ.formatted)
+    inputHandler.setValue(JUZToken.formatted)
+  }
+
+  async function handleLock() {
+    const result = await lock(getPeriodInWeeks(lockPeriod))
   }
 
   return (
@@ -62,7 +68,7 @@ export default function JuzLock() {
 
         <div className="mt-2 text-sm font-semibold items-center gap-2 grid grid-cols-5">
           {[0, 25, 50, 75, 100].map((lockRatio) => {
-            const lockingAmount = (Number(JUZ.formatted) * lockRatio) / 100
+            const lockingAmount = (Number(JUZToken.formatted) * lockRatio) / 100
             const isActivePeriod =
               lockRatio == 0
                 ? inputHandler.value == 0
@@ -123,7 +129,10 @@ export default function JuzLock() {
         </div>
       </fieldset>
 
-      <LemonButton className="text-base py-3 mt-6 bg-black text-white w-full">
+      <LemonButton
+        onClick={handleLock}
+        className="text-base py-3 mt-6 bg-black text-white w-full"
+      >
         Confirm & Lock
       </LemonButton>
 

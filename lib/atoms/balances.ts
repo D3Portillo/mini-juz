@@ -2,62 +2,130 @@
 
 import useSWR from "swr"
 import {
-  type Address,
   createPublicClient,
   erc20Abi,
   formatEther,
   http,
+  parseAbi,
   parseUnits,
 } from "viem"
 
 import { getPlayerJUZEarned } from "@/actions/game"
 import { worldchain } from "viem/chains"
-import { ZERO } from "@/lib/constants"
+import {
+  ADDRESS_JUZ,
+  ADDRESS_VE_JUZ,
+  ADDRESS_WORLD_COIN,
+  ZERO,
+} from "@/lib/constants"
+import { useWorldAuth } from "@radish-la/world-auth"
 
 const client = createPublicClient({
   chain: worldchain,
   transport: http(),
 })
 
-export const ADDRESS_WORLD_COIN =
-  "0x2cFc85d8E48F8EAB294be644d9E25C3030863003" as const
+const ABI_LOCKED_JUZ = parseAbi([
+  "function getLockData(address) external view returns ((uint256 lockedJUZ, uint256 unlockTime, uint256 lockTime, uint256 veJUZClaimed))",
+])
 
-export const useAccountBalances = (address?: Address | null) => {
-  const { data: balances = null } = useSWR(
-    address ? `balance-${address}` : null,
+export const useAccountBalances = () => {
+  const { user } = useWorldAuth()
+  const address = user?.walletAddress
+
+  const { data: balances = null, error } = useSWR(
+    address ? `balances-${address}` : null,
     async () => {
-      if (!address) return null
+      if (!address) return {}
 
-      const [WLD, JUZ] = await Promise.all([
-        client.readContract({
-          abi: erc20Abi,
-          functionName: "balanceOf",
-          address: ADDRESS_WORLD_COIN,
-          args: [address as any],
+      const ERC20_BALANCE = {
+        abi: erc20Abi,
+        functionName: "balanceOf",
+      } as const
+
+      const [multicallResult, offchainJUZEarned] = await Promise.all([
+        client.multicall({
+          contracts: [
+            {
+              ...ERC20_BALANCE,
+              address: ADDRESS_WORLD_COIN,
+              args: [address as any],
+            },
+            {
+              ...ERC20_BALANCE,
+              address: ADDRESS_JUZ,
+              args: [address as any],
+            },
+            {
+              ...ERC20_BALANCE,
+              address: ADDRESS_VE_JUZ,
+              args: [address as any],
+            },
+            {
+              abi: ABI_LOCKED_JUZ,
+              functionName: "getLockData",
+              address: ADDRESS_VE_JUZ,
+              args: [address as any],
+            },
+          ],
         }),
         getPlayerJUZEarned(address),
       ])
 
+      const [WLD, JUZ, VE_JUZ, lockData] = multicallResult
+
       return {
-        WLD,
-        JUZ: parseUnits(`${JUZ}`, 18),
+        WLD: WLD.result || ZERO,
+        VE_JUZ: VE_JUZ.result || ZERO,
+        JUZToken: JUZ.result || ZERO,
+        JUZPoints: parseUnits(`${offchainJUZEarned}`, 18),
+        lockedJUZ: lockData.result?.lockedJUZ || ZERO,
       }
     },
     {
       refreshInterval: 5_000, // 5 seconds
     }
   )
+  console.debug({ error, address, balances })
 
   const WLD = balances?.WLD || ZERO
-  const JUZ = balances?.JUZ || ZERO
+  const JUZToken = balances?.JUZToken || ZERO
+  const VE_JUZ = balances?.VE_JUZ || ZERO
+  const lockedJUZ = balances?.lockedJUZ || ZERO
+  const JUZPoints = balances?.JUZPoints || ZERO
+
+  // All the JUZ related balances that sumup in the leaderboard
+  const TotalJUZBalance = JUZPoints + JUZToken + VE_JUZ + lockedJUZ
 
   return {
+    // All tokens are 18 decimals
+    // So we can use formatEther safely
+
+    /** The balance that accounts for this wallet holdings in terms of the MiniApp */
+    TotalJUZBalance: {
+      balance: TotalJUZBalance,
+      formatted: formatEther(TotalJUZBalance),
+    },
     WLD: { balance: WLD, formatted: formatEther(WLD) },
-    JUZ: {
-      balance: JUZ,
-      formatted: formatEther(JUZ),
+    VE_JUZ: {
+      balance: VE_JUZ,
+      formatted: formatEther(VE_JUZ),
+    },
+    lockedJUZ: {
+      balance: lockedJUZ,
+      formatted: formatEther(lockedJUZ),
+    },
+    JUZToken: {
+      balance: JUZToken,
+      formatted: formatEther(JUZToken),
+    },
+    JUZPoints: {
+      balance: JUZPoints,
+      formatted: formatEther(JUZPoints),
       /** `true` if user has claimed this balance as ERC20 token */
-      isSynced: false,
+      isOnchainSynced: false,
+      onchainJUZAvailable: 0,
+      // TODO: Build a RewardDistributor contract to get onchain JUZ available
     },
   }
 }

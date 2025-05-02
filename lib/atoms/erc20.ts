@@ -1,0 +1,75 @@
+import type {
+  Abi,
+  Address,
+  ContractFunctionArgs,
+  ContractFunctionName,
+} from "viem"
+import { useWorldAuth } from "@radish-la/world-auth"
+import { MiniKit } from "@worldcoin/minikit-js"
+
+export const PERMIT_SIGNATURE = "PERMIT2_SIGNATURE_PLACEHOLDER_0"
+
+export const usePermittedTransfer = () => {
+  const { isMiniApp, user } = useWorldAuth()
+
+  const permitTransfer = async <T extends Abi>({
+    token,
+    functionName,
+    deadline,
+    amount,
+    nonce,
+    abi,
+    args,
+    recipient,
+  }: {
+    token: Address
+    abi: T
+    args: ContractFunctionArgs<T>
+    functionName: ContractFunctionName<T>
+    nonce: number
+    deadline: number
+    amount: bigint
+    recipient: Address
+  }) => {
+    if (!isMiniApp) return null
+    if (!user?.walletAddress) return null
+
+    const formattedAmount = amount.toString()
+
+    const PERMITTED_TRANSFER = {
+      permitted: {
+        token,
+        amount: formattedAmount,
+      },
+      spender: recipient,
+      deadline: deadline.toString(),
+      nonce: nonce.toString(),
+    }
+
+    try {
+      const { finalPayload, commandPayload } =
+        await MiniKit.commandsAsync.sendTransaction({
+          transaction: [
+            {
+              address: recipient,
+              args: args as any,
+              functionName,
+              abi,
+            },
+          ],
+          permit2: [PERMITTED_TRANSFER],
+        })
+
+      console.debug({ result: finalPayload, commandPayload })
+      if (finalPayload.status === "success") {
+        return finalPayload
+      }
+    } catch (error) {
+      console.error({ error })
+    }
+
+    return null
+  }
+
+  return { permitTransfer }
+}

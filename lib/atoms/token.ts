@@ -25,7 +25,7 @@ export const ALL_TOKENS = {
 
 export const LEMON_TOKENS = {
   JUZ: {
-    label: "JUZ",
+    label: "JUZ Token",
     value: "JUZ",
   },
   veJUZ: {
