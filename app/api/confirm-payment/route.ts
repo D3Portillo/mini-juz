@@ -27,8 +27,9 @@ export async function POST(req: Request) {
     transaction.reference == intentId && transaction.status != "failed"
 
   // Mark intent as completed in backend
-  if (isCompleted) await completePaymentIntent(address, intentId)
-
+  if (isCompleted) {
+    await completePaymentIntent(address, intentId, payload.transaction_id)
+  }
   // We optimistically confirm the transaction.
   // Otherwise, you can poll until the status == mined
   return Response.json({

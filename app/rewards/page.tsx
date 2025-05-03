@@ -74,7 +74,8 @@ export default function PageRewards() {
         args: [address as any],
       })
 
-      return Number(formatEther(claimable))
+      // We want to keep the really small numbers
+      return formatEther(claimable) as any as number
     },
     {
       refreshInterval: 3_000, // 3 seconds
@@ -198,7 +199,13 @@ export default function PageRewards() {
 
                   <nav className="flex mt-1 items-end justify-between gap-2">
                     <p className="text-4xl tabular-nums font-semibold">
-                      {shortifyDecimals(claimable, claimable < 1e-3 ? 8 : 2)}
+                      {claimable <= 0
+                        ? "0.00"
+                        : claimable < 1e-9
+                        ? "<0.00000001"
+                        : claimable < 1
+                        ? Number(claimable).toFixed(9)
+                        : shortifyDecimals(claimable, 3)}
                     </p>
                     <button
                       onClick={claimRewards}

@@ -42,10 +42,20 @@ export default function JuzLock() {
 
   async function handleLock() {
     if (!isConnected) return signIn()
+    if (isStakingZero) {
+      return toast.error({
+        title: "Please enter a valid amount",
+      })
+    }
+
     if (await lock(getPeriodInWeeks(lockPeriod))) {
       toast.success({
         title: "JUZ locked successfully",
       })
+
+      // Reset input
+      inputHandler.resetValue()
+      setLockPeriod(LOCK_1Y)
     }
   }
 

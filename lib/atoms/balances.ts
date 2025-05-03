@@ -14,6 +14,7 @@ import { getPlayerJUZEarned } from "@/actions/game"
 import { worldchain } from "viem/chains"
 import {
   ADDRESS_JUZ,
+  ADDRESS_LOCK_CONTRACT,
   ADDRESS_VE_JUZ,
   ADDRESS_WORLD_COIN,
   ZERO,
@@ -35,8 +36,8 @@ export const useAccountBalances = () => {
   const { user } = useWorldAuth()
   const address = user?.walletAddress
 
-  const { data: balances = null, error } = useSWR(
-    address ? `balances-${address}` : null,
+  const { data: balances = {}, error } = useSWR(
+    address ? `all-balances-${address}` : null,
     async () => {
       if (!address) return {}
 
@@ -66,7 +67,7 @@ export const useAccountBalances = () => {
             {
               abi: ABI_LOCKED_JUZ,
               functionName: "getLockData",
-              address: ADDRESS_VE_JUZ,
+              address: ADDRESS_LOCK_CONTRACT,
               args: [address as any],
             },
           ],
@@ -88,6 +89,7 @@ export const useAccountBalances = () => {
       refreshInterval: 5_000, // 5 seconds
     }
   )
+  console.debug({ error, balances })
 
   const WLD = balances?.WLD || ZERO
   const JUZToken = balances?.JUZToken || ZERO
