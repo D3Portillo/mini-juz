@@ -4,7 +4,11 @@ import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 
 import { useState } from "react"
 import { useWorldAuth } from "@radish-la/world-auth"
-import { executeWorldPyment } from "@/actions/payments"
+import { MiniKit } from "@worldcoin/minikit-js"
+import { erc20Abi, parseEther } from "viem"
+
+import { executeWorldPayment, MINI_APP_RECIPIENT } from "@/actions/payments"
+import { incrPlayerJUZEarned } from "@/actions/game"
 
 import { FaChevronDown } from "react-icons/fa"
 
@@ -17,7 +21,8 @@ import { shortifyDecimals } from "@/lib/numbers"
 import { usePlayerHearts } from "@/lib/atoms/user"
 
 import { CURRENCY_TOKENS } from "@/lib/atoms/token"
-import { incrPlayerJUZEarned } from "@/actions/game"
+import { ADDRESS_JUZ } from "@/lib/constants"
+import { serializeBigint } from "@/lib/utils"
 
 const HEART_HOLDING_LIMIT = 25 // 25 hearts
 export default function PageProfile() {
@@ -26,7 +31,7 @@ export default function PageProfile() {
   const [payingToken, setPayingToken] = useState(CURRENCY_TOKENS.WLD)
 
   const { hearts, setHearts } = usePlayerHearts()
-  const { JUZToken, WLD } = useAccountBalances()
+  const { JUZToken, WLD, mutate, data } = useAccountBalances()
 
   // @ts-ignore
   const isJUZPayment = payingToken.value === CURRENCY_TOKENS.JUZ.value
@@ -44,9 +49,32 @@ export default function PageProfile() {
     if (!user?.walletAddress) return signIn()
 
     if (isJUZPayment) {
-      // TODO: Handle JUZ payment
+      if (cost > Number(JUZToken.formatted)) {
+        return toast.error({
+          title: "Insufficient JUZ balance",
+        })
+      }
+
+      const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+        transaction: [
+          {
+            abi: erc20Abi,
+            address: ADDRESS_JUZ,
+            functionName: "transfer",
+            args: serializeBigint([
+              MINI_APP_RECIPIENT,
+              parseEther(cost.toString()),
+            ]),
+          },
+        ],
+      })
+
+      isSuccess = finalPayload.status === "success"
+
+      // Revalidate account balance
+      if (isSuccess) mutate(data)
     } else {
-      const result = await executeWorldPyment({
+      const result = await executeWorldPayment({
         amount: cost, // in WLD
         initiatorAddress: user.walletAddress,
         paymentDescription: `Confirm to buy a Pack of ${amount} hearts in JUZ Mini App`,
@@ -67,7 +95,7 @@ export default function PageProfile() {
     const address = user?.walletAddress
     if (!address) return signIn()
 
-    const result = await executeWorldPyment({
+    const result = await executeWorldPayment({
       amount: 10, // 10 WLD
       initiatorAddress: address,
       paymentDescription: "Confirm to buy the JUZ Master NFT in JUZ Mini App",
@@ -128,7 +156,10 @@ export default function PageProfile() {
         </nav>
 
         {isJUZPayment ? null : (
-          <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
+          <section
+            // TODO: Include after mini app approval
+            className="p-4 hidden -flex gap-6 rounded-2xl border-2 border-black shadow-3d"
+          >
             <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
               <div className="text-5xl">🍋</div>
             </figure>
@@ -214,12 +245,15 @@ export default function PageProfile() {
               }
               className="py-3 rounded-full text-base w-full mt-5"
             >
-              Buy for {isJUZPayment ? 10 : 5} {PAYING_LABEL}
+              Buy for {isJUZPayment ? 12 : 5} {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>
 
-        <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
+        <section
+          // TODO: Include after mini app approval
+          className="p-4 hidden -flex gap-6 rounded-2xl border-2 border-black shadow-3d"
+        >
           <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
             <div className="text-5xl mt-1">🛡️</div>
           </figure>

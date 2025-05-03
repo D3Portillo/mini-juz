@@ -8,9 +8,9 @@ import {
 } from "@worldcoin/minikit-js"
 import { generateUUID } from "@/lib/utils"
 
-const RECIPIENT = "0x05a700132Fb88D4F565453153E6b05F2049fCb45"
+export const MINI_APP_RECIPIENT = "0x05a700132Fb88D4F565453153E6b05F2049fCb45"
 
-export const executeWorldPyment = async ({
+export const executeWorldPayment = async ({
   initiatorAddress,
   paymentDescription,
   amount,
@@ -24,7 +24,7 @@ export const executeWorldPyment = async ({
   const uuid = generateUUID()
   const payload: PayCommandInput = {
     reference: uuid,
-    to: RECIPIENT,
+    to: MINI_APP_RECIPIENT,
     tokens: [
       {
         symbol: Tokens.WLD,

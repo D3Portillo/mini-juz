@@ -14,7 +14,7 @@ import {
   useToast,
 } from "@worldcoin/mini-apps-ui-kit-react"
 
-import { executeWorldPyment } from "@/actions/payments"
+import { executeWorldPayment } from "@/actions/payments"
 import { usePlayerHearts } from "@/lib/atoms/user"
 import { useWorldAuth } from "@radish-la/world-auth"
 
@@ -35,7 +35,7 @@ export default function DialogHearts({
     const initiatorAddress = user?.walletAddress
     if (!initiatorAddress) return signIn()
 
-    const result = await executeWorldPyment({
+    const result = await executeWorldPayment({
       amount: 2.5, // 2.5 WLD
       initiatorAddress,
       paymentDescription: `Confirm to refill a total of ${

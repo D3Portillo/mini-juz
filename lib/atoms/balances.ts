@@ -36,7 +36,7 @@ export const useAccountBalances = () => {
   const { user } = useWorldAuth()
   const address = user?.walletAddress
 
-  const { data: balances = {}, error } = useSWR(
+  const { data: balances = {}, ...query } = useSWR(
     address ? `all-balances-${address}` : null,
     async () => {
       if (!address) return {}
@@ -89,7 +89,6 @@ export const useAccountBalances = () => {
       refreshInterval: 5_000, // 5 seconds
     }
   )
-  console.debug({ error, balances })
 
   const WLD = balances?.WLD || ZERO
   const JUZToken = balances?.JUZToken || ZERO
@@ -101,9 +100,11 @@ export const useAccountBalances = () => {
   const TotalJUZBalance = JUZPoints + JUZToken + VE_JUZ + lockedJUZ
 
   return {
+    ...query,
+    data: balances,
+
     // All tokens are 18 decimals
     // So we can use formatEther safely
-
     /** The balance that accounts for this wallet holdings in terms of the MiniApp */
     TotalJUZBalance: {
       balance: TotalJUZBalance,
