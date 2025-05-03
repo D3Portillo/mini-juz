@@ -1,7 +1,10 @@
+import { Address } from "viem"
 import { useAtom } from "jotai"
+import useSWR from "swr"
+
 import { atomWithStorage } from "jotai/utils"
 import { ONE_DAY_IN_MS } from "@/lib/constants"
-import { useUserTopics } from "./topics"
+import { MiniKit } from "@worldcoin/minikit-js"
 
 const atomIsExplainerConfirmed = atomWithStorage(
   "juz.isExplainerConfirmed",
@@ -68,4 +71,12 @@ export const usePlayerHearts = () => {
     // Force null when invalid timestamp
     zeroHeartsTimestamp: zeroHeartsTimestamp || null,
   }
+}
+
+export const useAccountData = (address: Address | null) => {
+  return useSWR(address ? `juz.data.min.${address}` : null, async () => {
+    if (!address) return null
+    const data = await MiniKit.getUserByAddress(address)
+    return data
+  })
 }

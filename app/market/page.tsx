@@ -116,7 +116,7 @@ export default function PageProfile() {
   const PAYING_LABEL = isJUZPayment ? "JUZ" : "WLD"
 
   return (
-    <section className="min-h-screen">
+    <main>
       <nav className="border-b bg-white top-0 sticky z-10">
         <TopBar
           className="py-0 gap-5 px-5"
@@ -274,6 +274,6 @@ export default function PageProfile() {
           </div>
         </section>
       </div>
-    </section>
+    </main>
   )
 }

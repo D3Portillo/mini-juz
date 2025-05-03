@@ -53,10 +53,31 @@ export const getPlayerJUZEarnedBatch = async (addresses: Address[]) => {
   const earnedPoints: Record<Address, number> = {}
 
   // Process results
-  results.forEach((result, index) => {
+  results.forEach((result: any, index) => {
     const address = addresses[index]
-    earnedPoints[address] = Array.isArray(result) ? result[0] : 0
+    earnedPoints[address] = result || 0
   })
 
   return earnedPoints
+}
+
+export const getLeaderBoard = async () => {
+  // Get the top 10 players from the leaderboard
+  const leaderboard = (await redis.zrange("juz.leaderboard", 0, 10, {
+    rev: true,
+    withScores: true,
+  })) as any[]
+
+  const players: Array<{
+    address: Address
+    total: number
+  }> = []
+
+  for (let i = 0; i < leaderboard.length; i += 2) {
+    const address = leaderboard[i] as Address
+    const total = Number(leaderboard[i + 1])
+    players.push({ address, total })
+  }
+
+  return players
 }

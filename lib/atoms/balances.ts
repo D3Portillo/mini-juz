@@ -17,13 +17,15 @@ export const useAccountBalances = () => {
     async () => {
       if (!address) return {}
 
-      const [holdings, offchainJUZEarned] = await Promise.all([
-        getTotalUserHoldings(address),
-        getPlayerJUZEarned(address),
-      ])
+      const [{ JUZ: JUZToken, ...holdings }, offchainJUZEarned] =
+        await Promise.all([
+          getTotalUserHoldings(address),
+          getPlayerJUZEarned(address),
+        ])
 
       return {
         ...holdings,
+        JUZToken,
         JUZPoints: parseUnits(`${offchainJUZEarned}`, 18),
       } as any
     },
