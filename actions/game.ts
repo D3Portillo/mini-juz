@@ -38,18 +38,27 @@ export const incrPlayerJUZEarned = async (address: Address, amount: number) => {
     redis.incrby(getJUZEarnedKey(address), amount),
   ])
 }
+const normalizeJUZEarned = ({
+  erc20Claimed,
+  gamePoints,
+}: {
+  erc20Claimed: number
+  gamePoints: number
+}) => {
+  // We subtract the JUZ tokens from points earned
+  return Math.max(0, gamePoints > erc20Claimed ? gamePoints - erc20Claimed : 0)
+}
 
 export const getPlayerJUZEarned = async (address: Address) => {
-  const [claimedJUZ, rawPoints] = await Promise.all([
+  const [claimedJUZ, gamePoints] = await Promise.all([
     getClaimedJUZ(address),
     redis.get<number>(getJUZEarnedKey(address)),
   ])
 
-  // We subtract the JUZ tokens from points earned
-  const claimedAsTokens = Number(formatEther(claimedJUZ))
-  const points = rawPoints || 0
-
-  return Math.max(0, points > claimedAsTokens ? points - claimedAsTokens : 0)
+  return normalizeJUZEarned({
+    erc20Claimed: Number(formatEther(claimedJUZ)),
+    gamePoints: gamePoints || 0,
+  })
 }
 
 export const getPlayerJUZEarnedBatch = async (addresses: Address[]) => {
@@ -63,10 +72,18 @@ export const getPlayerJUZEarnedBatch = async (addresses: Address[]) => {
   const earnedPoints: Record<Address, number> = {}
 
   // Process results
-  results.forEach((result: any, index) => {
-    const address = addresses[index]
-    earnedPoints[address] = result || 0
-  })
+  await Promise.all(
+    results.map(async (result: any, index) => {
+      try {
+        const address = addresses[index]
+        const gamePoints = result as number
+        earnedPoints[address] = normalizeJUZEarned({
+          gamePoints,
+          erc20Claimed: Number(formatEther(await getClaimedJUZ(address))),
+        })
+      } catch (_) {}
+    })
+  )
 
   return earnedPoints
 }

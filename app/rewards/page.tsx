@@ -84,6 +84,12 @@ export default function PageRewards() {
 
   async function claimRewards() {
     if (!address) return signIn()
+    if (claimable < 1e-9) {
+      return toast.error({
+        title: "Nothing to be claimed",
+      })
+    }
+
     const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
       transaction: [
         {

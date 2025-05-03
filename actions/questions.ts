@@ -33,6 +33,7 @@ Generate a list of ${amount} questions about "${topic}".
 - Options should be short: 6 words max.
 - There can't be more than 1 correct answer in the options.
 - The correct answer should be in the options.
+- And please, please mixup the correct answer position (reduce to always be the first-one) in the options and make sure the index matches the correct answer too
 
 ${
   history.length > 0

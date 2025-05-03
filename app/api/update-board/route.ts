@@ -31,8 +31,9 @@ export async function GET() {
             address as any
           )
 
-          const DIVIDER = BigInt(1e12)
           // Shorten to 6 decimals
+          const DIVIDER = BigInt(1e12)
+
           // Coming from 18 decimals
           const scaledJUZ = JUZ / DIVIDER
           const scaledVE_JUZ = VE_JUZ / DIVIDER

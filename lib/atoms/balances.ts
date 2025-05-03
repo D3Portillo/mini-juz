@@ -13,7 +13,7 @@ export const useAccountBalances = () => {
   const address = user?.walletAddress
 
   const { data: balances = {}, ...query } = useSWR(
-    address ? `wallet.holding.${address}` : null,
+    address ? `wallet.holdings.${address}` : null,
     async () => {
       if (!address) return {}
 

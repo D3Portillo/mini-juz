@@ -20,8 +20,8 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
   const { toast } = useToast()
   const { JUZToken, JUZPoints, VE_JUZ, lockedJUZ, mutate, data } =
     useAccountBalances()
-  const JUZHoldings = JUZToken.balance + JUZPoints.balance
 
+  const JUZHoldings = JUZToken.balance + JUZPoints.balance
   const showClaimOnchain = !JUZPoints.isOnchainSynced
 
   async function handleClaim() {
@@ -44,7 +44,7 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
         {
           ...data,
           // Optimistically sum-up balances as tokens in frontend
-          JUZToken: amount + JUZPoints.balance,
+          JUZToken: JUZHoldings,
           // Remove JUZPoints to avoid re-claiming
           JUZPoints: ZERO,
         },
@@ -59,7 +59,6 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
     }
   }
 
-  // TODO: Add a notification circle when claim is available
   return (
     <ReusableDialog
       title="JUZ Breakdown"

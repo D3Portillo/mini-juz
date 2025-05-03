@@ -71,12 +71,16 @@ export default function HomeNavigation() {
 }
 
 export function JUZCounter({ asLink = false, href = "", ...props }) {
-  const { TotalJUZBalance } = useAccountBalances()
+  const { TotalJUZBalance, JUZPoints } = useAccountBalances()
   const Container = asLink ? Link : "button"
 
   return (
     <Container {...props} href={href} className="flex items-center gap-2">
-      <LemonIcon className="size-9">
+      <LemonIcon className="size-9 relative">
+        {JUZPoints.isOnchainSynced ? null : (
+          <figure className="absolute -bottom-1 -right-1 size-3.5 bg-juz-green-lime border-2 border-black rounded-full" />
+        )}
+
         <FaRegLemon className="text-xl" />
       </LemonIcon>
       <span className="text-xl font-semibold">
