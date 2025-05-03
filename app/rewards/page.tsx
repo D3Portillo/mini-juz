@@ -14,7 +14,7 @@ import { JUZCounter } from "@/app/HomeNavigation"
 import RouteBackButton from "@/components/RouteBackButton"
 import LemonButton from "@/components/LemonButton"
 import ReusableDialog from "@/components/ReusableDialog"
-import { ABI_LOCKED_JUZ, worldClient } from "@/lib/atoms/balances"
+import { ABI_LOCKED_JUZ, worldClient } from "@/lib/atoms/holdings"
 
 import { erc20Abi, formatEther } from "viem"
 import {

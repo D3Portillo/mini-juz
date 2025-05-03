@@ -2,6 +2,7 @@
 
 import type { Address } from "viem"
 import { Redis } from "@upstash/redis"
+import { KEY_BATCHED_PARTICIPANTS } from "./internals"
 
 const redis = Redis.fromEnv()
 
@@ -30,10 +31,32 @@ export const getPlayerGameData = async (address: Address) => {
 }
 
 export const incrPlayerJUZEarned = async (address: Address, amount: number) => {
-  await redis.incrby(getJUZEarnedKey(address), amount)
+  await Promise.all([
+    redis.sadd(KEY_BATCHED_PARTICIPANTS, address),
+    redis.incrby(getJUZEarnedKey(address), amount),
+  ])
 }
 
 export const getPlayerJUZEarned = async (address: Address) => {
   const earned = await redis.get<number>(getJUZEarnedKey(address))
   return Number(earned || 0)
+}
+
+export const getPlayerJUZEarnedBatch = async (addresses: Address[]) => {
+  const keys = addresses.map(getJUZEarnedKey)
+  const pipeline = redis.pipeline()
+
+  // Execute the batch (pipeline) and get all results
+  keys.forEach((key) => pipeline.get(key))
+  const results = await pipeline.exec()
+
+  const earnedPoints: Record<Address, number> = {}
+
+  // Process results
+  results.forEach((result, index) => {
+    const address = addresses[index]
+    earnedPoints[address] = Array.isArray(result) ? result[0] : 0
+  })
+
+  return earnedPoints
 }

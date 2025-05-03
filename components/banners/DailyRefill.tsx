@@ -26,7 +26,7 @@ export default function DailyRefill() {
 
         <p className="mt-2 text-xs max-w-xs">
           Get a full-hearts refill every 24 hours. Make it to the top and earn
-          rewards for being the smartest player!
+          rewards for being the smartest player in the <strong>World!</strong>
         </p>
 
         <nav className="flex mt-4">

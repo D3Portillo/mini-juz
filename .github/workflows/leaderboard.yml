@@ -1,0 +1,14 @@
+name: Update Leaderboard
+
+on:
+  schedule:
+    - cron: "*/30 * * * *" # Every 30 minutes
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping API
+        run: curl -sS https://mini-juz.vercel.app/api/update-board

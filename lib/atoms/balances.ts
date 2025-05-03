@@ -1,36 +1,12 @@
 "use client"
 
 import useSWR from "swr"
-import {
-  createPublicClient,
-  erc20Abi,
-  formatEther,
-  http,
-  parseAbi,
-  parseUnits,
-} from "viem"
-
-import { getPlayerJUZEarned } from "@/actions/game"
-import { worldchain } from "viem/chains"
-import {
-  ADDRESS_JUZ,
-  ADDRESS_LOCK_CONTRACT,
-  ADDRESS_VE_JUZ,
-  ADDRESS_WORLD_COIN,
-  ZERO,
-} from "@/lib/constants"
+import { formatEther, parseUnits } from "viem"
 import { useWorldAuth } from "@radish-la/world-auth"
 
-export const worldClient = createPublicClient({
-  chain: worldchain,
-  transport: http(),
-})
-
-export const ABI_LOCKED_JUZ = parseAbi([
-  "function claimVeJUZ() public",
-  "function getLockData(address) external view returns ((uint256 lockedJUZ, uint256 unlockTime, uint256 lockTime, uint256 veJUZClaimed))",
-  "function getRewardData(address) external view returns (uint256 earned, uint256 claimable)",
-])
+import { getPlayerJUZEarned } from "@/actions/game"
+import { ZERO } from "@/lib/constants"
+import { getTotalUserHoldings, type Holdings } from "./holdings"
 
 export const useAccountBalances = () => {
   const { user } = useWorldAuth()
@@ -41,49 +17,15 @@ export const useAccountBalances = () => {
     async () => {
       if (!address) return {}
 
-      const ERC20_BALANCE = {
-        abi: erc20Abi,
-        functionName: "balanceOf",
-      } as const
-
-      const [multicallResult, offchainJUZEarned] = await Promise.all([
-        worldClient.multicall({
-          contracts: [
-            {
-              ...ERC20_BALANCE,
-              address: ADDRESS_WORLD_COIN,
-              args: [address as any],
-            },
-            {
-              ...ERC20_BALANCE,
-              address: ADDRESS_JUZ,
-              args: [address as any],
-            },
-            {
-              ...ERC20_BALANCE,
-              address: ADDRESS_VE_JUZ,
-              args: [address as any],
-            },
-            {
-              abi: ABI_LOCKED_JUZ,
-              functionName: "getLockData",
-              address: ADDRESS_LOCK_CONTRACT,
-              args: [address as any],
-            },
-          ],
-        }),
+      const [holdings, offchainJUZEarned] = await Promise.all([
+        getTotalUserHoldings(address),
         getPlayerJUZEarned(address),
       ])
 
-      const [WLD, JUZ, VE_JUZ, lockData] = multicallResult
-
       return {
-        WLD: WLD.result || ZERO,
-        VE_JUZ: VE_JUZ.result || ZERO,
-        JUZToken: JUZ.result || ZERO,
+        ...holdings,
         JUZPoints: parseUnits(`${offchainJUZEarned}`, 18),
-        lockedJUZ: lockData.result?.lockedJUZ || ZERO,
-      }
+      } as any
     },
     {
       refreshInterval: 5_000, // 5 seconds
