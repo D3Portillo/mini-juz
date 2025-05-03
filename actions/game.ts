@@ -1,7 +1,9 @@
 "use server"
 
-import type { Address } from "viem"
+import { formatEther, type Address } from "viem"
 import { Redis } from "@upstash/redis"
+import { getClaimedJUZ } from "@/lib/atoms/holdings"
+
 import { KEY_BATCHED_PARTICIPANTS } from "./internals"
 
 const redis = Redis.fromEnv()
@@ -38,8 +40,16 @@ export const incrPlayerJUZEarned = async (address: Address, amount: number) => {
 }
 
 export const getPlayerJUZEarned = async (address: Address) => {
-  const earned = await redis.get<number>(getJUZEarnedKey(address))
-  return Number(earned || 0)
+  const [claimedJUZ, rawPoints] = await Promise.all([
+    getClaimedJUZ(address),
+    redis.get<number>(getJUZEarnedKey(address)),
+  ])
+
+  // We subtract the JUZ tokens from points earned
+  const claimedAsTokens = Number(formatEther(claimedJUZ))
+  const points = rawPoints || 0
+
+  return Math.max(0, points > claimedAsTokens ? points - claimedAsTokens : 0)
 }
 
 export const getPlayerJUZEarnedBatch = async (addresses: Address[]) => {

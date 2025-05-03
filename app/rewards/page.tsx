@@ -200,9 +200,9 @@ export default function PageRewards() {
                   <nav className="flex mt-1 items-end justify-between gap-2">
                     <p className="text-4xl tabular-nums font-semibold">
                       {claimable <= 0
-                        ? "0.00"
+                        ? "0.000000000"
                         : claimable < 1e-9
-                        ? "<0.00000001"
+                        ? "<0.000000001"
                         : claimable < 1
                         ? Number(claimable).toFixed(9)
                         : shortifyDecimals(claimable, 3)}

@@ -6,45 +6,45 @@ import { useWorldAuth } from "@radish-la/world-auth"
 
 import { getPlayerJUZEarned } from "@/actions/game"
 import { ZERO } from "@/lib/constants"
-import { getTotalUserHoldings, type Holdings } from "./holdings"
+import { getTotalUserHoldings } from "./holdings"
 
 export const useAccountBalances = () => {
   const { user } = useWorldAuth()
   const address = user?.walletAddress
 
   const { data: balances = {}, ...query } = useSWR(
-    address ? `all-balances-${address}` : null,
+    address ? `wallet.holding.${address}` : null,
     async () => {
       if (!address) return {}
 
-      const [{ JUZ: JUZToken, ...holdings }, offchainJUZEarned] =
-        await Promise.all([
-          getTotalUserHoldings(address),
-          getPlayerJUZEarned(address),
-        ])
+      const [{ JUZ: JUZToken, ...holdings }, JUZPoints] = await Promise.all([
+        getTotalUserHoldings(address),
+        getPlayerJUZEarned(address),
+      ])
 
       return {
         ...holdings,
         JUZToken,
-        JUZPoints: parseUnits(`${offchainJUZEarned}`, 18),
+        JUZPoints: parseUnits(`${JUZPoints}`, 18),
       } as any
     },
     {
-      refreshInterval: 5_000, // 5 seconds
+      refreshInterval: 3_500, // 3.5 seconds
     }
   )
 
   const WLD = balances?.WLD || ZERO
   const JUZToken = balances?.JUZToken || ZERO
   const VE_JUZ = balances?.VE_JUZ || ZERO
-  const lockedJUZ = balances?.lockedJUZ || ZERO
   const JUZPoints = balances?.JUZPoints || ZERO
+  const lockedJUZ = balances?.lockedJUZ || ZERO
 
   // All the JUZ related balances that sumup in the leaderboard
   const TotalJUZBalance = JUZPoints + JUZToken + VE_JUZ + lockedJUZ
 
   return {
     ...query,
+    /** SWR returned payload */
     data: balances,
 
     // All tokens are 18 decimals
@@ -71,9 +71,7 @@ export const useAccountBalances = () => {
       balance: JUZPoints,
       formatted: formatEther(JUZPoints),
       /** `true` if user has claimed this balance as ERC20 token */
-      isOnchainSynced: false,
-      onchainJUZAvailable: 0,
-      // TODO: Build a RewardDistributor contract to get onchain JUZ available
+      isOnchainSynced: JUZPoints < 1,
     },
   }
 }

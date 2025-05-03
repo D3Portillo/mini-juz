@@ -60,7 +60,6 @@ export const usePermittedTransfer = () => {
           permit2: [PERMITTED_TRANSFER],
         })
 
-      console.debug({ result: finalPayload, commandPayload })
       if (finalPayload.status === "success") {
         return finalPayload
       }

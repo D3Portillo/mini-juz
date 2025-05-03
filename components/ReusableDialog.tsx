@@ -14,12 +14,16 @@ import {
 export default function ReusableDialog({
   children,
   trigger,
+  onClosePressed,
   closeText = "Got it",
+  footNote,
   title,
 }: PropsWithChildren<{
   title: string
+  footNote?: string
   trigger?: JSX.Element | ReactNode
   closeText?: string
+  onClosePressed?: () => void
 }>) {
   return (
     <AlertDialog>
@@ -37,9 +41,13 @@ export default function ReusableDialog({
 
         <AlertDialogFooter>
           <AlertDialogClose asChild>
-            <Button>{closeText}</Button>
+            <Button onClick={onClosePressed}>{closeText}</Button>
           </AlertDialogClose>
         </AlertDialogFooter>
+
+        <p className="text-xs mt-3 -mb-3 text-center max-w-xs mx-auto text-black/50">
+          {footNote}
+        </p>
       </AlertDialogContent>
     </AlertDialog>
   )

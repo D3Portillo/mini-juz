@@ -59,8 +59,15 @@ export default function LeaderBoard() {
               </JUZDistributionModal>
             </nav>
 
-            <nav className="flex mt-3 items-center gap-2">
-              <figure className="size-8 bg-black rounded-full" />
+            <nav className="flex mt-3 items-center gap-3">
+              <figure
+                style={{
+                  backgroundImage: `url(${
+                    user?.profilePictureUrl || "/marble.png"
+                  })`,
+                }}
+                className="size-9 bg-cover bg-center bg-black/10 border-black border-2 rounded-full"
+              />
               <h3 className="font-semibold text-xl">
                 {connectedUsername ||
                   beautifyAddress(connectedUserAddress, 4, "")}{" "}

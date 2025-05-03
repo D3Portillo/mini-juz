@@ -1,5 +1,13 @@
-import { createPublicClient, erc20Abi, http, parseAbi } from "viem"
+import {
+  type Address,
+  createPublicClient,
+  erc20Abi,
+  http,
+  parseAbi,
+} from "viem"
 import { worldchain } from "viem/chains"
+
+import { ABI_DISPENSER, ADDRESS_DISPENSER } from "@/actions/internals"
 
 import {
   ADDRESS_JUZ,
@@ -20,12 +28,21 @@ export const ABI_LOCKED_JUZ = parseAbi([
   "function getRewardData(address) external view returns (uint256 earned, uint256 claimable)",
 ])
 
+export const getClaimedJUZ = async (address: Address) => {
+  return await worldClient.readContract({
+    abi: ABI_DISPENSER,
+    functionName: "claimed",
+    address: ADDRESS_DISPENSER,
+    args: [address],
+  })
+}
+
 const ERC20_BALANCE = {
   abi: erc20Abi,
   functionName: "balanceOf",
 } as const
 
-export const getTotalUserHoldings = async (address: `0x${string}`) => {
+export const getTotalUserHoldings = async (address: Address) => {
   const [WLD, JUZ, VE_JUZ, lockData] = await worldClient.multicall({
     contracts: [
       {
