@@ -24,7 +24,7 @@ import { CURRENCY_TOKENS } from "@/lib/atoms/token"
 import { ADDRESS_JUZ } from "@/lib/constants"
 import { serializeBigint } from "@/lib/utils"
 
-const HEART_HOLDING_LIMIT = 25 // 25 hearts
+const HEART_HOLDING_LIMIT = 20 // 20 hearts
 export default function PageProfile() {
   const { toast } = useToast()
   const { signIn, user } = useWorldAuth()
@@ -208,13 +208,13 @@ export default function PageProfile() {
                 handleBuyHearts(
                   5,
                   isJUZPayment
-                    ? 7 // JUZ
+                    ? 10 // JUZ
                     : 3 // WLD
                 )
               }
               className="py-3 rounded-full text-base w-full mt-5"
             >
-              Buy for {isJUZPayment ? 7 : 3} {PAYING_LABEL}
+              Buy for {isJUZPayment ? 10 : 3} {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>
@@ -239,13 +239,13 @@ export default function PageProfile() {
                 handleBuyHearts(
                   10,
                   isJUZPayment
-                    ? 12 // JUZ
+                    ? 15 // JUZ
                     : 5 // WLD
                 )
               }
               className="py-3 rounded-full text-base w-full mt-5"
             >
-              Buy for {isJUZPayment ? 12 : 5} {PAYING_LABEL}
+              Buy for {isJUZPayment ? 15 : 5} {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>
