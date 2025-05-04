@@ -22,7 +22,8 @@ export default function WelcomeModal() {
     })
   }
 
-  if (isReady && isWelcomeRead) return null
+  if (!isReady) return null
+  if (isWelcomeRead) return null
 
   return (
     <main className="fixed bg-white/85 p-6 backdrop-blur-md inset-0 grid place-items-center z-[15]">

@@ -27,7 +27,7 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
 
   const canClaim = Date.now() - lastClaim > 7_000 // 7 seconds
   const JUZHoldings = JUZToken.balance + JUZPoints.balance
-  const showClaimOnchain = !JUZPoints.isOnchainSynced
+  const showClaimOnchain = canClaim && !JUZPoints.isOnchainSynced
 
   async function handleClaim() {
     const address = user?.walletAddress

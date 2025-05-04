@@ -26,14 +26,12 @@ export const generateQuestionsForTopic = async (
 Generate a list of ${amount} questions about "${topic}".
 - Each question should have 3 options.
 - Correct option should be in the list of options.
+- There can't be more than 1 correct option.
 - The questions should be fun and interesting - for trivia or quiz games.
 - The questions should be in English.
 - Options should be in English.
 - Options should be in the format: ["option1", "option2", "option3"]
 - Options should be short: 6 words max.
-- There can't be more than 1 correct answer in the options.
-- The correct answer should be in the options.
-- And please, please mixup the correct answer position (reduce to always be the first-one) in the options and make sure the index matches the correct answer too
 
 ${
   history.length > 0
@@ -53,5 +51,22 @@ Thanks.
     `,
   })
 
-  return object.questions
+  // The prompt wasn't giving me good "random" position results and for 3 elements
+  // most of the time the "correct" option was the first one so was ass easy to get points.
+  return object.questions.map(({ correctOptionIndex, options, question }) => {
+    const correctOptionContent = options[correctOptionIndex]
+    const shuffled = [...options]
+
+    // Shuffle by swapping random pairs
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+
+    return {
+      question,
+      options: shuffled,
+      correctOptionIndex: shuffled.indexOf(correctOptionContent),
+    }
+  })
 }
