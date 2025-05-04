@@ -20,6 +20,8 @@ export default function LeaderBoard() {
   const connectedUsername = user?.username
   const connectedUserAddress = user?.walletAddress!
 
+  const isEmpty = leaderboard.length <= 0
+
   return (
     <section className="px-4 mt-4 mb-10 flex flex-col gap-2">
       <div className="flex h-12 whitespace-nowrap px-5 gap-4 font-semibold rounded-2xl border-2 shadow-3d border-black items-center bg-gradient-to-bl from-juz-green-lime to-juz-green-ish">
@@ -29,6 +31,11 @@ export default function LeaderBoard() {
       </div>
 
       <div className="flex w-full min-h-[calc(25vh+4rem)] flex-col gap-2">
+        {isEmpty &&
+          Array.from({ length: 3 }).map((_, i) => (
+            <PlayerSkeleton key={`skeleton-${i}`} />
+          ))}
+
         {leaderboard.map((player, i) => (
           <PlayerData
             points={player.total}
@@ -101,6 +108,15 @@ function PlayerData({
       <div className="w-24 text-end">
         {shortifyDecimals(formatUSDC(points), 3)}
       </div>
+    </div>
+  )
+}
+
+function PlayerSkeleton() {
+  return (
+    <div className="flex h-14 whitespace-nowrap px-3 gap-4 rounded-xl border-2 shadow-3d border-black items-center bg-juz-green-ish/20 even:bg-juz-green-ish/3">
+      <div className="w-12 bg-black/10 h-8 rounded-lg animate-pulse" />
+      <div className="flex-grow bg-black/10 delay-100 h-8 rounded-lg animate-pulse" />
     </div>
   )
 }

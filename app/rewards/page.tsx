@@ -1,9 +1,10 @@
 "use client"
 
 import { Fragment } from "react"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import useSWR from "swr"
+import { MiniKit } from "@worldcoin/minikit-js"
+import Image from "next/image"
 
 import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
@@ -25,12 +26,11 @@ import {
 
 import JuzLock, { LockedJuzExplainer } from "./JuzLock"
 import { JUZDistributionModal } from "./JuzDistributionModal"
+import { useWorldAuth } from "@radish-la/world-auth"
+import { shortifyDecimals } from "@/lib/numbers"
 
 import asset_running from "@/assets/running.png"
 import asset_frog from "@/assets/frog.png"
-import { useWorldAuth } from "@radish-la/world-auth"
-import { shortifyDecimals } from "@/lib/numbers"
-import { MiniKit } from "@worldcoin/minikit-js"
 
 export default function PageRewards() {
   const { toast } = useToast()
@@ -166,7 +166,8 @@ export default function PageRewards() {
                     </p>
 
                     <LemonButton
-                      onClick={() => router.push("/market")}
+                      // Back to home atm - later update to marketplace
+                      onClick={() => router.push("/")}
                       className="flex py-3 text-base mt-4 items-center gap-4"
                     >
                       <span>Get JUZ</span>

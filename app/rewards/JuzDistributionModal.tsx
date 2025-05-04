@@ -1,6 +1,8 @@
 "use client"
 
 import type { PropsWithChildren } from "react"
+import { atomWithStorage } from "jotai/utils"
+import { useAtom } from "jotai"
 
 import { MiniKit } from "@worldcoin/minikit-js"
 import { formatEther } from "viem"
@@ -15,18 +17,27 @@ import { useWorldAuth } from "@radish-la/world-auth"
 import { ABI_DISPENSER, ADDRESS_DISPENSER } from "@/actions/internals"
 import { ZERO } from "@/lib/constants"
 
+const atomlastClaim = atomWithStorage("juz.canClaim", 0)
 export function JUZDistributionModal({ children }: PropsWithChildren) {
+  const [lastClaim, setLastClaim] = useAtom(atomlastClaim)
   const { user, signIn } = useWorldAuth()
   const { toast } = useToast()
   const { JUZToken, JUZPoints, VE_JUZ, lockedJUZ, mutate, data } =
     useAccountBalances()
 
+  const canClaim = Date.now() - lastClaim > 7_000 // 7 seconds
   const JUZHoldings = JUZToken.balance + JUZPoints.balance
   const showClaimOnchain = !JUZPoints.isOnchainSynced
 
   async function handleClaim() {
     const address = user?.walletAddress
     if (!address) return signIn()
+    if (!canClaim) {
+      return toast.error({
+        title: "Wait a bit before claiming again",
+      })
+    }
+
     const { amount, deadline, signature } = await getDispenserPayload(address)
     const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
       transaction: [
@@ -53,6 +64,11 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
         }
       )
 
+      // Store last claim time
+      // to allow block confirmations to be processed
+      // and avoid double claims
+      setLastClaim(Date.now())
+
       toast.success({
         title: `Yaay. ${shortifyDecimals(formatEther(amount))} JUZ claimed!`,
       })
@@ -78,7 +94,7 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
             <p className="text-xs opacity-75">Trivia earned + ERC20 Tokens</p>
           </div>
           <span className="text-xl mt-1 font-medium">
-            {shortifyDecimals(formatEther(JUZHoldings))}
+            {shortifyDecimals(formatEther(JUZHoldings), 5)}
           </span>
         </nav>
       </p>
@@ -90,7 +106,7 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
             <p className="text-xs opacity-75">Balance locked in pools</p>
           </div>
           <span className="text-xl mt-1 font-medium">
-            {shortifyDecimals(lockedJUZ.formatted)}
+            {shortifyDecimals(lockedJUZ.formatted, 5)}
           </span>
         </nav>
       </p>
@@ -104,7 +120,10 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
             </p>
           </div>
           <span className="text-xl mt-1 font-medium">
-            {shortifyDecimals(VE_JUZ.formatted)}
+            {shortifyDecimals(
+              VE_JUZ.formatted,
+              (VE_JUZ.formatted as any) > 1 ? 5 : 8
+            )}
           </span>
         </nav>
       </p>

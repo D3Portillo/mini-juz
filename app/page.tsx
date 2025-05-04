@@ -69,11 +69,6 @@ export default function PageHome() {
     })
   }
 
-  // TODO: Add a explainer first modal window
-  // Where user "customizes" the first categories to play
-  // This saves us some time to prepare for initial question fetch +
-  // engage the user to understand the game logic
-
   return (
     <Tabs asChild defaultValue="play">
       <section>
