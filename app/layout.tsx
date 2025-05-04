@@ -8,6 +8,7 @@ import { Rubik, Sora } from "next/font/google"
 import WorldProvider from "@/components/world-provider"
 import { Toaster as WorldToaster } from "@worldcoin/mini-apps-ui-kit-react"
 import GameSentinel from "./GameSentinel"
+import WelcomeModal from "./WelcomeModal"
 import MainLayout from "./MainLayout"
 
 const fontRubik = Rubik({
@@ -45,6 +46,7 @@ export default function RootLayout({
       <body
         className={`${fontRubik.variable} ${fontSora.variable} ${fontRubik.className} antialiased`}
       >
+        <WelcomeModal />
         <WorldToaster duration={2_500} />
         <GameSentinel />
         <WorldProvider>
