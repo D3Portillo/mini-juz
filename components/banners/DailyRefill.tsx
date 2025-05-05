@@ -38,7 +38,7 @@ export default function DailyRefill() {
               <strong className="font-semibold">Refill now</strong>
               <FaArrowRight />
             </button>
-          ) : secondsToNextRefill ? (
+          ) : secondsToNextRefill > elapsedTime ? (
             <div className="bg-black h-14 py-2.5 px-4 rounded-lg text-white">
               <div className="text-xs">Time to refill</div>
               <div className="font-semibold -mt-0.5 tabular-nums">
