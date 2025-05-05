@@ -21,10 +21,10 @@ export default function DailyRefill() {
 
   return (
     <div className="border-3 bg-gradient-to-r from-juz-green-lime/0 via-juz-green-lime/0 to-juz-green-lime/70 relative overflow-hidden mt-14 shadow-3d-lg border-black p-4 !pr-0 rounded-2xl">
-      <div className="pr-36">
+      <div className="pr-40">
         <h1 className="text-xl font-semibold">Daily hearts refill</h1>
 
-        <p className="mt-2 text-xs max-w-xs">
+        <p className="mt-2 text-xs max-w-[16rem]">
           Get a full-hearts refill every 24 hours. Make it to the top and earn
           rewards for being the smartest player in the <strong>World!</strong>
         </p>
