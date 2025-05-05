@@ -63,8 +63,8 @@ export const usePlayerHearts = () => {
     canBeRefilled: isClaimed
       ? false
       : nextRefillTime
-      ? Date.now() > nextRefillTime
-      : hearts < 1,
+      ? Date.now() > nextRefillTime && hearts < INITIAL_PLAYER_HEARTS
+      : hearts < INITIAL_PLAYER_HEARTS,
     setHearts,
     removeHeart,
     isRefillClaimed: isClaimed,

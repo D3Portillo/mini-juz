@@ -6,7 +6,7 @@ import { MiniKit } from "@worldcoin/minikit-js"
 
 import useSWR from "swr"
 import Image from "next/image"
-import { erc20Abi, formatEther } from "viem"
+import { formatEther } from "viem"
 
 import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
@@ -66,6 +66,12 @@ export default function PageRewards() {
     if (claimable < 1e-9) {
       return toast.error({
         title: "Nothing to be claimed",
+      })
+    }
+
+    if (claimable < 1e-4) {
+      return toast.error({
+        title: "Balance too low",
       })
     }
 
