@@ -5,6 +5,9 @@
 html,
 body {
   @apply bg-white;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  overflow: scroll;
 }
 
 @layer base {
