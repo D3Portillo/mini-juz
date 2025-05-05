@@ -81,7 +81,7 @@ export default function PageProfile() {
               >
                 <MdOutlineArrowOutward className="absolute text-2xl text-white top-3 right-3" />
                 <h2 className="font-semibold text-6xl text-juz-green-lime">
-                  {shortifyDecimals(TotalJUZBalance.formatted, 3)}
+                  {shortifyDecimals(TotalJUZBalance.formatted)}
                 </h2>
                 <p className="text-white">Total JUZ Balance</p>
               </button>

@@ -1,13 +1,15 @@
 "use client"
 
-import { Fragment } from "react"
+import { Fragment, useState } from "react"
 import { useRouter } from "next/navigation"
-import useSWR from "swr"
 import { MiniKit } from "@worldcoin/minikit-js"
+
+import useSWR from "swr"
 import Image from "next/image"
+import { erc20Abi, formatEther } from "viem"
 
 import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
+import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
 import { FaArrowRight } from "react-icons/fa"
 
@@ -17,12 +19,9 @@ import LemonButton from "@/components/LemonButton"
 import ReusableDialog from "@/components/ReusableDialog"
 import { ABI_LOCKED_JUZ, worldClient } from "@/lib/atoms/holdings"
 
-import { erc20Abi, formatEther } from "viem"
-import {
-  ADDRESS_JUZ,
-  ADDRESS_LOCK_CONTRACT,
-  ADDRESS_VE_JUZ,
-} from "@/lib/constants"
+import { ADDRESS_LOCK_CONTRACT } from "@/lib/constants"
+import { cn } from "@/lib/utils"
+import { calculateAPR } from "@/lib/apr"
 
 import JuzLock, { LockedJuzExplainer } from "./JuzLock"
 import { JUZDistributionModal } from "./JuzDistributionModal"
@@ -33,34 +32,14 @@ import asset_running from "@/assets/running.png"
 import asset_frog from "@/assets/frog.png"
 
 export default function PageRewards() {
+  const APR = calculateAPR(Date.now() / 1_000)
+
+  const [activeTab, setActiveTab] = useState("lock")
   const { toast } = useToast()
   const router = useRouter()
 
   const { user, signIn } = useWorldAuth()
   const address = user?.walletAddress
-
-  const { data: APR = 0 } = useSWR("apr", async () => {
-    if (!worldClient) return 0
-    const [lockedJUZ, totalVeJuzSupply] = await Promise.all([
-      worldClient.readContract({
-        abi: erc20Abi,
-        args: [ADDRESS_LOCK_CONTRACT],
-        functionName: "balanceOf",
-        address: ADDRESS_JUZ,
-      }),
-      worldClient.readContract({
-        abi: erc20Abi,
-        functionName: "totalSupply",
-        address: ADDRESS_VE_JUZ,
-      }),
-    ])
-
-    return (
-      (Number(totalVeJuzSupply > 0 ? totalVeJuzSupply : 1) /
-        Number(lockedJUZ > 0 ? lockedJUZ : 1)) *
-      100
-    )
-  })
 
   const { data: claimable = 0 } = useSWR(
     address ? `juz.earned.${address}` : null,
@@ -123,7 +102,7 @@ export default function PageRewards() {
         />
       </nav>
 
-      <Tabs asChild defaultValue="lock">
+      <Tabs asChild value={activeTab} onValueChange={setActiveTab}>
         <Fragment>
           <div className="bg-gradient-to-b from-juz-orange/7 to-juz-orange/0">
             <nav className="px-5 pb-16">
@@ -145,109 +124,101 @@ export default function PageRewards() {
             </nav>
           </div>
 
-          <div className="-mt-8 px-5">
-            <TabsContent asChild value="lock">
-              <div className="mb-12">
-                <h2 className="font-medium text-xl">JUZ Locking</h2>
+          <section className="-mt-8 px-5">
+            <div className={cn("mb-12", activeTab === "lock" || "hidden")}>
+              <h2 className="font-medium text-xl">JUZ Locking</h2>
 
-                <div className="flex justify-between items-start gap-4">
-                  <div className="mt-2 text-sm max-w-xs">
-                    <p>
-                      Earn{" "}
-                      <LockedJuzExplainer
-                        trigger={
-                          <button className="underline underline-offset-2 font-medium">
-                            veJUZ
-                          </button>
-                        }
-                      />{" "}
-                      by locking JUZ for a period of time. In the future veJUZ
-                      can be used for goverance, access reward pools or airdrops
-                    </p>
-
-                    <LemonButton
-                      // Back to home atm - later update to marketplace
-                      onClick={() => router.push("/")}
-                      className="flex py-3 text-base mt-4 items-center gap-4"
-                    >
-                      <span>Get JUZ</span>
-                      <FaArrowRight className="text-lg" />
-                    </LemonButton>
-                  </div>
-
-                  <figure className="w-40 -mt-2 shrink-0">
-                    <Image placeholder="blur" alt="" src={asset_running} />
-                  </figure>
-                </div>
-
-                <JuzLock />
-
-                <section className="p-4 bg-gradient-to-br from-juz-green-lime/5 to-juz-green-lime/0 mt-5 rounded-2xl border-3 border-black shadow-3d-lg">
-                  <nav className="flex items-center justify-between">
-                    <p className="font-semibold text-xl">Earning veJUZ</p>
-
-                    <ReusableDialog
-                      title="APR Breakdown"
+              <div className="flex justify-between items-start gap-4">
+                <div className="mt-2 text-sm max-w-xs">
+                  <p>
+                    Earn{" "}
+                    <LockedJuzExplainer
                       trigger={
-                        <button className="rounded-full text-sm font-semibold text-center bg-juz-orange/10 border-2 border-juz-orange text-black py-1 px-3">
-                          🔥{" "}
-                          {Number(Math.max(9.56, APR))
-                            .toFixed(2)
-                            .replace(".00", "")}
-                          % APR
+                        <button className="underline underline-offset-2 font-medium">
+                          veJUZ
                         </button>
                       }
-                    >
-                      APR is calculated based on the current veJUZ supply and
-                      the amount of JUZ locked in the pool. APR is variable and
-                      can change over time.
-                    </ReusableDialog>
-                  </nav>
-
-                  <nav className="flex mt-1 items-end justify-between gap-2">
-                    <p className="text-4xl tabular-nums font-semibold">
-                      {claimable <= 0
-                        ? "0.000000000"
-                        : claimable < 1e-9
-                        ? "<0.000000001"
-                        : claimable < 1
-                        ? Number(claimable).toFixed(9)
-                        : shortifyDecimals(claimable, 3)}
-                    </p>
-                    <button
-                      onClick={claimRewards}
-                      className="underline font-medium underline-offset-2"
-                    >
-                      Claim
-                    </button>
-                  </nav>
-                </section>
-              </div>
-            </TabsContent>
-
-            <TabsContent asChild value="drops">
-              <div>
-                <h2 className="font-medium text-xl">Lemon Drops</h2>
-
-                <div className="flex justify-between items-start gap-7">
-                  <p className="mt-2 text-sm max-w-xs">
-                    We're working on a new way for you to earn rewards from
-                    communities in World. Incentives are distributed by doing
-                    tasks or learning. This are called a{" "}
-                    <strong className="font-medium">Lemon Drops</strong>
+                    />{" "}
+                    by locking JUZ for a period of time. In the future veJUZ can
+                    be used for goverance, access reward pools or airdrops
                   </p>
 
-                  <figure className="w-32 -mt-3 shrink-0">
-                    <Image placeholder="blur" alt="" src={asset_frog} />
-                  </figure>
+                  <LemonButton
+                    // Back to home atm - later update to marketplace
+                    onClick={() => router.push("/")}
+                    className="flex whitespace-nowrap py-3 text-base mt-4 items-center gap-4"
+                  >
+                    <span>Get JUZ</span>
+                    <FaArrowRight className="text-lg" />
+                  </LemonButton>
                 </div>
 
-                <div className="mt-14 border border-dashed border-black/20 rounded-2xl p-4 text-center text-sm">
-                  Coming soon ⚡
-                </div>
+                <figure className="w-40 -mt-2 shrink-0">
+                  <Image placeholder="blur" alt="" src={asset_running} />
+                </figure>
               </div>
-            </TabsContent>
-          </div>
+
+              <JuzLock />
+
+              <section className="p-4 bg-gradient-to-br from-juz-green-lime/5 to-juz-green-lime/0 mt-5 rounded-2xl border-3 border-black shadow-3d-lg">
+                <nav className="flex items-center justify-between">
+                  <p className="font-semibold text-xl">Earning veJUZ</p>
+
+                  <ReusableDialog
+                    title="APR Breakdown"
+                    trigger={
+                      <button className="rounded-full text-sm font-semibold text-center bg-juz-orange/10 border-2 border-juz-orange text-black py-1 px-3">
+                        🔥 {APR.toFixed(2).replace(".00", "")}% APR
+                      </button>
+                    }
+                  >
+                    APR is calculated based on the current veJUZ supply and the
+                    amount of JUZ locked in the pool. APR is variable and can
+                    change over time.
+                  </ReusableDialog>
+                </nav>
+
+                <nav className="flex mt-1 items-end justify-between gap-2">
+                  <p className="text-4xl tabular-nums font-semibold">
+                    {claimable <= 0
+                      ? "0.000000000"
+                      : claimable < 1e-9
+                      ? "<0.000000001"
+                      : claimable < 1
+                      ? Number(claimable).toFixed(9)
+                      : shortifyDecimals(claimable, 3)}
+                  </p>
+                  <button
+                    onClick={claimRewards}
+                    className="underline font-medium underline-offset-2"
+                  >
+                    Claim
+                  </button>
+                </nav>
+              </section>
+            </div>
+
+            <div className={cn("mb-12", activeTab === "lock" && "hidden")}>
+              <h2 className="font-medium text-xl">Lemon Drops</h2>
+
+              <div className="flex justify-between items-start gap-7">
+                <p className="mt-2 text-sm max-w-xs">
+                  We're working on a new way for you to earn rewards from
+                  communities in World. Incentives are distributed by doing
+                  tasks or learning. This are called a{" "}
+                  <strong className="font-medium">Lemon Drops</strong>
+                </p>
+
+                <figure className="w-32 -mt-3 shrink-0">
+                  <Image placeholder="blur" alt="" src={asset_frog} />
+                </figure>
+              </div>
+
+              <div className="mt-14 border border-dashed border-black/20 rounded-2xl p-4 text-center text-sm">
+                Coming soon ⚡
+              </div>
+            </div>
+          </section>
         </Fragment>
       </Tabs>
     </section>

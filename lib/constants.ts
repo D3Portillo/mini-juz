@@ -3,6 +3,7 @@ export const SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000 // 6 hours
 export const MANAGE_HEARTS_TRIGGER_ID = "view-hearts" as const
 export const ZERO = BigInt(0)
 export const ONE_HOUR_IN_BLOCK_TIME = 60 * 60 // 1 hour in seconds
+export const ONE_YEAR_IN_BLOCK_TIME = 60 * 60 * 24 * 365 // 1 year in seconds
 export const ADDRESS_LOCK_CONTRACT =
   "0x0D34587468721386b6573caa608005D00B1F8431" as const
 export const ADDRESS_JUZ = "0x14ddC988bdF1E1aea0BFf8351DDC3F59176E56d3" as const
