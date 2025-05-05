@@ -27,7 +27,7 @@ export default function PageProfile() {
   const { TotalJUZBalance } = useAccountBalances()
 
   return (
-    <section className="min-h-[calc(100vh-3.85rem)] flex flex-col">
+    <Fragment>
       <nav className="border-b bg-white top-0 sticky z-10">
         <TopBar
           className="py-0 gap-5 px-5"
@@ -36,7 +36,7 @@ export default function PageProfile() {
         />
       </nav>
 
-      <div className="flex flex-grow relative px-4 pt-10 mb-12 flex-col gap-5">
+      <div className="flex relative px-4 pt-10 mb-12 flex-col gap-5">
         {isConnected && (
           <div className="absolute top-3 right-5">
             <ProfileMenu />
@@ -104,10 +104,9 @@ export default function PageProfile() {
           </LemonButton>
         )}
 
-        <div className="flex-grow" />
-        <hr className="mb-4" />
+        <hr className="mt-2" />
 
-        <nav className="flex text-sm opacity-60 gap-8 justify-center items-center">
+        <nav className="flex whitespace-nowrap text-sm opacity-60 gap-8 justify-center items-center">
           <Link
             target="_blank"
             className="underline flex items-center gap-2 underline-offset-4"
@@ -127,6 +126,6 @@ export default function PageProfile() {
           </Link>
         </nav>
       </div>
-    </section>
+    </Fragment>
   )
 }
