@@ -9,13 +9,15 @@ import { shortifyDecimals } from "@/lib/numbers"
 import { formatUSDC } from "@/lib/tokens"
 
 import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
-import { useAccountData } from "@/lib/atoms/user"
+import { useAccountData, useGameRank } from "@/lib/atoms/user"
 import { beautifyAddress } from "@/lib/utils"
 
 export default function LeaderBoard() {
   const { user, isConnected } = useWorldAuth()
   const { TotalJUZBalance } = useAccountBalances()
   const { data: leaderboard = [] } = useLeaderboard()
+
+  const { rank } = useGameRank(user?.walletAddress || null)
 
   const connectedUsername = user?.username
   const connectedUserAddress = user?.walletAddress!
@@ -57,7 +59,9 @@ export default function LeaderBoard() {
 
           <div className="p-5 gap-4 font-semibold rounded-2xl shadow-3d-lg border-3 border-black">
             <nav className="flex items-center justify-between">
-              <span className="text-2xl text-juz-green">#32</span>
+              <span className="text-2xl text-juz-green">
+                #{rank ? rank : ">99"}
+              </span>
 
               <JUZDistributionModal>
                 <button className="bg-juz-green-lime text-sm px-3 py-0.5 rounded-full font-semibold text-black border-2 border-black">

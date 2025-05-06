@@ -1,7 +1,10 @@
+"use client"
+
 import { Address } from "viem"
 import { useAtom } from "jotai"
 import useSWR from "swr"
 
+import { getPlayerRank } from "@/actions/game"
 import { atomWithStorage } from "jotai/utils"
 import { ONE_DAY_IN_MS } from "@/lib/constants"
 import { MiniKit } from "@worldcoin/minikit-js"
@@ -79,4 +82,18 @@ export const useAccountData = (address: Address | null) => {
     const data = await MiniKit.getUserByAddress(address)
     return data
   })
+}
+
+export const useGameRank = (address: Address | null) => {
+  const { data = null } = useSWR(
+    address ? `juz.game.rank.${address}` : null,
+    async () => {
+      if (!address) return null
+      return await getPlayerRank(address)
+    }
+  )
+
+  return {
+    rank: data,
+  }
 }

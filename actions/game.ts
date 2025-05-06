@@ -4,7 +4,7 @@ import { formatEther, type Address } from "viem"
 import { Redis } from "@upstash/redis"
 import { getClaimedJUZ } from "@/lib/atoms/holdings"
 
-import { KEY_BATCHED_PARTICIPANTS } from "./internals"
+import { KEY_BATCHED_PARTICIPANTS, KEY_LEADERBOARD } from "./internals"
 
 const redis = Redis.fromEnv()
 
@@ -90,7 +90,7 @@ export const getPlayerJUZEarnedBatch = async (addresses: Address[]) => {
 
 export const getLeaderBoard = async () => {
   // Get the top 10 players from the leaderboard
-  const leaderboard = (await redis.zrange("juz.leaderboard", 0, 10, {
+  const leaderboard = (await redis.zrange(KEY_LEADERBOARD, 0, 10, {
     rev: true,
     withScores: true,
   })) as any[]
@@ -107,4 +107,11 @@ export const getLeaderBoard = async () => {
   }
 
   return players
+}
+
+export const getPlayerRank = async (address: Address) => {
+  const rank = await redis.zrevrank(KEY_LEADERBOARD, address)
+  if (rank === null) return null
+
+  return rank + 1
 }
