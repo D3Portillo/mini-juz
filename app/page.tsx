@@ -71,7 +71,7 @@ export default function PageHome() {
 
   return (
     <Tabs asChild defaultValue="play">
-      <section>
+      <main>
         <ModalGame
           topic={showGame?.topic}
           open={Boolean(showGame?.topic)}
@@ -187,7 +187,7 @@ export default function PageHome() {
         <TabsContent asChild value="leaderboard">
           <LeaderBoard />
         </TabsContent>
-      </section>
+      </main>
     </Tabs>
   )
 }

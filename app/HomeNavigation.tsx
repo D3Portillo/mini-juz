@@ -11,6 +11,7 @@ import LemonIcon from "@/components/LemonIcon"
 import MainSelect from "@/components/MainSelect"
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { shortifyDecimals } from "@/lib/numbers"
+import FixedTopContainer from "@/components/FixedTopContainer"
 
 export default function HomeNavigation() {
   const router = useRouter()
@@ -37,7 +38,7 @@ export default function HomeNavigation() {
   )
 
   return (
-    <nav className="border-b h-[4.5rem] px-5 flex gap-4 bg-white top-0 sticky z-10">
+    <FixedTopContainer className="border-b px-5 flex items-center gap-4">
       {isConnected ? (
         <MainSelect
           value="NONE" // Dummy value to trigger the select
@@ -66,7 +67,7 @@ export default function HomeNavigation() {
 
       <div className="flex-grow" />
       <JUZCounter asLink href="/rewards" />
-    </nav>
+    </FixedTopContainer>
   )
 }
 

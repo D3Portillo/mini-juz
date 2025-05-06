@@ -23,6 +23,7 @@ import { usePlayerHearts } from "@/lib/atoms/user"
 import { CURRENCY_TOKENS } from "@/lib/atoms/token"
 import { ADDRESS_JUZ } from "@/lib/constants"
 import { serializeBigint } from "@/lib/utils"
+import FixedTopContainer from "@/components/FixedTopContainer"
 
 const HEART_HOLDING_LIMIT = 20 // 20 hearts
 export default function PageProfile() {
@@ -117,13 +118,12 @@ export default function PageProfile() {
 
   return (
     <main>
-      <nav className="border-b bg-white top-0 sticky z-10">
+      <FixedTopContainer className="border-b">
         <TopBar
-          className="py-0 gap-5 px-5"
           startAdornment={<RouteBackButton />}
           title="Level up your profile"
         />
-      </nav>
+      </FixedTopContainer>
 
       <div className="flex [&_strong]:font-medium px-4 mt-2 mb-12 flex-col gap-4">
         <nav className="flex px-1 items-center justify-between gap-2">

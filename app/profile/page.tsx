@@ -19,6 +19,7 @@ import { useAccountBalances } from "@/lib/atoms/balances"
 import { shortifyDecimals } from "@/lib/numbers"
 
 import asset_bg from "@/assets/bg.png"
+import FixedTopContainer from "@/components/FixedTopContainer"
 
 export default function PageProfile() {
   const router = useRouter()
@@ -27,14 +28,10 @@ export default function PageProfile() {
   const { TotalJUZBalance } = useAccountBalances()
 
   return (
-    <Fragment>
-      <nav className="border-b bg-white top-0 sticky z-10">
-        <TopBar
-          className="py-0 gap-5 px-5"
-          startAdornment={<RouteBackButton />}
-          title="Manage profile"
-        />
-      </nav>
+    <main>
+      <FixedTopContainer className="border-b">
+        <TopBar startAdornment={<RouteBackButton />} title="Manage profile" />
+      </FixedTopContainer>
 
       <div className="flex relative px-4 pt-10 mb-12 flex-col gap-5">
         {isConnected && (
@@ -126,6 +123,6 @@ export default function PageProfile() {
           </Link>
         </nav>
       </div>
-    </Fragment>
+    </main>
   )
 }

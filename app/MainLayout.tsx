@@ -4,9 +4,9 @@ import BottomNavigation from "./BottomNavigation"
 
 export default function MainLayout({ children }: PropsWithChildren) {
   return (
-    <main className="min-h-screen flex flex-col relative bg-white w-full max-w-2xl mx-auto">
+    <main className="min-h-dvh flex flex-col bg-white w-full max-w-2xl mx-auto">
       <WithDevAccount>{children}</WithDevAccount>
-      <div className="flex-grow" />
+      <div className="h-navigation w-full pointer-events-none" />
       <BottomNavigation />
     </main>
   )

@@ -21,6 +21,9 @@ const config: Config = {
         "3d-lg": "3px 3px var(--tw-shadow-color, black)",
       },
       width: { "2px": "2px" },
+      height: {
+        navigation: "4.5rem",
+      },
       zIndex: {
         "1": "1",
         "2": "2",

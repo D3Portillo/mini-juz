@@ -4,7 +4,7 @@
 
 html,
 body {
-  @apply bg-white;
+  background-color: white;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: none;
   overflow: scroll;

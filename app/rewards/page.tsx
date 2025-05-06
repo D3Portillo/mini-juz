@@ -30,6 +30,7 @@ import { shortifyDecimals } from "@/lib/numbers"
 
 import asset_running from "@/assets/running.png"
 import asset_frog from "@/assets/frog.png"
+import FixedTopContainer from "@/components/FixedTopContainer"
 
 export default function PageRewards() {
   const APR = calculateAPR(Date.now() / 1_000)
@@ -94,10 +95,10 @@ export default function PageRewards() {
   }
 
   return (
-    <section className="min-h-screen">
-      <nav className="border-b border-black/15 bg-white top-0 sticky z-10">
+    <main>
+      <FixedTopContainer className="border-b border-black/15">
         <TopBar
-          className="py-0 gap-5 px-5 [&_.text-lg]:text-left"
+          className="[&_.text-lg]:text-left"
           startAdornment={<RouteBackButton />}
           endAdornment={
             <JUZDistributionModal>
@@ -106,7 +107,7 @@ export default function PageRewards() {
           }
           title="Reward boost"
         />
-      </nav>
+      </FixedTopContainer>
 
       <Tabs asChild value={activeTab} onValueChange={setActiveTab}>
         <Fragment>
@@ -227,6 +228,6 @@ export default function PageRewards() {
           </section>
         </Fragment>
       </Tabs>
-    </section>
+    </main>
   )
 }
