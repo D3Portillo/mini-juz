@@ -60,7 +60,7 @@ export default function LeaderBoard() {
           <div className="p-5 gap-4 font-semibold rounded-2xl shadow-3d-lg border-3 border-black">
             <nav className="flex items-center justify-between">
               <span className="text-2xl text-juz-green">
-                #{rank ? rank : ">99"}
+                #{rank ? rank : "99+"}
               </span>
 
               <JUZDistributionModal>
