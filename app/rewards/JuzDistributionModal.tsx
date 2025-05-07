@@ -16,6 +16,7 @@ import { useAccountBalances } from "@/lib/atoms/balances"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { ABI_DISPENSER, ADDRESS_DISPENSER } from "@/actions/internals"
 import { ZERO } from "@/lib/constants"
+import { trackEvent } from "@/components/posthog"
 
 const atomlastClaim = atomWithStorage("juz.canClaim", 0)
 export function JUZDistributionModal({ children }: PropsWithChildren) {
@@ -51,6 +52,11 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
     })
 
     if (finalPayload.status === "success") {
+      trackEvent("erc20-claimed", {
+        amount: formatEther(amount),
+        address,
+      })
+
       mutate(
         {
           ...data,

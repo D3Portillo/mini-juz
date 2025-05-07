@@ -9,6 +9,8 @@ import { useWorldAuth } from "@radish-la/world-auth"
 import { useAtomExplainerConfirmed, usePlayerHearts } from "@/lib/atoms/user"
 import { useUserTopics } from "@/lib/atoms/topics"
 import { openHeartsDialog } from "@/lib/utils"
+import { trackEvent } from "@/components/posthog"
+
 import {
   incrementGamesPlayed,
   incrementGamesWon,
@@ -38,9 +40,9 @@ export default function PageHome() {
 
   const [showGame, setShowGame] = useState(null as { topic?: string } | null)
   const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
+  const address = user?.walletAddress
 
   function addPlayedGame() {
-    const address = user?.walletAddress
     if (address) incrementGamesPlayed(address)
   }
 
@@ -59,7 +61,6 @@ export default function PageHome() {
 
   function handleGameWon(wonJUZ: number) {
     // TODO: Add a cute modal window that celebrates the win
-    const address = user?.walletAddress
     if (address) {
       incrementGamesWon(address)
       incrPlayerJUZEarned(address, wonJUZ)
@@ -145,6 +146,10 @@ export default function PageHome() {
                   if (hearts <= 0) openHeartsDialog()
                 }}
                 onItemSelected={(topic) => {
+                  trackEvent("topic-selected", {
+                    topic,
+                    address: address || "NO_ADDRESS",
+                  })
                   setShowGame({ topic })
                   addPlayedGame()
                   setTimeout(shuffleTopics, 250)

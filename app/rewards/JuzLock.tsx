@@ -8,10 +8,12 @@ import { useFormattedInputHandler } from "@/lib/input"
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { shortifyDecimals } from "@/lib/numbers"
 
+import { useLockJUZ } from "@/lib/atoms/lock"
+import { trackEvent } from "@/components/posthog"
+
 import LemonButton from "@/components/LemonButton"
 import LemonIcon from "@/components/LemonIcon"
 import ReusableDialog from "@/components/ReusableDialog"
-import { useLockJUZ } from "@/lib/atoms/lock"
 
 const LOCK_2W = "2W" as const
 const LOCK_1Y = "1Y" as const
@@ -49,6 +51,11 @@ export default function JuzLock() {
     }
 
     if (await lock(getPeriodInWeeks(lockPeriod))) {
+      trackEvent("locked-JUZ", {
+        amount: inputHandler.value,
+        period: lockPeriod,
+      })
+
       toast.success({
         title: "JUZ locked successfully",
       })

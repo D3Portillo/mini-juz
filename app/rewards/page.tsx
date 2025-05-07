@@ -31,6 +31,7 @@ import { shortifyDecimals } from "@/lib/numbers"
 import asset_running from "@/assets/running.png"
 import asset_frog from "@/assets/frog.png"
 import FixedTopContainer from "@/components/FixedTopContainer"
+import { trackEvent } from "@/components/posthog"
 
 export default function PageRewards() {
   const APR = calculateAPR(Date.now() / 1_000)
@@ -75,6 +76,11 @@ export default function PageRewards() {
         title: "Balance too low",
       })
     }
+
+    trackEvent("claimed-veJUZ", {
+      address,
+      amount: claimable,
+    })
 
     const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
       transaction: [

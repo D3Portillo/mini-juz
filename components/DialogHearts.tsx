@@ -17,6 +17,7 @@ import {
 import { executeWorldPayment } from "@/actions/payments"
 import { usePlayerHearts } from "@/lib/atoms/user"
 import { useWorldAuth } from "@radish-la/world-auth"
+import { trackEvent } from "./posthog"
 
 export default function DialogHearts({
   trigger,
@@ -44,6 +45,11 @@ export default function DialogHearts({
     })
 
     if (result) {
+      trackEvent("heart-refilled", {
+        type: "paid",
+        address: initiatorAddress,
+      })
+
       refill({ isForcedRefill: true })
       return toast.success({
         title: "Hearts refilled",
@@ -54,6 +60,9 @@ export default function DialogHearts({
 
   function handleFreeRefill() {
     refill()
+    trackEvent("heart-refilled", {
+      type: "free",
+    })
     toast.success({
       title: "Yeah. Hearts refilled",
       content: "Bring me Thanos!",
