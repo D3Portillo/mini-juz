@@ -13,6 +13,10 @@ body {
   overscroll-behavior: none;
 }
 
+:root {
+  --safe-pb: env(safe-area-inset-bottom, 0px);
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

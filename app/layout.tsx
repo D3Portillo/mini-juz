@@ -1,7 +1,7 @@
 import "@worldcoin/mini-apps-ui-kit-react/styles.css"
 import "./globals.css"
 
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import dynamic from "next/dynamic"
 import { Rubik, Sora } from "next/font/google"
 
@@ -26,6 +26,12 @@ export const metadata: Metadata = {
   title: "JUZ Mini App",
   description: "Learn, share, create and earn with Lemon",
   metadataBase: new URL("https://mini-juz.vercel.app"),
+}
+
+export const viewport: Viewport = {
+  viewportFit: "cover",
+  width: "device-width",
+  initialScale: 1,
 }
 
 const ErudaProvider = dynamic(

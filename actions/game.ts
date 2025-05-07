@@ -90,7 +90,7 @@ export const getPlayerJUZEarnedBatch = async (addresses: Address[]) => {
 
 export const getLeaderBoard = async () => {
   // Get the top 10 players from the leaderboard
-  const leaderboard = (await redis.zrange(KEY_LEADERBOARD, 0, 10, {
+  const leaderboard = (await redis.zrange(KEY_LEADERBOARD, 0, 9, {
     rev: true,
     withScores: true,
   })) as any[]

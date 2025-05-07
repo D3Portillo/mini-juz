@@ -6,7 +6,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
   return (
     <main className="h-dvh overflow-hidden flex flex-col bg-white w-full max-w-2xl mx-auto">
       <WithDevAccount>
-        <div className="[&_main]:overflow-auto [&_main]:pb-[4.5rem] [&_main]:max-h-dvh">
+        <div className="[&_main]:overflow-auto [&_main]:pb-[4.5rem] [&_main]:max-h-[calc(100dvh-var(--safe-pb))]">
           {children}
         </div>
       </WithDevAccount>

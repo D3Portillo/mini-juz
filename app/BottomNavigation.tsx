@@ -45,7 +45,7 @@ export default function BottomNavigation() {
     <Tabs value={activePathValue} asChild>
       <Fragment>
         <TabsList asChild>
-          <nav className="border-t shrink-0 [&_a]:shrink-0 z-2 fixed left-0 right-0 bottom-0 !bg-white rounded-none h-auto grid grid-cols-4">
+          <nav className="border-t shrink-0 [&_a]:shrink-0 z-2 fixed left-0 right-0 bottom-[--safe-pb] !bg-white rounded-none h-auto grid grid-cols-4">
             <NavItem
               onClick={() => {
                 // Focus on the play tab when navigating to the play route
