@@ -89,5 +89,19 @@
     "user": "User",
     "updated": "Updated",
     "refreshMessage": "Leaderboard can take a while to refresh. Thanks for your patience!"
+  },
+  "DialogHearts": {
+    "title": "Manage game hearts",
+    "explainers": {
+      "full": "Hearts are used to play trivia games. When you miss a question, you lose a heart.",
+      "regular": "Hearts are refilled for free every 24 hours. You can also buy a refill with WLD."
+    },
+    "success": {
+      "refilled": "Yaay. Hearts refilled"
+    },
+    "buyRefillMessage": "Confirm to refill a total of {hearts} hearts in JUZ Mini App",
+    "claimFree": "Claim free refill",
+    "refillNow": "Refill now",
+    "heartCount": "Your hearts ({hearts})"
   }
 }

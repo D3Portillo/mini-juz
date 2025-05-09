@@ -47,6 +47,7 @@ export const usePlayerHearts = () => {
       setHearts(INITIAL_PLAYER_HEARTS)
     }
 
+    // We omit setting claimed timestamp if "forced"
     if (!opts?.isForcedRefill) {
       setHeartsRefill({
         zeroHeartsTimestamp: Date.now(),

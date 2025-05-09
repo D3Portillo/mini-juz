@@ -21,7 +21,7 @@
     },
     "dailyRefill": {
       "title": "Recarga puntos diariamente",
-      "content": "Recibe una recarga completa cada 24 horas. ¡Llega a la cima y gana recompensas por ser el más inteligente de <strong>World!</strong>"
+      "content": "Recibe una recarga completa de puntos cada 24 horas. ¡Llega a la cima y gana recompensas por ser el más inteligente en <strong>World!</strong>"
     },
     "howToPlay": {
       "title": "¿Cómo jugar?",
@@ -89,5 +89,19 @@
     "user": "Usuario",
     "updated": "Actualizado",
     "refreshMessage": "La tabla de posiciones puede tardar en actualizarse. ¡Gracias por tu paciencia!"
+  },
+  "DialogHearts": {
+    "title": "Puntos de juego",
+    "explainers": {
+      "full": "Usa corazones para jugar trivia. Si te equivocas, ¡pierdes uno!",
+      "regular": "Los corazones se recargan gratis cada 24 horas. También puedes comprar una recarga con WLD"
+    },
+    "success": {
+      "refilled": "¡Yuju! Corazones recargados."
+    },
+    "buyRefillMessage": "Confirma para recargar {hearts} corazones en JUZ Mini App.",
+    "claimFree": "Refill gratis",
+    "refillNow": "Rellenar ahora",
+    "heartCount": "Tus puntos ({hearts})"
   }
 }
