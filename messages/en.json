@@ -20,5 +20,17 @@
     "profile": "Profile",
     "market": "Market",
     "rewards": "Rewards"
+  },
+  "Market": {
+    "title": "Level up your profile",
+    "errors": {
+      "maxHearts": "Holding hearts limit reached",
+      "noBalance": "Insufficient JUZ balance"
+    },
+    "success": {
+      "purchagedHearts": "Paquete de corazones comprado!"
+    },
+    "buyFor": "Buy for",
+    "heartPointsExplainer": "Buy a pack of {amount} hearts. Hearts will be added to your current heart points."
   }
 }

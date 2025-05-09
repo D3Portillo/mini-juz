@@ -6,6 +6,7 @@ import { useState } from "react"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { MiniKit } from "@worldcoin/minikit-js"
 import { erc20Abi, parseEther } from "viem"
+import { useTranslations } from "next-intl"
 
 import { executeWorldPayment, MINI_APP_RECIPIENT } from "@/actions/payments"
 import { incrPlayerJUZEarned } from "@/actions/game"
@@ -27,8 +28,10 @@ import FixedTopContainer from "@/components/FixedTopContainer"
 
 const HEART_HOLDING_LIMIT = 20 // 20 hearts
 export default function PageProfile() {
+  const t = useTranslations("Market")
   const { toast } = useToast()
   const { signIn, user } = useWorldAuth()
+
   const [payingToken, setPayingToken] = useState(CURRENCY_TOKENS.WLD)
 
   const { hearts, setHearts } = usePlayerHearts()
@@ -42,7 +45,7 @@ export default function PageProfile() {
       // In pro of buys - we only limit based on the amount of holding hearts
       // not current + incoming hearts
       return toast.error({
-        title: "Holding hearts limit reached",
+        title: t("errors.maxHearts"),
       })
     }
 
@@ -52,7 +55,7 @@ export default function PageProfile() {
     if (isJUZPayment) {
       if (cost > Number(JUZToken.formatted)) {
         return toast.error({
-          title: "Insufficient JUZ balance",
+          title: t("errors.noBalance"),
         })
       }
 
@@ -87,7 +90,7 @@ export default function PageProfile() {
     if (isSuccess) {
       setHearts(hearts + amount)
       return toast.success({
-        title: "Pack of hearts purchased",
+        title: t("success.purchagedHearts"),
       })
     }
   }
@@ -119,10 +122,7 @@ export default function PageProfile() {
   return (
     <main>
       <FixedTopContainer className="border-b">
-        <TopBar
-          startAdornment={<RouteBackButton />}
-          title="Level up your profile"
-        />
+        <TopBar startAdornment={<RouteBackButton />} title={t("title")} />
       </FixedTopContainer>
 
       <div className="flex [&_strong]:font-medium px-4 mt-2 mb-12 flex-col gap-4">
@@ -199,8 +199,7 @@ export default function PageProfile() {
             </h2>
 
             <p className="text-sm opacity-70">
-              Buy a pack of 5 hearts. Hearts will be added to your current heart
-              points.
+              {t("heartPointsExplainer", { amount: 5 })}
             </p>
 
             <LemonButton
@@ -212,9 +211,9 @@ export default function PageProfile() {
                     : 1 // WLD
                 )
               }
-              className="py-3 rounded-full text-base w-full mt-5"
+              className="py-3 whitespace-nowrap rounded-full text-base w-full mt-5"
             >
-              Buy for {isJUZPayment ? 10 : 1} {PAYING_LABEL}
+              {t("buyFor")} {isJUZPayment ? 10 : 1} {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>
@@ -230,8 +229,7 @@ export default function PageProfile() {
             </h2>
 
             <p className="text-sm opacity-70">
-              Buy a pack of 10 hearts. Hearts will be added to your current
-              heart points.
+              {t("heartPointsExplainer", { amount: 10 })}
             </p>
 
             <LemonButton
@@ -243,9 +241,9 @@ export default function PageProfile() {
                     : 1.5 // WLD
                 )
               }
-              className="py-3 rounded-full text-base w-full mt-5"
+              className="py-3 whitespace-nowrap rounded-full text-base w-full mt-5"
             >
-              Buy for {isJUZPayment ? 15 : 1.5} {PAYING_LABEL}
+              {t("buyFor")} {isJUZPayment ? 15 : 1.5} {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>

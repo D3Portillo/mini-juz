@@ -20,5 +20,17 @@
     "profile": "Perfil",
     "market": "Tienda",
     "rewards": "Incentivos"
+  },
+  "Market": {
+    "title": "Tienda y más",
+    "errors": {
+      "maxHearts": "Límite de corazones alcanzado",
+      "noBalance": "Balance insuficiente de JUZ"
+    },
+    "success": {
+      "purchagedHearts": "Pack of hearts purchased"
+    },
+    "buyFor": "Comprar x ",
+    "heartPointsExplainer": "Compra un paquete de {amount} corazones. Se sumarán a tus corazones actuales."
   }
 }
