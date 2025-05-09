@@ -1,5 +1,24 @@
 {
   "global": {
-    "not-connected": "Not connected"
+    "not-connected": "Not connected",
+    "english": "English",
+    "spanish": "Spanish",
+    "friend": "Friend",
+    "connectWallet": "Connect Wallet"
+  },
+  "Profile": {
+    "title": "Manage Profile",
+    "gamesPlayed": "Games played",
+    "gamesWon": "Games won",
+    "joinCommunity": "Join Community",
+    "support": "Contact support",
+    "totalJUZ": "Total JUZ Balance",
+    "inviteYourFriends": "Invite your friends"
+  },
+  "BottomNavigation": {
+    "play": "Play",
+    "profile": "Profile",
+    "market": "Market",
+    "rewards": "Rewards"
   }
 }

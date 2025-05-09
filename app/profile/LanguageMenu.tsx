@@ -1,10 +1,12 @@
 "use client"
 
+import { useTranslations, type Locale } from "next-intl"
 import { setUserLocale } from "@/actions/locale"
 import MainSelect from "@/components/MainSelect"
-import type { Locale } from "next-intl"
 
 export default function LanguageMenu({ trigger }: { trigger: JSX.Element }) {
+  const t = useTranslations("global")
+
   function setLocale(locale: Locale) {
     setUserLocale(locale)
   }
@@ -19,11 +21,11 @@ export default function LanguageMenu({ trigger }: { trigger: JSX.Element }) {
       }}
       options={[
         {
-          label: "English",
+          label: t("english"),
           value: "EN",
         },
         {
-          label: "Spanish",
+          label: t("spanish"),
           value: "ES",
         },
       ]}

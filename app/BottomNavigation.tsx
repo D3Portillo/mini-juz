@@ -2,39 +2,41 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useTranslations } from "next-intl"
 import { Fragment } from "react"
 
 import { IoGameController, IoStorefront } from "react-icons/io5"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FaGem, FaLemon } from "react-icons/fa"
 
-const PLAY_ROUTE = {
-  href: "/",
-  value: "play",
-  label: "Play",
-} as const
-
-const ROUTES = {
-  play: PLAY_ROUTE,
-  rewards: {
-    href: "/rewards",
-    value: "rewards",
-    label: "Rewards",
-  },
-  profile: {
-    href: "/profile",
-    value: "profile",
-    label: "Profile",
-  },
-  market: {
-    href: "/market",
-    value: "market",
-    label: "Market",
-  },
-} as const
-
 export default function BottomNavigation() {
+  const t = useTranslations("BottomNavigation")
   const pathname = usePathname()
+
+  const PLAY_ROUTE = {
+    href: "/",
+    value: "play",
+    label: t("play"),
+  } as const
+
+  const ROUTES = {
+    play: PLAY_ROUTE,
+    rewards: {
+      href: "/rewards",
+      value: "rewards",
+      label: t("rewards"),
+    },
+    profile: {
+      href: "/profile",
+      value: "profile",
+      label: t("profile"),
+    },
+    market: {
+      href: "/market",
+      value: "market",
+      label: t("market"),
+    },
+  } as const
 
   const activePathValue =
     Object.values(ROUTES).find((route) => {

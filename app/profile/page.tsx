@@ -29,16 +29,18 @@ import { useAccountBalances } from "@/lib/atoms/balances"
 import { shortifyDecimals } from "@/lib/numbers"
 
 import FixedTopContainer from "@/components/FixedTopContainer"
+import DialogInvites from "@/components/DialogInvites"
 import LemonIcon from "@/components/LemonIcon"
 
-import asset_bg from "@/assets/bg.png"
 import ProfileMenu from "./ProfileMenu"
-import DialogInvites from "@/components/DialogInvites"
 import LanguageMenu from "./LanguageMenu"
+
+import asset_bg from "@/assets/bg.png"
 
 export default function PageProfile() {
   const locale = useLocale()
   const tglobal = useTranslations("global")
+  const t = useTranslations("Profile")
 
   const router = useRouter()
   const { user, isConnected, signIn } = useWorldAuth()
@@ -48,7 +50,7 @@ export default function PageProfile() {
   return (
     <main>
       <FixedTopContainer className="border-b">
-        <TopBar startAdornment={<RouteBackButton />} title="Manage profile" />
+        <TopBar startAdornment={<RouteBackButton />} title={t("title")} />
       </FixedTopContainer>
 
       <div className="flex relative px-4 pt-10 mb-12 flex-col gap-5">
@@ -86,12 +88,12 @@ export default function PageProfile() {
 
         <div className="grid mt-2 grid-cols-2 gap-4">
           <section className="p-4 rounded-2xl border-3 border-black shadow-3d-lg">
-            <h2 className="text-sm">Games played</h2>
+            <h2 className="text-sm">{t("gamesPlayed")}</h2>
             <p className="text-2xl font-semibold">{played}</p>
           </section>
 
           <section className="p-4 rounded-2xl border-3 border-black shadow-3d-lg">
-            <h2 className="text-sm">Games won</h2>
+            <h2 className="text-sm">{t("gamesWon")}</h2>
             <p className="text-2xl font-semibold">{won}</p>
           </section>
         </div>
@@ -109,7 +111,7 @@ export default function PageProfile() {
                 <h2 className="font-semibold text-6xl text-juz-green-lime">
                   {shortifyDecimals(TotalJUZBalance.formatted)}
                 </h2>
-                <p className="text-white">Total JUZ Balance</p>
+                <p className="text-white">{t("totalJUZ")}</p>
               </button>
             </JUZDistributionModal>
 
@@ -121,11 +123,11 @@ export default function PageProfile() {
                   </LemonIcon>
 
                   <div className="flex-grow">
-                    <span className="text-lg">Invite your friends</span>
+                    <span className="text-lg">{t("inviteYourFriends")}</span>
                     <nav className="flex mt-0.5 mb-1">
                       <div className="pl-2 pr-3 py-1 text-xs font-medium flex items-center gap-1 border rounded-full text-black border-juz-green-lime bg-juz-green-lime/15">
                         <FaLemon />
-                        <span>10 JUZ / Friend</span>
+                        <span>10 JUZ / {tglobal("friend")}</span>
                       </div>
                     </nav>
                   </div>
@@ -148,7 +150,7 @@ export default function PageProfile() {
             onClick={signIn}
             className="bg-juz-green-lime text-base py-3.5"
           >
-            Connect Wallet
+            {tglobal("connectWallet")}
           </LemonButton>
         )}
 
@@ -160,7 +162,7 @@ export default function PageProfile() {
             className="underline flex items-center gap-2 underline-offset-4"
             href="https://t.me/+1m4vng7THvVmNmIx"
           >
-            <span>Join community</span>
+            <span>{t("joinCommunity")}</span>
             <FaTelegramPlane className="text-[122%]" />
           </Link>
 
@@ -169,7 +171,7 @@ export default function PageProfile() {
             className="underline flex items-center gap-2.5 underline-offset-4"
             href="https://t.me/+1m4vng7THvVmNmIx"
           >
-            <span>Contact support</span>
+            <span>{t("support")}</span>
             <FaBug className="text-[105%]" />
           </Link>
         </nav>
