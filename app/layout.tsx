@@ -4,6 +4,8 @@ import "./globals.css"
 import type { Metadata, Viewport } from "next"
 import dynamic from "next/dynamic"
 import { Rubik, Sora } from "next/font/google"
+import { NextIntlClientProvider } from "next-intl"
+import { getLocale } from "next-intl/server"
 
 import WorldProvider from "@/components/world-provider"
 import { Toaster as WorldToaster } from "@worldcoin/mini-apps-ui-kit-react"
@@ -45,13 +47,15 @@ const WelcomeModal = dynamic(() => import("./WelcomeModal"), {
   ssr: false,
 })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const locale = await getLocale()
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`${fontRubik.variable} ${fontSora.variable} ${fontRubik.className} antialiased`}
       >
@@ -60,7 +64,9 @@ export default function RootLayout({
         <GameSentinel />
         <WorldProvider>
           <ErudaProvider>
-            <MainLayout>{children}</MainLayout>
+            <NextIntlClientProvider>
+              <MainLayout>{children}</MainLayout>
+            </NextIntlClientProvider>
           </ErudaProvider>
         </WorldProvider>
       </body>

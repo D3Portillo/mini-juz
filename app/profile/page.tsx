@@ -1,6 +1,8 @@
 "use client"
 
 import { Fragment } from "react"
+import { useTranslations, useLocale } from "next-intl"
+
 import Link from "next/link"
 import { TopBar } from "@worldcoin/mini-apps-ui-kit-react"
 import { useRouter } from "next/navigation"
@@ -11,17 +13,33 @@ import RouteBackButton from "@/components/RouteBackButton"
 import LemonButton from "@/components/LemonButton"
 
 import { MdOutlineArrowOutward } from "react-icons/md"
-import { FaArrowRight, FaBug, FaTelegramPlane } from "react-icons/fa"
-import ProfileMenu from "./ProfileMenu"
+import {
+  FaArrowRight,
+  FaBug,
+  FaChevronRight,
+  FaLemon,
+  FaTelegramPlane,
+} from "react-icons/fa"
+
+import { TbWorldPin } from "react-icons/tb"
+import { RiHeartAdd2Fill } from "react-icons/ri"
 
 import { useAccountGameData } from "@/lib/atoms/game"
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { shortifyDecimals } from "@/lib/numbers"
 
-import asset_bg from "@/assets/bg.png"
 import FixedTopContainer from "@/components/FixedTopContainer"
+import LemonIcon from "@/components/LemonIcon"
+
+import asset_bg from "@/assets/bg.png"
+import ProfileMenu from "./ProfileMenu"
+import DialogInvites from "@/components/DialogInvites"
+import LanguageMenu from "./LanguageMenu"
 
 export default function PageProfile() {
+  const locale = useLocale()
+  const tglobal = useTranslations("global")
+
   const router = useRouter()
   const { user, isConnected, signIn } = useWorldAuth()
   const { played, won } = useAccountGameData()
@@ -34,6 +52,17 @@ export default function PageProfile() {
       </FixedTopContainer>
 
       <div className="flex relative px-4 pt-10 mb-12 flex-col gap-5">
+        <div className="absolute top-4 left-5">
+          <LanguageMenu
+            trigger={
+              <button className="flex outline-none py-0.5 text-sm gap-1 border-2 pl-1 pr-2 border-black rounded-2xl items-center">
+                <TbWorldPin className="text-lg" />
+                <strong className="font-semibold uppercase">{locale}</strong>
+              </button>
+            }
+          />
+        </div>
+
         {isConnected && (
           <div className="absolute top-3 right-5">
             <ProfileMenu />
@@ -51,7 +80,7 @@ export default function PageProfile() {
           />
 
           <strong className="font-semibold text-xl mt-2">
-            {isConnected ? user?.username : "Not connected"}
+            {isConnected ? user?.username : tglobal("not-connected")}
           </strong>
         </div>
 
@@ -83,6 +112,28 @@ export default function PageProfile() {
                 <p className="text-white">Total JUZ Balance</p>
               </button>
             </JUZDistributionModal>
+
+            <DialogInvites
+              trigger={
+                <LemonButton className="bg-white rounded-2xl p-4 text-left gap-6 flex items-center">
+                  <LemonIcon className="size-16">
+                    <RiHeartAdd2Fill className="text-2xl scale-125" />
+                  </LemonIcon>
+
+                  <div className="flex-grow">
+                    <span className="text-lg">Invite your friends</span>
+                    <nav className="flex mt-0.5 mb-1">
+                      <div className="pl-2 pr-3 py-1 text-xs font-medium flex items-center gap-1 border rounded-full text-black border-juz-green-lime bg-juz-green-lime/15">
+                        <FaLemon />
+                        <span>10 JUZ / Friend</span>
+                      </div>
+                    </nav>
+                  </div>
+
+                  <FaChevronRight className="text-lg" />
+                </LemonButton>
+              }
+            />
 
             <LemonButton
               onClick={() => router.push("/rewards")}

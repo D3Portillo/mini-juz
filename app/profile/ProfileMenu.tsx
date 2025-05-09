@@ -53,7 +53,7 @@ export default function ProfileMenu() {
           value: "copy-address",
         },
         {
-          label: "View in WorldScan",
+          label: "View in Worldscan",
           value: "view-txs",
         },
         {
