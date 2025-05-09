@@ -2,6 +2,7 @@
 
 import { useMemo } from "react"
 import Image from "next/image"
+import { useTranslations } from "next-intl"
 
 import { FaArrowRight } from "react-icons/fa"
 import { useTimer } from "@/lib/time"
@@ -11,6 +12,7 @@ import { usePlayerHearts } from "@/lib/atoms/user"
 import asset_skaterboi from "@/assets/skaterboi.png"
 
 export default function DailyRefill() {
+  const t = useTranslations("Home")
   const { nextRefillTime, canBeRefilled } = usePlayerHearts()
 
   const secondsToNextRefill = useMemo(() => {
@@ -22,11 +24,12 @@ export default function DailyRefill() {
   return (
     <div className="border-3 bg-gradient-to-r from-juz-green-lime/0 via-juz-green-lime/0 to-juz-green-lime/70 relative overflow-hidden mt-14 shadow-3d-lg border-black p-4 !pr-0 rounded-2xl">
       <div className="pr-40">
-        <h1 className="text-xl font-semibold">Daily hearts refill</h1>
+        <h1 className="text-xl font-semibold">{t("dailyRefill.title")}</h1>
 
         <p className="mt-2 text-xs max-w-[16rem]">
-          Get a full-hearts refill every 24 hours. Make it to the top and earn
-          rewards for being the smartest player in the <strong>World!</strong>
+          {t.rich("dailyRefill.content", {
+            strong: (children) => <strong>{children}</strong>,
+          })}
         </p>
 
         <nav className="flex mt-4">
@@ -35,12 +38,12 @@ export default function DailyRefill() {
               onClick={openHeartsDialog}
               className="bg-black h-14 flex items-center justify-center gap-3 px-5 rounded-lg text-white"
             >
-              <strong className="font-semibold">Refill now</strong>
+              <strong className="font-semibold">{t("refillNow")}</strong>
               <FaArrowRight />
             </button>
           ) : secondsToNextRefill > elapsedTime ? (
             <div className="bg-black h-14 py-2.5 px-4 rounded-lg text-white">
-              <div className="text-xs">Time to refill</div>
+              <div className="text-xs">{t("timeToRefill")}</div>
               <div className="font-semibold -mt-0.5 tabular-nums">
                 {formatCountdown(secondsToNextRefill - elapsedTime)}
               </div>

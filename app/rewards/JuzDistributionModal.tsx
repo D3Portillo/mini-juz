@@ -39,7 +39,7 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
     if (!address) return signIn()
     if (!canClaim) {
       return toast.error({
-        title: "Wait a bit before claiming again",
+        title: t("errors.waitabit"),
       })
     }
 
@@ -80,7 +80,9 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
       setLastClaim(Date.now())
 
       toast.success({
-        title: `Yaay. ${shortifyDecimals(formatEther(amount))} JUZ claimed!`,
+        title: t("success.claimed", {
+          amount: shortifyDecimals(formatEther(amount)),
+        }),
       })
     }
   }
@@ -99,7 +101,7 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
         <nav className="flex justify-between gap-6 w-full">
           <div className="w-32">
             <strong className="text-juz-green text-lg">JUZ</strong>
-            <p className="text-xs opacity-75">Trivia earned + ERC20 Tokens</p>
+            <p className="text-xs opacity-75">{t("explainers.points")}</p>
           </div>
           <span className="text-xl mt-1 font-medium">
             {shortifyDecimals(formatEther(JUZHoldings), 5)}
@@ -109,11 +111,11 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
 
       <p>
         <nav className="flex justify-between gap-6 w-full">
-          <div className="w-32 whitespace-nowrap">
-            <strong className="text-juz-orange text-lg">
+          <div className="w-32">
+            <strong className="text-juz-orange whitespace-nowrap text-lg">
               JUZ {tglobal("locked")}
             </strong>
-            <p className="text-xs opacity-75">Balance locked in pools</p>
+            <p className="text-xs opacity-75">{t("explainers.locked")}</p>
           </div>
           <span className="text-xl mt-1 font-medium">
             {shortifyDecimals(lockedJUZ.formatted, 5)}
@@ -125,9 +127,7 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
         <nav className="flex justify-between gap-6 w-full">
           <div className="w-32">
             <strong className="text-black/70 text-lg">veJUZ</strong>
-            <p className="text-xs opacity-75">
-              Rewards claimed for JUZ locking
-            </p>
+            <p className="text-xs opacity-75">{t("explainers.earned")}</p>
           </div>
           <span className="text-xl mt-1 font-medium">
             {shortifyDecimals(

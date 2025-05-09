@@ -3,17 +3,22 @@
 import { Fragment } from "react"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { formatDistanceToNow } from "date-fns"
+import { useLocale, useTranslations } from "next-intl"
 
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { useLeaderboard } from "@/lib/atoms/leaderboard"
 import { shortifyDecimals } from "@/lib/numbers"
 import { formatUSDC } from "@/lib/tokens"
+import { getDateFnsLocal } from "@/lib/date-locale"
 
 import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
 import { useAccountData, useGameRank } from "@/lib/atoms/user"
 import { beautifyAddress } from "@/lib/utils"
 
 export default function LeaderBoard() {
+  const locale = useLocale()
+  const t = useTranslations("LeaderBoard")
+
   const { user, isConnected } = useWorldAuth()
   const { TotalJUZBalance } = useAccountBalances()
   const {
@@ -30,8 +35,8 @@ export default function LeaderBoard() {
     <section className="px-4 mt-4 mb-10 flex flex-col gap-2">
       <div className="flex h-12 whitespace-nowrap px-5 gap-4 font-semibold rounded-2xl border-2 shadow-3d border-black items-center bg-gradient-to-bl from-juz-green-lime to-juz-green-ish">
         <div className="w-12">#</div>
-        <div className="flex-grow">User</div>
-        <div className="w-24 text-end">Total JUZ</div>
+        <div className="flex-grow">{t("user")}</div>
+        <div className="w-24 text-end">{t("totalJUZ")}</div>
       </div>
 
       <div className="flex w-full min-h-[calc(25vh+4rem)] flex-col gap-2">
@@ -52,17 +57,18 @@ export default function LeaderBoard() {
         <p className="max-w-xs mt-2 text-sm mx-auto text-center">
           {lastUpdated > 0 ? (
             <Fragment>
-              Updated{" "}
+              {t("updated")}{" "}
               <strong className="font-medium">
                 {formatDistanceToNow(lastUpdated, {
                   addSuffix: true,
+                  locale: getDateFnsLocal(locale),
                   includeSeconds: false,
                 })}
               </strong>
               .{" "}
             </Fragment>
           ) : null}
-          Leaderboard can take a while to refresh. Thanks for your patience!
+          {t("refreshMessage")}
         </p>
       </div>
 
@@ -95,7 +101,7 @@ export default function LeaderBoard() {
               <h3 className="font-semibold text-xl">
                 {connectedUsername ||
                   beautifyAddress(connectedUserAddress, 4, "")}{" "}
-                (You)
+                ({t("you")})
               </h3>
             </nav>
           </div>

@@ -1,12 +1,34 @@
 {
   "global": {
     "not-connected": "Not connected",
+    "connected": "Connected",
     "english": "English",
     "spanish": "Español",
     "friend": "Friend",
     "locked": "Locked",
     "gotIt": "Got it",
+    "letsGo": "Let's go",
     "connectWallet": "Connect Wallet"
+  },
+  "HomeNavigation": {
+    "disconnect": "Disconnect",
+    "manageProfile": "Manage Profile"
+  },
+  "Home": {
+    "play": "Play",
+    "errors": {
+      "noHeartsLeft": "😢 No hearts left to play"
+    },
+    "dailyRefill": {
+      "title": "Daily hearts refill",
+      "content": " Get a full-hearts refill every 24 hours. Make it to the top and earn rewards for being the smartest player in the <strong>World!</strong>"
+    },
+    "howToPlay": {
+      "title": "How to play?",
+      "content": "Spin the wheel. Get daily random topics, play a trivia mini-game and earn JUZ!"
+    },
+    "timeToRefill": "Time to refill",
+    "refillNow": "Refill now"
   },
   "Profile": {
     "title": "Manage Profile",
@@ -48,6 +70,24 @@
   "JUZDistributionModal": {
     "title": "JUZ Breakdown",
     "claimTokens": "Claim Tokens",
-    "claimAvailable": "You have JUZ Tokens available to claim"
+    "claimAvailable": "You have JUZ Tokens available to claim",
+    "errors": {
+      "waitabit": "Wait a bit before claiming again"
+    },
+    "success": {
+      "claimed": "Yaay. {amount} JUZ claimed!"
+    },
+    "explainers": {
+      "points": "Trivia earned + ERC20 Tokens",
+      "locked": "Balance locked in pools",
+      "earned": "Rewards claimed for JUZ locking"
+    }
+  },
+  "LeaderBoard": {
+    "you": "You",
+    "totalJUZ": "Total JUZ",
+    "user": "User",
+    "updated": "Updated",
+    "refreshMessage": "Leaderboard can take a while to refresh. Thanks for your patience!"
   }
 }

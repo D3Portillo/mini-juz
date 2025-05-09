@@ -4,6 +4,7 @@ import Image from "next/image"
 import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
+import { useTranslations } from "next-intl"
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { useAtomExplainerConfirmed, usePlayerHearts } from "@/lib/atoms/user"
@@ -33,6 +34,8 @@ import ModalGame from "./ModalGame"
 
 export default function PageHome() {
   const { toast } = useToast()
+  const t = useTranslations("Home")
+  const tglobal = useTranslations("global")
 
   const { hearts } = usePlayerHearts()
   const { gameTopics, shuffleTopics, isEmpty } = useUserTopics()
@@ -94,7 +97,7 @@ export default function PageHome() {
               className="border-b-2 flex items-center gap-4 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
               value="play"
             >
-              Play
+              {t("play")}
             </TabsTrigger>
 
             <TabsTrigger
@@ -128,12 +131,12 @@ export default function PageHome() {
           <div className="px-4 mb-12">
             {hearts > 0 ? null : (
               <div className="mt-4 animate-in fade-in slide-in-from-top-5 flex items-center justify-between text-sm bg-black text-white px-4 py-2 rounded-full">
-                <span>😢 No hearts left to play</span>
+                <span>{t("errors.noHeartsLeft")}</span>
                 <button
                   onClick={openHeartsDialog}
                   className="font-medium -mt-0.5 underline underline-offset-2"
                 >
-                  Refill now
+                  {t("refillNow")}
                 </button>
               </div>
             )}
@@ -165,18 +168,19 @@ export default function PageHome() {
               <div className="border-3 mt-14 shadow-3d-lg border-black p-4 rounded-2xl">
                 <nav className="flex justify-between gap-6 items-start">
                   <div>
-                    <h1 className="text-xl font-semibold">How to play?</h1>
+                    <h1 className="text-xl font-semibold">
+                      {t("howToPlay.title")}
+                    </h1>
 
                     <p className="mt-2 text-xs max-w-xs">
-                      Spin the wheel. Get daily random topics, play a trivia
-                      mini-game and earn JUZ!
+                      {t("howToPlay.content")}
                     </p>
 
                     <LemonButton
                       className="mt-4"
                       onClick={handleConfirmExplainer}
                     >
-                      {isConnected ? "GOT IT" : "LETS GO"}
+                      {isConnected ? tglobal("gotIt") : tglobal("letsGo")}
                     </LemonButton>
                   </div>
 

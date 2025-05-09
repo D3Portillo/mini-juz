@@ -1,12 +1,34 @@
 {
   "global": {
     "not-connected": "No conectado",
+    "connected": "Conectado",
     "english": "English",
     "spanish": "Español",
     "friend": "Amigo",
     "locked": "Bloqueado",
-    "gotIt": "Perfecto",
+    "gotIt": "Entendido",
+    "letsGo": "Vamos",
     "connectWallet": "Conectar Wallet"
+  },
+  "HomeNavigation": {
+    "disconnect": "Disconnect",
+    "manageProfile": "Ver Perfil"
+  },
+  "Home": {
+    "play": "Jugar",
+    "errors": {
+      "noHear,tsLeft": "😢 No tienes puntos para jugar"
+    },
+    "dailyRefill": {
+      "title": "Recarga puntos diariamente",
+      "content": "Recibe una recarga completa cada 24 horas. ¡Llega a la cima y gana recompensas por ser el más inteligente de <strong>World!</strong>"
+    },
+    "howToPlay": {
+      "title": "¿Cómo jugar?",
+      "content": "Gira la ruleta. Recibe un tema random diario, juega la trivia y gana JUZ."
+    },
+    "timeToRefill": "Refill gratis en",
+    "refillNow": "Obtener puntos"
   },
   "Profile": {
     "title": "Mi Perfil",
@@ -48,6 +70,24 @@
   "JUZDistributionModal": {
     "title": "Distribución de JUZ",
     "claimTokens": "Reclamar Tokens",
-    "claimAvailable": "Reclama tus puntos como tokens de JUZ"
+    "claimAvailable": "Reclama tus puntos como tokens de JUZ",
+    "errors": {
+      "waitabit": "Espera un poco antes de reclamar de nuevo"
+    },
+    "success": {
+      "claimed": "Yeah. {amount} JUZ reclamado!"
+    },
+    "explainers": {
+      "points": "Ganado en trivia + Tokens ERC20",
+      "locked": "Balance bloqueado en pools ",
+      "earned": "Tus recompensas por bloquear JUZ"
+    }
+  },
+  "LeaderBoard": {
+    "you": "Tu",
+    "totalJUZ": "JUZ Total",
+    "user": "Usuario",
+    "updated": "Actualizado",
+    "refreshMessage": "La tabla de posiciones puede tardar en actualizarse. ¡Gracias por tu paciencia!"
   }
 }

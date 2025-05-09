@@ -2,6 +2,7 @@
 
 import Link from "next/link"
 
+import { useTranslations } from "next-intl"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { useRouter } from "next/navigation"
 
@@ -15,6 +16,9 @@ import FixedTopContainer from "@/components/FixedTopContainer"
 
 export default function HomeNavigation() {
   const router = useRouter()
+  const t = useTranslations("HomeNavigation")
+  const tglobal = useTranslations("global")
+
   const { user, signIn, signOut, isConnected } = useWorldAuth()
 
   const PROFILE = (
@@ -29,9 +33,9 @@ export default function HomeNavigation() {
         className="size-10 bg-cover bg-center bg-black/3 border-2 shadow-3d-bottom border-black rounded-full overflow-hidden"
       />
       <div>
-        <p className="font-semibold text-lg">{user?.username || "Profile"}</p>
+        <p className="font-semibold text-lg">{user?.username || "Limoncito"}</p>
         <p className="text-xs -mt-1">
-          {isConnected ? "Connected" : "Connect wallet"}
+          {isConnected ? t("disconnect") : tglobal("connectWallet")}
         </p>
       </div>
     </button>
@@ -50,11 +54,11 @@ export default function HomeNavigation() {
           }}
           options={[
             {
-              label: "Manage Profile",
+              label: t("manageProfile"),
               value: "profile",
             },
             {
-              label: "Disconnect",
+              label: t("disconnect"),
               value: "disconnect",
             },
           ]}

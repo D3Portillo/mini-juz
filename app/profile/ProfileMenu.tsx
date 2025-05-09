@@ -9,8 +9,9 @@ import { HiDotsHorizontal } from "react-icons/hi"
 import MainSelect from "@/components/MainSelect"
 
 export default function ProfileMenu() {
-  const { toast } = useToast()
   const t = useTranslations("ProfileMenu")
+
+  const { toast } = useToast()
   const { signOut, user } = useWorldAuth()
 
   function handleCopyAddress() {
