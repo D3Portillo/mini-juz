@@ -1,19 +1,21 @@
-import { parseEther, type Address } from "viem"
+import type { Address } from "viem"
 
 import { Redis } from "@upstash/redis"
-import { getPlayerJUZEarnedBatch } from "@/actions/game"
+import {
+  getLastLeaderboardUpdate,
+  getPlayerJUZEarnedBatch,
+  setLastLeaderboardUpdate,
+} from "@/actions/game"
 import { KEY_BATCHED_PARTICIPANTS, KEY_LEADERBOARD } from "@/actions/internals"
 import { getTotalUserHoldings } from "@/lib/atoms/holdings"
 import { parseUSDC } from "@/lib/tokens"
 
 const redis = Redis.fromEnv()
-
 const STALE_WINDOW = 20 * 60 // 20 minutes
-const KEY = "update-board.last-run"
 
 export async function GET() {
   const now = Math.floor(Date.now() / 1000)
-  const lastRun = (await redis.get<number>(KEY)) || 0
+  const lastRun = await getLastLeaderboardUpdate()
 
   let updatedRecords = 0
   if (now - lastRun > STALE_WINDOW) {
@@ -60,7 +62,7 @@ export async function GET() {
         // Execute pipeline with new leaderboard
         pipeline.exec(),
         // Store new timestamp
-        redis.set(KEY, now),
+        setLastLeaderboardUpdate(now),
         // Remove the batched participants
         redis.del(KEY_BATCHED_PARTICIPANTS),
       ])

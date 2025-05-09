@@ -115,3 +115,14 @@ export const getPlayerRank = async (address: Address) => {
 
   return rank + 1
 }
+
+const KEY_LEADERBOARD_UPDATED_TIME = "update-board.last-run" as const
+export const getLastLeaderboardUpdate = async () => {
+  const lastUpdate =
+    (await redis.get<number>(KEY_LEADERBOARD_UPDATED_TIME)) || 0
+  return lastUpdate
+}
+
+export const setLastLeaderboardUpdate = async (timeInSeconds: number) => {
+  await redis.set(KEY_LEADERBOARD_UPDATED_TIME, timeInSeconds)
+}

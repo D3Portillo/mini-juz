@@ -2,6 +2,7 @@
 
 import { Fragment } from "react"
 import { useWorldAuth } from "@radish-la/world-auth"
+import { formatDistanceToNow } from "date-fns"
 
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { useLeaderboard } from "@/lib/atoms/leaderboard"
@@ -15,13 +16,14 @@ import { beautifyAddress } from "@/lib/utils"
 export default function LeaderBoard() {
   const { user, isConnected } = useWorldAuth()
   const { TotalJUZBalance } = useAccountBalances()
-  const { data: leaderboard = [] } = useLeaderboard()
+  const {
+    data: { lastUpdated, leaderboard },
+  } = useLeaderboard()
 
   const { rank } = useGameRank(user?.walletAddress || null)
 
   const connectedUsername = user?.username
   const connectedUserAddress = user?.walletAddress!
-
   const isEmpty = leaderboard.length <= 0
 
   return (
@@ -48,8 +50,19 @@ export default function LeaderBoard() {
         ))}
 
         <p className="max-w-xs mt-2 text-sm mx-auto text-center">
-          It can take a while to update the leaderboard. Thanks for your
-          patience!
+          {lastUpdated > 0 ? (
+            <Fragment>
+              Updated{" "}
+              <strong className="font-medium">
+                {formatDistanceToNow(lastUpdated, {
+                  addSuffix: true,
+                  includeSeconds: false,
+                })}
+              </strong>
+              .{" "}
+            </Fragment>
+          ) : null}
+          Leaderboard can take a while to refresh. Thanks for your patience!
         </p>
       </div>
 
