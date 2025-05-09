@@ -4,6 +4,8 @@
     "english": "Inglés",
     "spanish": "Español",
     "friend": "Amigo",
+    "locked": "Bloqueado",
+    "gotIt": "Perfecto",
     "connectWallet": "Conectar Wallet"
   },
   "Profile": {
@@ -13,7 +15,17 @@
     "joinCommunity": "Unirme al telegram",
     "support": "Soporte",
     "totalJUZ": "Balance total de JUZ",
-    "inviteYourFriends": "Invita a tus amigos"
+    "inviteYourFriends": "Invita a tus amigos",
+    "lockMyJUZ": "Generar ganancias"
+  },
+  "ProfileMenu": {
+    "clipboardCopied": "Copiado a la papelera",
+    "disconnect": "Desconectar",
+    "viewInWorldscan": "Ver en Worldscan",
+    "copyAddress": "Copiar dirección",
+    "errors": {
+      "noAddress": "No conectado"
+    }
   },
   "BottomNavigation": {
     "play": "Jugar",
@@ -32,5 +44,10 @@
     },
     "buyFor": "Comprar x ",
     "heartPointsExplainer": "Compra un paquete de {amount} corazones. Se sumarán a tus corazones actuales."
+  },
+  "JUZDistributionModal": {
+    "title": "Distribución de JUZ",
+    "claimTokens": "Reclamar Tokens",
+    "claimAvailable": "Reclama tus puntos como tokens de JUZ"
   }
 }

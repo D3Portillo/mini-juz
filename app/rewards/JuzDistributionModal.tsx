@@ -3,7 +3,9 @@
 import type { PropsWithChildren } from "react"
 import { atomWithStorage } from "jotai/utils"
 import { useAtom } from "jotai"
+import { useTranslations } from "next-intl"
 
+import { useWorldAuth } from "@radish-la/world-auth"
 import { MiniKit } from "@worldcoin/minikit-js"
 import { formatEther } from "viem"
 import { shortifyDecimals } from "@/lib/numbers"
@@ -13,13 +15,15 @@ import { serializeBigint } from "@/lib/utils"
 import ReusableDialog from "@/components/ReusableDialog"
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { useAccountBalances } from "@/lib/atoms/balances"
-import { useWorldAuth } from "@radish-la/world-auth"
 import { ABI_DISPENSER, ADDRESS_DISPENSER } from "@/actions/internals"
 import { ZERO } from "@/lib/constants"
 import { trackEvent } from "@/components/posthog"
 
 const atomlastClaim = atomWithStorage("juz.canClaim", 0)
 export function JUZDistributionModal({ children }: PropsWithChildren) {
+  const t = useTranslations("JUZDistributionModal")
+  const tglobal = useTranslations("global")
+
   const [lastClaim, setLastClaim] = useAtom(atomlastClaim)
   const { user, signIn } = useWorldAuth()
   const { toast } = useToast()
@@ -83,14 +87,12 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
 
   return (
     <ReusableDialog
-      title="JUZ Breakdown"
+      title={t("title")}
       onClosePressed={() => {
         if (showClaimOnchain) handleClaim()
       }}
-      footNote={
-        showClaimOnchain ? "You have JUZ Tokens available to claim" : undefined
-      }
-      closeText={showClaimOnchain ? "Claim tokens" : "Got it"}
+      footNote={showClaimOnchain ? t("claimAvailable") : undefined}
+      closeText={showClaimOnchain ? t("claimTokens") : tglobal("gotIt")}
       trigger={children}
     >
       <p>
@@ -107,8 +109,10 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
 
       <p>
         <nav className="flex justify-between gap-6 w-full">
-          <div className="w-32">
-            <strong className="text-juz-orange text-lg">JUZ Locked</strong>
+          <div className="w-32 whitespace-nowrap">
+            <strong className="text-juz-orange text-lg">
+              JUZ {tglobal("locked")}
+            </strong>
             <p className="text-xs opacity-75">Balance locked in pools</p>
           </div>
           <span className="text-xl mt-1 font-medium">

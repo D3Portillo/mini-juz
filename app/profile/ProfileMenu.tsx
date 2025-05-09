@@ -3,12 +3,14 @@
 import copy from "clipboard-copy"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
+import { useTranslations } from "next-intl"
 
 import { HiDotsHorizontal } from "react-icons/hi"
 import MainSelect from "@/components/MainSelect"
 
 export default function ProfileMenu() {
   const { toast } = useToast()
+  const t = useTranslations("ProfileMenu")
   const { signOut, user } = useWorldAuth()
 
   function handleCopyAddress() {
@@ -16,12 +18,12 @@ export default function ProfileMenu() {
     if (address) {
       copy(address)
       return toast.success({
-        title: "Copied to clipboard",
+        title: t("clipboardCopied"),
       })
     }
 
     toast.error({
-      title: "No address found",
+      title: t("errors.noAddress"),
     })
   }
 
@@ -32,7 +34,7 @@ export default function ProfileMenu() {
       return
     }
     toast.error({
-      title: "No address found",
+      title: t("errors.noAddress"),
     })
   }
 
@@ -49,15 +51,15 @@ export default function ProfileMenu() {
       }}
       options={[
         {
-          label: "Copy address",
+          label: t("copyAddress"),
           value: "copy-address",
         },
         {
-          label: "View in Worldscan",
+          label: t("viewInWorldscan"),
           value: "view-txs",
         },
         {
-          label: "Disconnect",
+          label: t("disconnect"),
           value: "disconnect",
         },
       ]}

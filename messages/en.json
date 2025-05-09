@@ -4,6 +4,8 @@
     "english": "English",
     "spanish": "Spanish",
     "friend": "Friend",
+    "locked": "Locked",
+    "gotIt": "Got it",
     "connectWallet": "Connect Wallet"
   },
   "Profile": {
@@ -13,7 +15,17 @@
     "joinCommunity": "Join Community",
     "support": "Contact support",
     "totalJUZ": "Total JUZ Balance",
-    "inviteYourFriends": "Invite your friends"
+    "inviteYourFriends": "Invite your friends",
+    "lockMyJUZ": "Lock my JUZ"
+  },
+  "ProfileMenu": {
+    "clipboardCopied": "Copied to clipboard",
+    "disconnect": "Disconnect",
+    "viewInWorldscan": "View in Worldscan",
+    "copyAddress": "Copy address",
+    "errors": {
+      "noAddress": "No address found"
+    }
   },
   "BottomNavigation": {
     "play": "Play",
@@ -32,5 +44,10 @@
     },
     "buyFor": "Buy for",
     "heartPointsExplainer": "Buy a pack of {amount} hearts. Hearts will be added to your current heart points."
+  },
+  "JUZDistributionModal": {
+    "title": "JUZ Breakdown",
+    "claimTokens": "Claim Tokens",
+    "claimAvailable": "You have JUZ Tokens available to claim"
   }
 }
