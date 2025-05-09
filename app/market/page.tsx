@@ -209,12 +209,12 @@ export default function PageProfile() {
                   5,
                   isJUZPayment
                     ? 10 // JUZ
-                    : 3 // WLD
+                    : 1 // WLD
                 )
               }
               className="py-3 rounded-full text-base w-full mt-5"
             >
-              Buy for {isJUZPayment ? 10 : 3} {PAYING_LABEL}
+              Buy for {isJUZPayment ? 10 : 1} {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>
@@ -240,12 +240,12 @@ export default function PageProfile() {
                   10,
                   isJUZPayment
                     ? 15 // JUZ
-                    : 5 // WLD
+                    : 1.5 // WLD
                 )
               }
               className="py-3 rounded-full text-base w-full mt-5"
             >
-              Buy for {isJUZPayment ? 15 : 5} {PAYING_LABEL}
+              Buy for {isJUZPayment ? 15 : 1.5} {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>
