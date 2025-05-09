@@ -13,6 +13,7 @@ type PostHogEvents =
   | "locked-JUZ" // added
   | "topic-selected" // added
   | "heart-refilled" // added
+  | "new-player" // added
 
 export const trackEvent = (
   event: PostHogEvents,

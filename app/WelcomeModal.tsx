@@ -6,6 +6,7 @@ import { useAtom } from "jotai"
 
 import { atomWithStorage } from "jotai/utils"
 import LemonButton from "@/components/LemonButton"
+import { trackEvent } from "@/components/posthog"
 
 const atomIsWelcomeRead = atomWithStorage("juz.data.isWelcomeRead", false)
 export default function WelcomeModal() {
@@ -16,6 +17,7 @@ export default function WelcomeModal() {
   useEffect(() => setIsReady(true), [])
 
   function handleAccept() {
+    trackEvent("new-player")
     setIsWelcomeRead(true)
     toast.success({
       title: "Spin the wheel to start playing!",
