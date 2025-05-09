@@ -37,7 +37,7 @@ export default function DialogHearts({
     if (!initiatorAddress) return signIn()
 
     const result = await executeWorldPayment({
-      amount: 2.5, // 2.5 WLD
+      amount: 0.5, // 0.5 WLD
       initiatorAddress,
       paymentDescription: `Confirm to refill a total of ${
         3 - hearts
