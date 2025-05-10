@@ -2,6 +2,7 @@
 
 import { useAtom } from "jotai"
 import { useEffect } from "react"
+import { useLocale } from "next-intl"
 
 import { atomWithStorage } from "jotai/utils"
 import { SIX_HOURS_IN_MS } from "@/lib/constants"
@@ -10,27 +11,46 @@ import { generateTopicList } from "@/actions/words"
 const atomUserTopics = atomWithStorage("juz.atomUserTopics", {
   topics: [] as string[],
   lastUpdated: 0,
+  locale: "en",
 })
 
 let timer: NodeJS.Timeout | undefined
 export const useUserTopics = () => {
-  const [{ lastUpdated, topics = [] }, setData] = useAtom(atomUserTopics)
+  const locale = useLocale()
+  const [{ lastUpdated, topics = [], locale: topicsLocale }, setData] =
+    useAtom(atomUserTopics)
 
   async function fetchTopics() {
     console.debug("Fetching fresh topics")
 
-    const newTopics = await generateTopicList({
-      omitted: topics.filter(() => {
-        // Russian roulette to remove 30% of the topics
-        return Math.random() > 0.7
-      }),
-    })
+    const newTopics = await generateTopicList(
+      locale === "es" ? "Spanish" : "English",
+      {
+        omitted: topics.filter(() => {
+          // Russian roulette to remove 30% of the topics
+          return Math.random() > 0.7
+        }),
+      }
+    )
 
     setData({
+      locale,
       lastUpdated: Date.now(),
       topics: newTopics,
     })
   }
+
+  useEffect(() => {
+    // Fetch new topics when changing language
+    if (locale != topicsLocale && topics.length) {
+      setData({
+        locale,
+        lastUpdated: Date.now(),
+        topics: [], // Force loading state in Spinning Wheel
+      })
+      fetchTopics()
+    }
+  }, [locale, topicsLocale, topics])
 
   useEffect(() => {
     clearTimeout(timer)
@@ -50,6 +70,7 @@ export const useUserTopics = () => {
       const newTopics = topics.sort(() => Math.random() - 0.5)
       setData({
         lastUpdated,
+        locale,
         // We keep same topics but shuffle them
         topics: newTopics,
       })

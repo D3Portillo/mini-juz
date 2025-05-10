@@ -8,14 +8,18 @@ const TopicsSchema = z.object({
   topics: z.array(z.string()),
 })
 
-export const generateTopicList = async (opts?: { omitted?: string[] }) => {
+export const generateTopicList = async (
+  lang: "English" | "Spanish",
+  opts?: { omitted?: string[] }
+) => {
   const { object } = await generateObject({
     model: GPT4OMini,
     schema: TopicsSchema,
     prompt: `
-Generate a list of 10 topics in a single word that can be considered "fun" or "interesting" to talk about.
+Generate a list of 10 single word topics in ${lang} language that can be considered "fun" or "interesting" to have trivia about.
 - Must be "general knowledge" topics, not specific to any field.
 - Must be topics that are not too serious or heavy.
+- Remember that topmics MUST be in ${lang}
 - You can include thins about crypto, blockchain but not too much or too technical.
 
 ${
