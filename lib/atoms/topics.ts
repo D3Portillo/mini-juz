@@ -15,6 +15,7 @@ const atomUserTopics = atomWithStorage("juz.atomUserTopics", {
 })
 
 let timer: NodeJS.Timeout | undefined
+let timerForLocaleUpdate: NodeJS.Timeout | undefined
 export const useUserTopics = () => {
   const locale = useLocale()
   const [{ lastUpdated, topics = [], locale: topicsLocale }, setData] =
@@ -41,22 +42,25 @@ export const useUserTopics = () => {
   }
 
   useEffect(() => {
+    clearTimeout(timerForLocaleUpdate)
     // Fetch new topics when changing language
-    if (locale != topicsLocale && topics.length) {
-      setData({
-        locale,
-        lastUpdated: Date.now(),
-        topics: [], // Force loading state in Spinning Wheel
-      })
-      fetchTopics()
+    if (locale != topicsLocale) {
+      timerForLocaleUpdate = setTimeout(() => {
+        setData({
+          locale,
+          lastUpdated: Date.now(),
+          topics: [], // Force loading state in Spinning Wheel
+        })
+        fetchTopics()
+      }, 200)
     }
-  }, [locale, topicsLocale, topics])
+  }, [locale, topicsLocale])
 
   useEffect(() => {
     clearTimeout(timer)
     // User topics are updated every 6 hours
     if (lastUpdated > Date.now() + SIX_HOURS_IN_MS || lastUpdated === 0) {
-      timer = setTimeout(fetchTopics, 250)
+      timer = setTimeout(fetchTopics, 200)
       // 250ms delay to avoid too many requests
     }
   }, [lastUpdated])
