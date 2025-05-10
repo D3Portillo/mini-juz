@@ -16,6 +16,7 @@ import { FaChevronDown } from "react-icons/fa"
 import RouteBackButton from "@/components/RouteBackButton"
 import LemonButton from "@/components/LemonButton"
 import MainSelect from "@/components/MainSelect"
+import FixedTopContainer from "@/components/FixedTopContainer"
 
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { shortifyDecimals } from "@/lib/numbers"
@@ -24,10 +25,9 @@ import { usePlayerHearts } from "@/lib/atoms/user"
 import { CURRENCY_TOKENS } from "@/lib/atoms/token"
 import { ADDRESS_JUZ } from "@/lib/constants"
 import { serializeBigint } from "@/lib/utils"
-import FixedTopContainer from "@/components/FixedTopContainer"
 
 const HEART_HOLDING_LIMIT = 20 // 20 hearts
-export default function PageProfile() {
+export default function PageMarket() {
   const t = useTranslations("Market")
   const { toast } = useToast()
   const { signIn, user } = useWorldAuth()
@@ -81,7 +81,9 @@ export default function PageProfile() {
       const result = await executeWorldPayment({
         amount: cost, // in WLD
         initiatorAddress: user.walletAddress,
-        paymentDescription: `Confirm to buy a Pack of ${amount} hearts in JUZ Mini App`,
+        paymentDescription: t("templates.buyHearts", {
+          amount,
+        }),
       })
 
       isSuccess = Boolean(result)
@@ -199,7 +201,7 @@ export default function PageProfile() {
             </h2>
 
             <p className="text-sm opacity-70">
-              {t("heartPointsExplainer", { amount: 5 })}
+              {t("templates.heartPointsExplainer", { amount: 5 })}
             </p>
 
             <LemonButton
@@ -229,7 +231,7 @@ export default function PageProfile() {
             </h2>
 
             <p className="text-sm opacity-70">
-              {t("heartPointsExplainer", { amount: 10 })}
+              {t("templates.heartPointsExplainer", { amount: 10 })}
             </p>
 
             <LemonButton

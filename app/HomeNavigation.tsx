@@ -35,7 +35,7 @@ export default function HomeNavigation() {
       <div>
         <p className="font-semibold text-lg">{user?.username || "Limoncito"}</p>
         <p className="text-xs -mt-1">
-          {isConnected ? t("disconnect") : tglobal("connectWallet")}
+          {isConnected ? tglobal("connected") : tglobal("connectWallet")}
         </p>
       </div>
     </button>

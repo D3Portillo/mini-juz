@@ -6,6 +6,7 @@ import useSWR from "swr"
 import { atomWithStorage } from "jotai/utils"
 import { atomFamily } from "jotai/utils"
 import { useAtom } from "jotai"
+import { useLocale } from "next-intl"
 
 import { generateQuestionsForTopic } from "@/actions/questions"
 
@@ -17,6 +18,7 @@ const familyAtomHistory = atomFamily((topic: string | null) =>
 )
 
 export const useQuestionHistory = (topic: string | null) => {
+  const locale = useLocale()
   const [ready, setReady] = useState(false)
   const [questionHistory, setHistory] = useAtom(familyAtomHistory(topic))
 
@@ -28,8 +30,8 @@ export const useQuestionHistory = (topic: string | null) => {
   }
 
   useEffect(() => {
-    setReady(true)
-  }, [topic])
+    setReady(Boolean(topic && locale))
+  }, [topic, locale])
 
   return { questionHistory, ready, addQuestion }
 }
@@ -42,6 +44,7 @@ export const useGameQuestions = (
   }
 ) => {
   const topic = config?.topic
+  const locale = useLocale()
   const { questionHistory, ready } = useQuestionHistory(topic || "")
 
   return useSWR(
@@ -49,6 +52,7 @@ export const useGameQuestions = (
     async () => {
       if (!topic || !ready) return []
       const questions = await generateQuestionsForTopic(
+        locale === "es" ? "Spanish" : "English",
         topic,
         config.questionCount,
         questionHistory

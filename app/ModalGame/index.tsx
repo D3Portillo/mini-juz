@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils"
 import { GiDiceTarget } from "react-icons/gi"
 import { MdError, MdOutlineExitToApp } from "react-icons/md"
 
+import { useTranslations } from "next-intl"
 import { useAudioMachine } from "@/lib/sounds"
 import { useIsGameActive } from "@/lib/atoms/game"
 import { useGameQuestions, useQuestionHistory } from "./atoms"
@@ -30,6 +31,8 @@ export default function ModalGame({
   topic?: string
   onGameWon?: (juzEarned: number) => void
 }) {
+  const t = useTranslations("ModalGame")
+
   const { addQuestion } = useQuestionHistory(topic || null)
   const { hearts, removeHeart } = usePlayerHearts()
   const { playSound } = useAudioMachine(["success", "failure"])
@@ -164,22 +167,19 @@ export default function ModalGame({
           <div className="flex-grow p-4 !pb-12 text-center flex flex-col items-center justify-center gap-6">
             <MdError className="text-7xl" />
 
-            <p className="text-sm max-w-xs">Something wrong occurred</p>
+            <p className="text-sm max-w-xs">{t("errorText")}</p>
 
             <button
               onClick={() => mutate([])}
               className="bg-black -mt-3 text-white px-4 rounded-full py-1"
             >
-              Retry
+              {t("retry")}
             </button>
           </div>
         ) : isLoading ? (
           <div className="flex-grow p-4 !pb-12 text-center flex flex-col items-center justify-center gap-6">
             <GiDiceTarget className="text-7xl transform animate-[bounce_3s_infinite]" />
-
-            <p className="text-sm max-w-xs">
-              Buckle up! We are cooking the trivia for you...
-            </p>
+            <p className="text-sm max-w-xs">{t("loadingText")}</p>
           </div>
         ) : (
           <div className="mt-12 flex gap-3 w-full flex-col">
@@ -224,7 +224,7 @@ export default function ModalGame({
 
         {isLoading || isError ? null : isAnswered ? (
           <LemonButton onClick={handleContinue} className="py-3 rounded-full">
-            Continue
+            {t("continue")}
           </LemonButton>
         ) : (
           <nav className="flex flex-col gap-2">
@@ -266,10 +266,11 @@ export default function ModalGame({
             </div>
             <div className="flex text-sm items-center justify-between">
               <div>
-                Time left: <strong>{PER_QUESTION_TIME - elapsedTime}s</strong>
+                {t("timeLeft")}:{" "}
+                <strong>{PER_QUESTION_TIME - elapsedTime}s</strong>
               </div>
               <div>
-                Progress:{" "}
+                {t("progress")}:{" "}
                 <strong>
                   {currentQuestion}/{TOTAL_QUESTIONS}
                 </strong>

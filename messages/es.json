@@ -17,7 +17,11 @@
   "Home": {
     "play": "Jugar",
     "errors": {
-      "noHear,tsLeft": "😢 No tienes puntos para jugar"
+      "noHeartsLeft": "😢 No tienes puntos para jugar",
+      "connect": "Conecta tu wallet para continuar"
+    },
+    "success": {
+      "juzEarned": "Genial! {amount} JUZ ganados"
     },
     "dailyRefill": {
       "title": "Recarga puntos diariamente",
@@ -28,7 +32,7 @@
       "content": "Gira la ruleta. Recibe un tema random diario, juega la trivia y gana JUZ."
     },
     "timeToRefill": "Refill gratis en",
-    "refillNow": "Obtener puntos"
+    "refillNow": "Obtener"
   },
   "Profile": {
     "title": "Mi Perfil",
@@ -64,8 +68,11 @@
     "success": {
       "purchagedHearts": "Pack of hearts purchased"
     },
-    "buyFor": "Comprar x ",
-    "heartPointsExplainer": "Compra un paquete de {amount} corazones. Se sumarán a tus corazones actuales."
+    "templates": {
+      "heartPointsExplainer": "Compra un paquete de {amount} corazones. Se sumarán a tus corazones actuales.",
+      "buyHearts": "Confirma para comprar un paquete de {amount} corazones en la Mini App de JUZ."
+    },
+    "buyFor": "Comprar x "
   },
   "JUZDistributionModal": {
     "title": "Distribución de JUZ",
@@ -103,5 +110,13 @@
     "claimFree": "Refill gratis",
     "refillNow": "Rellenar ahora",
     "heartCount": "Tus puntos ({hearts})"
+  },
+  "ModalGame": {
+    "retry": "Reintentar",
+    "continue": "Continuar",
+    "progress": "Progreso",
+    "timeLeft": "Time left",
+    "errorText": "Oops. Algo malo ocurrió",
+    "loadingText": "¡Prepárate! Estamos preparando la trivia..."
   }
 }

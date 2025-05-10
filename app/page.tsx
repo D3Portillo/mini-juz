@@ -54,7 +54,7 @@ export default function PageHome() {
       const account = await signIn()
       if (!account) {
         return toast.error({
-          title: "Connect your wallet to continue",
+          title: t("errors.connect"),
         })
       }
     }
@@ -69,7 +69,7 @@ export default function PageHome() {
       incrPlayerJUZEarned(address, wonJUZ)
     }
     toast.success({
-      title: `Yaaaas! ${wonJUZ} JUZ Earned`,
+      title: t("success.juzEarned", { amount: wonJUZ }),
     })
   }
 

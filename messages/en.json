@@ -17,7 +17,11 @@
   "Home": {
     "play": "Play",
     "errors": {
-      "noHeartsLeft": "😢 No hearts left to play"
+      "noHeartsLeft": "😢 No hearts left to play",
+      "connect": "Connect your wallet to continue"
+    },
+    "success": {
+      "juzEarned": "Yaaaas! {amount} JUZ Earned"
     },
     "dailyRefill": {
       "title": "Daily hearts refill",
@@ -64,8 +68,11 @@
     "success": {
       "purchagedHearts": "Paquete de corazones comprado!"
     },
-    "buyFor": "Buy for",
-    "heartPointsExplainer": "Buy a pack of {amount} hearts. Hearts will be added to your current heart points."
+    "templates": {
+      "heartPointsExplainer": "Buy a pack of {amount} hearts. Hearts will be added to your current heart points.",
+      "buyHearts": "Confirm to buy a Pack of {amount} hearts in JUZ Mini App"
+    },
+    "buyFor": "Buy for"
   },
   "JUZDistributionModal": {
     "title": "JUZ Breakdown",
@@ -103,5 +110,13 @@
     "claimFree": "Claim free refill",
     "refillNow": "Refill now",
     "heartCount": "Your hearts ({hearts})"
+  },
+  "ModalGame": {
+    "retry": "Retry",
+    "continue": "Continue",
+    "progress": "Progress",
+    "timeLeft": "Tiempo restante",
+    "errorText": "Something wrong occurred",
+    "loadingText": "Buckle up! We are cooking the trivia for you..."
   }
 }

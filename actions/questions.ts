@@ -15,6 +15,7 @@ const QuestionListSchema = z.object({
 })
 
 export const generateQuestionsForTopic = async (
+  lang: "English" | "Spanish",
   topic: string,
   amount: number,
   history: string[] = []
@@ -28,8 +29,8 @@ Generate a list of ${amount} questions about "${topic}".
 - Correct option should be in the list of options.
 - There can't be more than 1 correct option.
 - The questions should be fun and interesting - for trivia or quiz games.
-- The questions should be in English.
-- Options should be in English.
+- The questions should be in ${lang}.
+- Options should be in ${lang}.
 - Options should be in the format: ["option1", "option2", "option3"]
 - Options should be short: 6 words max.
 
