@@ -115,7 +115,8 @@
     "retry": "Reintentar",
     "continue": "Continuar",
     "progress": "Progreso",
-    "timeLeft": "Time left",
+    "timeLeft": "Tiempo restante",
+    "generalKnowledge": "Conocimiento",
     "errorText": "Oops. Algo malo ocurrió",
     "loadingText": "¡Prepárate! Estamos preparando la trivia..."
   }

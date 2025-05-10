@@ -115,7 +115,8 @@
     "retry": "Retry",
     "continue": "Continue",
     "progress": "Progress",
-    "timeLeft": "Tiempo restante",
+    "timeLeft": "Time left",
+    "generalKnowledge": "General Knowledge",
     "errorText": "Something wrong occurred",
     "loadingText": "Buckle up! We are cooking the trivia for you..."
   }

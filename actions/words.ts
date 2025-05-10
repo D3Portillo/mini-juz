@@ -13,7 +13,7 @@ export const generateTopicList = async (opts?: { omitted?: string[] }) => {
     model: GPT4OMini,
     schema: TopicsSchema,
     prompt: `
-Generate a lsit of 10 topics in a single word that can be considered "fun" or "interesting" to talk about.
+Generate a list of 10 topics in a single word that can be considered "fun" or "interesting" to talk about.
 - Must be "general knowledge" topics, not specific to any field.
 - Must be topics that are not too serious or heavy.
 - You can include thins about crypto, blockchain but not too much or too technical.

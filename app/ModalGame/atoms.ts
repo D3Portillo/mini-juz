@@ -47,17 +47,18 @@ export const useGameQuestions = (
   const locale = useLocale()
   const { questionHistory, ready } = useQuestionHistory(topic || "")
 
-  return useSWR(
+  const { data, ...query } = useSWR(
     `${cacheKey}.${ready && "ready"}`,
-    async () => {
-      if (!topic || !ready) return []
-      const questions = await generateQuestionsForTopic(
+    async (): Promise<
+      Awaited<ReturnType<typeof generateQuestionsForTopic>>
+    > => {
+      if (!topic || !ready) return {} as any
+      return await generateQuestionsForTopic(
         locale === "es" ? "Spanish" : "English",
         topic,
         config.questionCount,
         questionHistory
       )
-      return questions
     },
     {
       // Keep staled data until key changes
@@ -65,4 +66,12 @@ export const useGameQuestions = (
       revalidateOnReconnect: false,
     }
   )
+
+  return {
+    data: {
+      questions: data?.questions || [],
+      translatedTopic: data?.topic || topic,
+    },
+    ...query,
+  }
 }

@@ -2,6 +2,8 @@
 
 import { useLocale, useTranslations, type Locale } from "next-intl"
 import { setUserLocale } from "@/actions/locale"
+import { trackEvent } from "@/components/posthog"
+
 import MainSelect from "@/components/MainSelect"
 
 export default function LanguageMenu({ trigger }: { trigger: JSX.Element }) {
@@ -10,6 +12,9 @@ export default function LanguageMenu({ trigger }: { trigger: JSX.Element }) {
 
   function setLocale(locale: Locale) {
     setUserLocale(locale)
+    trackEvent("updated-locale", {
+      locale,
+    })
   }
 
   return (

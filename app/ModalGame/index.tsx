@@ -57,7 +57,7 @@ export default function ModalGame({
   }
 
   const {
-    data: questions = [],
+    data: { questions, translatedTopic },
     isLoading: isFetching,
     isValidating,
     mutate,
@@ -155,7 +155,7 @@ export default function ModalGame({
         <div className="grid place-items-center gap-4 mt-12">
           {isError ? null : (
             <div className="bg-juz-green-lime/10 text-sm px-3 py-0.5 rounded-full font-semibold text-black border-2 border-juz-green-lime">
-              {topic || "General Knowledge"}
+              {translatedTopic || t("generalKnowledge")}
             </div>
           )}
           <h2 className="text-2xl min-h-20 font-medium text-center">
@@ -170,7 +170,7 @@ export default function ModalGame({
             <p className="text-sm max-w-xs">{t("errorText")}</p>
 
             <button
-              onClick={() => mutate([])}
+              onClick={() => mutate({} as any)}
               className="bg-black -mt-3 text-white px-4 rounded-full py-1"
             >
               {t("retry")}

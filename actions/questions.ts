@@ -5,6 +5,7 @@ import { generateObject } from "ai"
 import { z } from "zod"
 
 const QuestionListSchema = z.object({
+  topic: z.string(),
   questions: z.array(
     z.object({
       question: z.string(),
@@ -54,20 +55,27 @@ Thanks.
 
   // The prompt wasn't giving me good "random" position results and for 3 elements
   // most of the time the "correct" option was the first one so was ass easy to get points.
-  return object.questions.map(({ correctOptionIndex, options, question }) => {
-    const correctOptionContent = options[correctOptionIndex]
-    const shuffled = [...options]
+  const questions = object.questions.map(
+    ({ correctOptionIndex, options, question }) => {
+      const correctOptionContent = options[correctOptionIndex]
+      const shuffled = [...options]
 
-    // Shuffle by swapping random pairs
-    for (let i = shuffled.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-    }
+      // Shuffle by swapping random pairs
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1))
+        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+      }
 
-    return {
-      question,
-      options: shuffled,
-      correctOptionIndex: shuffled.indexOf(correctOptionContent),
+      return {
+        question,
+        options: shuffled,
+        correctOptionIndex: shuffled.indexOf(correctOptionContent),
+      }
     }
-  })
+  )
+
+  return {
+    questions,
+    topic: object.topic,
+  }
 }
