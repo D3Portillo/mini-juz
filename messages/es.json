@@ -11,7 +11,7 @@
     "connectWallet": "Conectar Wallet"
   },
   "HomeNavigation": {
-    "disconnect": "Disconnect",
+    "disconnect": "Desconectar",
     "manageProfile": "Ver Perfil"
   },
   "Home": {
@@ -108,7 +108,7 @@
     },
     "buyRefillMessage": "Confirma para recargar {hearts} corazones en JUZ Mini App.",
     "claimFree": "Refill gratis",
-    "refillNow": "Rellenar ahora",
+    "refillNow": "Comprar refill",
     "heartCount": "Tus puntos ({hearts})"
   },
   "ModalGame": {
@@ -118,6 +118,26 @@
     "timeLeft": "Tiempo restante",
     "generalKnowledge": "Conocimiento",
     "errorText": "Oops. Algo malo ocurrió",
-    "loadingText": "¡Prepárate! Estamos preparando la trivia..."
+    "loadingText": "¡Prepárate! Estamos cocinando la trivia..."
+  },
+  "Rewards": {
+    "title": "Incentivos",
+    "getJUZ": "Obtener JUZ",
+    "claim": "Reclamar",
+    "earningVeJUZ": "veJUZ ganado",
+    "aprBreakdown": "Cálculo del APR",
+    "errors": {
+      "balanceToLow": "Balance muy bajo",
+      "noClaims": "Nada para reclamar"
+    },
+    "success": {
+      "claimed": "¡veJUZ reclamado!"
+    },
+    "comingSoon": "Muy pronto ⚡",
+    "explainers": {
+      "apr": "El APR se calcula según la cantidad actual de veJUZ en circulación y la cantidad de JUZ bloqueado en el pool. El APR es variable y puede cambiar con el tiempo.",
+      "locking": "Gana <trigger>veJUZ</trigger> bloqueando JUZ por un período de tiempo. En el futuro, veJUZ se parte de gobernanza, para acceder a reward pools o airdrops.",
+      "drops": "Estamos trabajando en una nueva forma para que ganes recompensas de comunidades en World. Los incentivos se distribuyen al realizar tareas y aprender. A esto lo llamamos <strong>Lemon Drops</strong>."
+    }
   }
 }

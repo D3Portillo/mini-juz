@@ -119,5 +119,25 @@
     "generalKnowledge": "General Knowledge",
     "errorText": "Something wrong occurred",
     "loadingText": "Buckle up! We are cooking the trivia for you..."
+  },
+  "Rewards": {
+    "title": "Reward boost",
+    "getJUZ": "Get JUZ",
+    "claim": "Claim",
+    "earningVeJUZ": "Earning veJUZ",
+    "aprBreakdown": "APR Breakdown",
+    "errors": {
+      "balanceToLow": "Balance too low",
+      "noClaims": "Nothing to be claimed"
+    },
+    "success": {
+      "claimed": "veJUZ claimed!"
+    },
+    "comingSoon": "Coming soon ⚡",
+    "explainers": {
+      "apr": "APR is calculated based on the current veJUZ supply and the amount of JUZ locked in the pool. APR is variable and can change over time.",
+      "locking": "Earn <trigger>veJUZ</trigger> by locking JUZ for a period of time. In the future veJUZ can be used for goverance, access reward pools or airdrops",
+      "drops": "We're working on a new way for you to earn rewards from communities in World. Incentives are distributed by doing tasks or learning. This are called <strong>Lemon Drops</strong>."
+    }
   }
 }
