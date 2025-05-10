@@ -139,5 +139,37 @@
       "locking": "Gana <trigger>veJUZ</trigger> bloqueando JUZ por un período de tiempo. En el futuro, veJUZ se parte de gobernanza, para acceder a reward pools o airdrops.",
       "drops": "Estamos trabajando en una nueva forma para que ganes recompensas de comunidades en World. Los incentivos se distribuyen al realizar tareas y aprender. A esto lo llamamos <strong>Lemon Drops</strong>."
     }
+  },
+  "JuzLock": {
+    "title": "Bloquea JUZ. Gana veJUZ 🍋",
+    "confirmLock": "Confirmar",
+    "lockAmount": "Cantidad",
+    "lockDuration": "Duración",
+    "errors": {
+      "validAmount": "Por favor ingresa una cantidad válida"
+    },
+    "byLocking": "Por bloquear",
+    "for": "por",
+    "youWillReceiveEstimated": "vas a recivir un total aproximado de <Estimate></Estimate>",
+    "periods": {
+      "2W": "2 Semanas",
+      "1M": "1 Mes",
+      "3M": "3 Meses",
+      "6M": "6 Meses",
+      "1Y": "1 Año"
+    },
+    "explainers": {
+      "veJUZ": {
+        "title": "¿Qué es veJUZ?",
+        "contents": {
+          "size": "2",
+          "0": "Vote Escrow JUZ (<strong>veJUZ</strong>) es un token del protocolo que se obtiene al bloquear JUZ por un período de tiempo. Cuanto más tiempo bloquees, mayor será tu potencial de ganancias.",
+          "1": "El <strong>veJUZ</strong> ganado se suma a tu balance total y puede usarse para votar en futuras propuestas de gobernanza y obtener otras recompensas."
+        }
+      }
+    },
+    "success": {
+      "locked": "JUZ bloqueado con éxito"
+    }
   }
 }

@@ -139,5 +139,37 @@
       "locking": "Earn <trigger>veJUZ</trigger> by locking JUZ for a period of time. In the future veJUZ can be used for goverance, access reward pools or airdrops",
       "drops": "We're working on a new way for you to earn rewards from communities in World. Incentives are distributed by doing tasks or learning. This are called <strong>Lemon Drops</strong>."
     }
+  },
+  "JuzLock": {
+    "title": "Lock JUZ. Get veJUZ 🍋",
+    "confirmLock": "Confirm & Lock",
+    "lockAmount": "Lock amount",
+    "lockDuration": "Lock duration",
+    "errors": {
+      "validAmount": "Please enter a valid amount"
+    },
+    "byLocking": "By locking",
+    "for": "for",
+    "youWillReceiveEstimated": "you will receive an estimated <Estimate></Estimate>",
+    "periods": {
+      "2W": "2 Weeks",
+      "1M": "1 Month",
+      "3M": "3 Months",
+      "6M": "6 Months",
+      "1Y": "1 Year"
+    },
+    "explainers": {
+      "veJUZ": {
+        "title": "What's veJUZ?",
+        "contents": {
+          "size": "2",
+          "0": "Vote-Escrowed JUZ (<strong>veJUZ</strong>) is a protocol token that can be obtained by locking JUZ for period of time. The longer you lock, the greater the earning potential.",
+          "1": "<strong>veJUZ</strong> is summed up to your total JUZ balance and can be used to vote in future governance proposals and earn rewards."
+        }
+      }
+    },
+    "success": {
+      "locked": "JUZ locked successfully"
+    }
   }
 }

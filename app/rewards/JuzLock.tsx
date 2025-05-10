@@ -2,6 +2,7 @@ import { useState } from "react"
 import { FaRegLemon } from "react-icons/fa"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
+import { useLocale, useTranslations } from "next-intl"
 
 import { calculateVeJUZ, cn } from "@/lib/utils"
 import { useFormattedInputHandler } from "@/lib/input"
@@ -20,6 +21,9 @@ const LOCK_1Y = "1Y" as const
 const LOCKED_PERIODS = [LOCK_2W, "1M", "3M", "6M", LOCK_1Y] as const
 
 export default function JuzLock() {
+  const t = useTranslations("JuzLock")
+  const tglobal = useTranslations("global")
+
   const inputHandler = useFormattedInputHandler()
   const [lockPeriod, setLockPeriod] = useState<string>(LOCK_1Y)
 
@@ -30,10 +34,7 @@ export default function JuzLock() {
 
   const isStakingZero = !(inputHandler.value > 0)
 
-  const FORMATTED_PERIOD = lockPeriod
-    .replace("M", ` month${lockPeriod.includes("1") ? "" : "s"}`)
-    .replace("2W", "2 weeks")
-    .replace("1Y", "1 year")
+  const FORMATTED_PERIOD = t(`periods.${lockPeriod as "2W"}`)
 
   const isValidStaking =
     !isStakingZero && LOCKED_PERIODS.includes(lockPeriod as any)
@@ -46,7 +47,7 @@ export default function JuzLock() {
     if (!isConnected) return signIn()
     if (isStakingZero) {
       return toast.error({
-        title: "Please enter a valid amount",
+        title: t("errors.validAmount"),
       })
     }
 
@@ -57,7 +58,7 @@ export default function JuzLock() {
       })
 
       toast.success({
-        title: "JUZ locked successfully",
+        title: t("success.locked"),
       })
 
       // Reset input
@@ -68,10 +69,10 @@ export default function JuzLock() {
 
   return (
     <div className="mt-8 border-3 border-black shadow-3d-lg rounded-2xl p-6">
-      <h2 className="font-semibold text-xl">Lock JUZ. Get veJUZ 🍋</h2>
+      <h2 className="font-semibold text-xl">{t("title")}</h2>
 
       <fieldset className="mt-4">
-        <p className="font-semibold">Lock amount</p>
+        <p className="font-semibold">{t("lockAmount")}</p>
 
         <label className="flex mt-1 gap-2 p-3 bg-juz-green/10 rounded-xl items-center border-2 border-black shadow-3d">
           <LemonIcon className="size-7 shrink-0">
@@ -117,13 +118,11 @@ export default function JuzLock() {
       </fieldset>
 
       <fieldset className="mt-8 select-none">
-        <p className="font-semibold">Lock duration</p>
+        <p className="font-semibold">{t("lockDuration")}</p>
 
         <div className="flex mt-1 gap-2 p-3 bg-juz-green/10 rounded-xl items-center border-2 border-black shadow-3d">
           <LemonIcon className="size-7">⏰</LemonIcon>
-          <span className="font-medium flex-grow capitalize">
-            {FORMATTED_PERIOD}
-          </span>
+          <span className="font-medium flex-grow">{FORMATTED_PERIOD}</span>
           <button
             onClick={() => setLockPeriod(LOCK_1Y)}
             className="font-semibold"
@@ -157,27 +156,31 @@ export default function JuzLock() {
         onClick={handleLock}
         className="text-base py-3 mt-6 bg-black text-white w-full"
       >
-        {isConnected ? "Confirm & Lock" : "Connect Wallet"}
+        {isConnected ? t("confirmLock") : tglobal("connectWallet")}
       </LemonButton>
 
       {isValidStaking ? (
         <div className="mt-3 max-w-md mx-auto text-center text-sm">
-          By locking <strong>{inputHandler.value} JUZ</strong> for{" "}
-          <strong>{FORMATTED_PERIOD}</strong> you will receive an estimated{" "}
-          <LockedJuzExplainer
-            trigger={
-              <button className="underline font-semibold underline-offset-2">
-                {shortifyDecimals(
-                  calculateVeJUZ(
-                    Number(inputHandler.value),
-                    getPeriodInWeeks(lockPeriod)
-                  ),
-                  3
-                )}{" "}
-                veJUZ
-              </button>
-            }
-          />
+          {t("byLocking")} <strong>{inputHandler.value} JUZ</strong> {t("for")}{" "}
+          <strong className="lowercase">{FORMATTED_PERIOD}</strong>{" "}
+          {t.rich("youWillReceiveEstimated", {
+            Estimate: () => (
+              <LockedJuzExplainer
+                trigger={
+                  <button className="underline font-semibold underline-offset-2">
+                    {shortifyDecimals(
+                      calculateVeJUZ(
+                        Number(inputHandler.value),
+                        getPeriodInWeeks(lockPeriod)
+                      ),
+                      3
+                    )}{" "}
+                    veJUZ
+                  </button>
+                }
+              />
+            ),
+          })}
         </div>
       ) : (
         <div className="py-1" />
@@ -187,18 +190,21 @@ export default function JuzLock() {
 }
 
 export function LockedJuzExplainer({ trigger }: { trigger: JSX.Element }) {
-  return (
-    <ReusableDialog title="What's veJUZ?" trigger={trigger}>
-      <p>
-        Vote-Escrowed JUZ (<strong>veJUZ</strong>) is a protocol token that can
-        be obtained by locking JUZ for period of time. The longer you lock, the
-        greater the earning potential.
-      </p>
+  const locale = useLocale()
+  const t = useTranslations("JuzLock.explainers.veJUZ")
 
-      <p>
-        <strong>veJUZ</strong> is summed up to your total JUZ balance and can be
-        used to vote in future governance proposals and earn rewards.
-      </p>
+  const contents = Array.from({ length: Number(t("contents.size")) }).map(
+    (_, i) =>
+      t.rich(`contents.${i}` as "contents.0", {
+        strong: (children) => <strong>{children}</strong>,
+      })
+  )
+
+  return (
+    <ReusableDialog title={t("title")} trigger={trigger}>
+      {contents.map((content, i) => (
+        <p key={`juz.content-${i}-${locale}`}>{content}</p>
+      ))}
     </ReusableDialog>
   )
 }
