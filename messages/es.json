@@ -179,7 +179,7 @@
       "claimed": "JUZ Reclamado"
     },
     "errors": {
-      "tooManyGifts": "Too many gifts received",
+      "tooManyGifts": "Límite de regalos alcanzado",
       "somethingWentWrong": "Oops. Algo malo ocurrió"
     },
     "inviteMessage": "<inviting></inviting> te envió un regalo de 10 JUZ. Para usarlos en el mini juego de trivia."
