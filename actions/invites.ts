@@ -42,7 +42,6 @@ type ClaimMessage = {
 }
 
 const CLAIMABLE_AMOUNT = 10
-// TODO: Add better error responses
 export const claimFriendRewards = async ({
   message,
   signature,

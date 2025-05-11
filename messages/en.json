@@ -179,6 +179,7 @@
       "claimed": "JUZ Claimed!"
     },
     "errors": {
+      "tooManyGifts": "Límite de regalos alcanzado",
       "somethingWentWrong": "Something wrong ocurred"
     },
     "inviteMessage": "<inviting></inviting> sent you a gift for joining the trivia mini game JUZ."

@@ -20,6 +20,8 @@ import { useRouter } from "next/navigation"
 import { trackEvent } from "./posthog"
 import { useTranslations } from "next-intl"
 
+const MAX_GIFTS_PER_RECIPIENT = 10 // 100 JUZ
+
 export default function InviteSentinel() {
   const t = useTranslations("InviteSentinel")
   const [isOpen, setIsOpen] = useState(false)
@@ -46,6 +48,12 @@ export default function InviteSentinel() {
     if (!address) return signIn()
 
     const nonce = (await getTotalInteractions(address)).totalInterations
+    if (nonce > MAX_GIFTS_PER_RECIPIENT) {
+      return toast.error({
+        title: t("errors.tooManyGifts"),
+      })
+    }
+
     const message = JSON.stringify({
       sender: inviting,
       deadline: Math.round(Date.now() / 1_000 + 60 * 3),
