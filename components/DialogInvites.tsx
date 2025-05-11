@@ -12,6 +12,7 @@ import {
   AlertDialogTrigger,
 } from "@worldcoin/mini-apps-ui-kit-react"
 import { useWorldAuth } from "@radish-la/world-auth"
+import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 
@@ -31,6 +32,8 @@ export default function DialogInvites({
 }: {
   trigger?: React.ReactNode
 }) {
+  const t = useTranslations("DialogInvites")
+
   const { user } = useWorldAuth()
   const address = user?.walletAddress
   const {
@@ -63,18 +66,18 @@ export default function DialogInvites({
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent className="[&_.size-10]:translate-x-2 [&_[aria-role=header]]:items-start [&_.size-10]:-translate-y-2">
         <AlertDialogHeader aria-role="header">
-          <h2 className="text-2xl font-semibold">Invite your friends</h2>
+          <h2 className="text-2xl font-semibold">{t("title")}</h2>
         </AlertDialogHeader>
 
         <div className="mb-5 -mt-4">
           <AlertDialogDescription className="mb-8">
-            You and your friend get{" "}
-            <strong className="font-medium">10 JUZ</strong> each when invite is
-            accepted and claimed.
+            {t.rich("description", {
+              amount: () => <strong className="font-medium">10 JUZ</strong>,
+            })}
           </AlertDialogDescription>
 
           <section className="p-4 relative rounded-2xl border-3 border-black shadow-3d">
-            <h2 className="text-sm">Total invited</h2>
+            <h2 className="text-sm">{t("totalInvited")}</h2>
             <p className="text-2xl font-semibold">
               {isLoading ? "--" : invited}
             </p>
@@ -96,7 +99,7 @@ export default function DialogInvites({
             onClick={handleCopyLink}
             className="bg-juz-green-lime rounded-full flex items-center !pr-4 justify-between h-14 text-base"
           >
-            <span>Copy invite link</span>
+            <span>{t("copyLink")}</span>
             <BiSolidCopy className="text-xl" />
           </LemonButton>
         </AlertDialogFooter>

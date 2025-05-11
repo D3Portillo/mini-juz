@@ -182,5 +182,11 @@
       "somethingWentWrong": "Something wrong ocurred"
     },
     "inviteMessage": "<inviting></inviting> sent you a gift for joining the trivia mini game JUZ."
+  },
+  "DialogInvites": {
+    "title": "Invite your friends",
+    "copyLink": "Copy invite link",
+    "totalInvited": "Total invited",
+    "description": "You and your friend get <amount></amount> each when invite is accepted and claimed."
   }
 }

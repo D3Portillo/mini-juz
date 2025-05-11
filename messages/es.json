@@ -182,5 +182,11 @@
       "somethingWentWrong": "Oops. Algo malo ocurrió"
     },
     "inviteMessage": "<inviting></inviting> te envió un regalo de 10 JUZ. Para usarlos en el mini juego de trivia."
+  },
+  "DialogInvites": {
+    "title": "Invita a tus amigos",
+    "copyLink": "Copiar link",
+    "totalInvited": "Amigos invitados",
+    "description": "Tú y tu amigo reciben <amount></amount> cada uno cuando se acepta y reclama la invitación."
   }
 }
