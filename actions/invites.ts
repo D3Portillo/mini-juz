@@ -3,7 +3,7 @@
 import type { Address, Hash } from "viem"
 import ProtocolKit, { hashSafeMessage } from "@safe-global/protocol-kit"
 import { Redis } from "@upstash/redis"
-import { incrPlayerJUZEarned, isValidPlayer } from "./game"
+import { getPlayerPoints, incrPlayerJUZEarned, isValidPlayer } from "./game"
 import { worldchain } from "viem/chains"
 
 const redis = Redis.fromEnv()
@@ -87,6 +87,12 @@ export const claimFriendRewards = async ({
   // Can't invite same person back
   if (await inviteExits(sender, recipient)) {
     return errorState("AlreadyInvited")
+  }
+
+  const recipientPoints = (await getPlayerPoints(recipient)) || 0
+  if (recipientPoints >= CLAIMABLE_AMOUNT * 2) {
+    // Allow people to farm at most 2 times the gifted JUZ
+    return errorState("NotFreshRecipient")
   }
 
   // Must have played at least one game
