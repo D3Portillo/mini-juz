@@ -11,6 +11,7 @@ import WorldProvider from "@/components/world-provider"
 import { Toaster as WorldToaster } from "@worldcoin/mini-apps-ui-kit-react"
 import GameSentinel from "./GameSentinel"
 import MainLayout from "./MainLayout"
+import InviteSentinel from "@/components/InviteSentinel"
 
 const fontRubik = Rubik({
   subsets: [],
@@ -61,8 +62,9 @@ export default async function RootLayout({
       >
         <WelcomeModal />
         <WorldToaster duration={2_500} />
-        <GameSentinel />
         <WorldProvider>
+          <GameSentinel />
+          <InviteSentinel />
           <ErudaProvider>
             <NextIntlClientProvider>
               <MainLayout>{children}</MainLayout>

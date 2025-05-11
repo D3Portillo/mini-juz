@@ -105,7 +105,7 @@ export default function PageProfile() {
                 style={{
                   backgroundImage: `url(${asset_bg.src})`,
                 }}
-                className="border-3 relative outline-none grid gap-1 pt-4 pb-3 place-items-center rounded-2xl bg-cover bg-center bg-black/90 border-black shadow-3d-lg"
+                className="border-3 relative outline-none grid gap-1 pt-6 pb-4 place-items-center rounded-2xl bg-cover bg-center bg-black/90 border-black shadow-3d-lg"
               >
                 <MdOutlineArrowOutward className="absolute text-2xl text-white top-3 right-3" />
                 <h2 className="font-semibold text-6xl text-juz-green-lime">
@@ -124,8 +124,8 @@ export default function PageProfile() {
 
                   <div className="flex-grow">
                     <span className="text-lg">{t("inviteYourFriends")}</span>
-                    <nav className="flex mt-0.5 mb-1">
-                      <div className="pl-2 pr-3 py-1 text-xs font-medium flex items-center gap-1 border rounded-full text-black border-juz-green-lime bg-juz-green-lime/15">
+                    <nav className="flex my-1">
+                      <div className="pl-2 pr-3 py-1 text-xs font-semibold flex items-center gap-1 border rounded-full text-black border-juz-green-lime bg-juz-green-lime/15">
                         <FaLemon />
                         <span>10 JUZ / {tglobal("friend")}</span>
                       </div>
