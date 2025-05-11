@@ -64,9 +64,9 @@ export default async function RootLayout({
         <WorldToaster duration={2_500} />
         <WorldProvider>
           <GameSentinel />
-          <InviteSentinel />
           <ErudaProvider>
             <NextIntlClientProvider>
+              <InviteSentinel />
               <MainLayout>{children}</MainLayout>
             </NextIntlClientProvider>
           </ErudaProvider>

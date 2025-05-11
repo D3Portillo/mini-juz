@@ -18,8 +18,10 @@ import { MiniKit } from "@worldcoin/minikit-js"
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/navigation"
 import { trackEvent } from "./posthog"
+import { useTranslations } from "next-intl"
 
 export default function InviteSentinel() {
+  const t = useTranslations("InviteSentinel")
   const [isOpen, setIsOpen] = useState(false)
   const { user, signIn } = useWorldAuth()
 
@@ -29,7 +31,6 @@ export default function InviteSentinel() {
   const inviting = searchParams.get("invite")
 
   useLayoutEffect(() => {
-    console.debug({ inviting })
     if (inviting) setIsOpen(true)
   }, [inviting])
 
@@ -69,11 +70,11 @@ export default function InviteSentinel() {
           recipient: address,
         })
         toast.success({
-          title: "JUZ Claimed!",
+          title: t("success.claimed"),
         })
       } else {
         toast.error({
-          title: `Error: ${result.error || "Something wrong ocurred"}`,
+          title: `Error: ${result.error || t("errors.somethingWentWrong")}`,
         })
       }
     }
@@ -85,20 +86,23 @@ export default function InviteSentinel() {
         <AlertDialog onClose={closeModal} open>
           <AlertDialogContent className="[&_.size-10]:translate-x-2 [&_[aria-role=header]]:items-start [&_.size-10]:-translate-y-2">
             <AlertDialogHeader aria-role="header">
-              <h2 className="text-2xl font-semibold">🎁 Gift available</h2>
+              <h2 className="text-2xl font-semibold">{t("title")}</h2>
             </AlertDialogHeader>
 
             <AlertDialogDescription asChild>
               <div className="mb-4 [&_strong]:font-medium [&_p:not(:last-child)]:mb-2">
-                <div className="px-2 py-1 text-xs font-semibold inline-flex items-center gap-1 border rounded-full text-black border-juz-green-lime bg-juz-green-lime/15">
-                  {data?.username || beautifyAddress(inviting, 5, "")}
-                </div>{" "}
-                sent you a gift for joining the trivia mini game JUZ.
+                {t.rich("inviteMessage", {
+                  inviting: () => (
+                    <div className="px-2 py-0.5 text-sm font-semibold inline-flex items-center gap-1 border rounded-full text-black border-juz-green-lime bg-juz-green-lime/15">
+                      {data?.username || beautifyAddress(inviting, 5, "")}
+                    </div>
+                  ),
+                })}
               </div>
             </AlertDialogDescription>
 
             <AlertDialogFooter>
-              <Button onClick={handleClaimJUZ}>Claim 10 JUZ</Button>
+              <Button onClick={handleClaimJUZ}>{t("claim")}</Button>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>

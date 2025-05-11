@@ -171,5 +171,16 @@
     "success": {
       "locked": "JUZ bloqueado con éxito"
     }
+  },
+  "InviteSentinel": {
+    "title": "🎁 Regalo disponible",
+    "claim": "Reclamar regalo",
+    "success": {
+      "claimed": "JUZ Reclamado"
+    },
+    "errors": {
+      "somethingWentWrong": "Oops. Algo malo ocurrió"
+    },
+    "inviteMessage": "<inviting></inviting> te envió un regalo de 10 JUZ. Para usarlos en el mini juego de trivia."
   }
 }

@@ -171,5 +171,16 @@
     "success": {
       "locked": "JUZ locked successfully"
     }
+  },
+  "InviteSentinel": {
+    "title": "🎁 Gift available",
+    "claim": "Claim 10 JUZ",
+    "success": {
+      "claimed": "JUZ Claimed!"
+    },
+    "errors": {
+      "somethingWentWrong": "Something wrong ocurred"
+    },
+    "inviteMessage": "<inviting></inviting> sent you a gift for joining the trivia mini game JUZ."
   }
 }
