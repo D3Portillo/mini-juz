@@ -17,6 +17,7 @@ import {
 import { MiniKit } from "@worldcoin/minikit-js"
 import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/navigation"
+import { trackEvent } from "./posthog"
 
 export default function InviteSentinel() {
   const [isOpen, setIsOpen] = useState(false)
@@ -63,6 +64,10 @@ export default function InviteSentinel() {
 
       if (result.success) {
         closeModal()
+        trackEvent("invite-accepted", {
+          sender: inviting,
+          recipient: address,
+        })
         toast.success({
           title: "JUZ Claimed!",
         })

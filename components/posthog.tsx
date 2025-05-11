@@ -15,6 +15,7 @@ type PostHogEvents =
   | "heart-refilled" // added
   | "new-player" // added
   | "updated-locale" // added
+  | "invite-accepted" // added
 
 export const trackEvent = (
   event: PostHogEvents,
