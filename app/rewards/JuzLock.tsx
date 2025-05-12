@@ -15,6 +15,7 @@ import { trackEvent } from "@/components/posthog"
 import LemonButton from "@/components/LemonButton"
 import LemonIcon from "@/components/LemonIcon"
 import ReusableDialog from "@/components/ReusableDialog"
+import { JUZDistributionModal } from "./JuzDistributionModal"
 
 const LOCK_2W = "2W" as const
 const LOCK_1Y = "1Y" as const
@@ -30,7 +31,7 @@ export default function JuzLock() {
   const { toast } = useToast()
   const { lock } = useLockJUZ(inputHandler.formattedValue)
   const { isConnected, signIn } = useWorldAuth()
-  const { JUZToken } = useAccountBalances()
+  const { JUZToken, lockedJUZ } = useAccountBalances()
 
   const isStakingZero = !(inputHandler.value > 0)
 
@@ -72,7 +73,16 @@ export default function JuzLock() {
       <h2 className="font-semibold text-xl">{t("title")}</h2>
 
       <fieldset className="mt-4">
-        <p className="font-semibold">{t("lockAmount")}</p>
+        <nav className="flex items-center justify-between">
+          <strong className="font-semibold">{t("lockAmount")}</strong>
+          {(lockedJUZ.formatted as any) > 1e-3 ? (
+            <JUZDistributionModal>
+              <button className="text-sm fade-in animate-in font-semibold">
+                JUZ {tglobal("locked")}: {shortifyDecimals(lockedJUZ.formatted)}
+              </button>
+            </JUZDistributionModal>
+          ) : null}
+        </nav>
 
         <label className="flex mt-1 gap-2 p-3 bg-juz-green/10 rounded-xl items-center border-2 border-black shadow-3d">
           <LemonIcon className="size-7 shrink-0">

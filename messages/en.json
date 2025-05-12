@@ -143,8 +143,8 @@
   "JuzLock": {
     "title": "Lock JUZ. Get veJUZ 🍋",
     "confirmLock": "Confirm & Lock",
-    "lockAmount": "Lock amount",
-    "lockDuration": "Lock duration",
+    "lockAmount": "Amount",
+    "lockDuration": "Duration",
     "errors": {
       "validAmount": "Please enter a valid amount"
     },
