@@ -162,8 +162,7 @@ export default function PageRewards() {
                   </p>
 
                   <LemonButton
-                    // Back to home atm - later update to marketplace
-                    onClick={() => router.push("/")}
+                    onClick={() => router.push("/market")}
                     className="flex whitespace-nowrap py-3 text-base mt-4 items-center gap-4"
                   >
                     <span>{t("getJUZ")}</span>

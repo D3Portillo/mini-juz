@@ -195,8 +195,8 @@ export default function PageMarket() {
               </figure>
 
               <div className="w-full">
-                <h2 className="font-medium text-xl">
-                  JUZ Pack <span className="text-juz-orange">#1</span>
+                <h2 className="font-medium whitespace-nowrap text-xl">
+                  JUZ Pack <span className="text-juz-orange">#PRO</span>
                 </h2>
 
                 <p className="text-sm opacity-70">
@@ -220,8 +220,8 @@ export default function PageMarket() {
               </figure>
 
               <div className="w-full">
-                <h2 className="font-medium text-xl">
-                  JUZ Pack <span className="text-juz-orange">#2</span>
+                <h2 className="font-medium whitespace-nowrap text-xl">
+                  JUZ Pack <span className="text-juz-orange">#ULTRA</span>
                 </h2>
 
                 <p className="text-sm opacity-70">
