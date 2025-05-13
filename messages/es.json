@@ -16,11 +16,13 @@
   },
   "Home": {
     "play": "Jugar",
+    "claimNow": "Reclamar",
     "errors": {
       "noHeartsLeft": "😢 No tienes puntos para jugar",
       "connect": "Conecta tu wallet para continuar"
     },
     "success": {
+      "juzAvailable": "🍋 JUZ Token disponible",
       "juzEarned": "Genial! {amount} JUZ ganados"
     },
     "dailyRefill": {

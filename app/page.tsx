@@ -12,6 +12,8 @@ import { useUserTopics } from "@/lib/atoms/topics"
 import { openHeartsDialog } from "@/lib/utils"
 import { trackEvent } from "@/components/posthog"
 
+import { useAccountBalances } from "@/lib/atoms/balances"
+
 import {
   incrementGamesPlayed,
   incrementGamesWon,
@@ -26,11 +28,13 @@ import LeaderBoard from "@/components/LeaderBoard"
 import DialogHearts from "@/components/DialogHearts"
 import DailyRefill from "@/components/banners/DailyRefill"
 
+import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
 import { MANAGE_HEARTS_TRIGGER_ID } from "@/lib/constants"
-import asset_limoncito from "@/assets/limoncito.png"
 
 import HomeNavigation from "./HomeNavigation"
 import ModalGame from "./ModalGame"
+
+import asset_limoncito from "@/assets/limoncito.png"
 
 export default function PageHome() {
   const { toast } = useToast()
@@ -40,6 +44,7 @@ export default function PageHome() {
   const { hearts } = usePlayerHearts()
   const { gameTopics, shuffleTopics, isEmpty } = useUserTopics()
   const { user, signIn, isConnected } = useWorldAuth()
+  const { JUZPoints } = useAccountBalances()
 
   const [showGame, setShowGame] = useState(null as { topic?: string } | null)
   const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
@@ -129,17 +134,22 @@ export default function PageHome() {
 
         <TabsContent asChild value="play">
           <div className="px-4 mb-12">
-            {hearts > 0 ? null : (
-              <div className="mt-4 animate-in fade-in slide-in-from-top-5 flex items-center justify-between text-sm bg-black text-white px-4 py-2 rounded-full">
-                <span>{t("errors.noHeartsLeft")}</span>
-                <button
+            {JUZPoints.isOnchainSynced ? (
+              hearts > 0 ? null : (
+                <HomeAlert
+                  content={t("errors.noHeartsLeft")}
+                  actionText={t("refillNow")}
                   onClick={openHeartsDialog}
-                  className="font-medium -mt-0.5 underline underline-offset-2"
-                >
-                  {t("refillNow")}
-                </button>
-              </div>
-            )}
+                />
+              )
+            ) : (JUZPoints.formatted as any) > 2 ? (
+              <JUZDistributionModal>
+                <HomeAlert
+                  content={t("success.juzAvailable")}
+                  actionText={t("claimNow")}
+                />
+              </JUZDistributionModal>
+            ) : null}
 
             <div className="size-full rounded-full mt-12 overflow-clip grid place-items-center">
               <WheelSpin
@@ -198,5 +208,27 @@ export default function PageHome() {
         </TabsContent>
       </main>
     </Tabs>
+  )
+}
+
+function HomeAlert({
+  content,
+  actionText,
+  onClick,
+}: {
+  content: string
+  actionText: string
+  onClick?: () => void
+}) {
+  return (
+    <div className="mt-4 animate-in fade-in slide-in-from-top-5 flex items-center justify-between text-sm bg-black text-white px-4 py-2 rounded-full">
+      <span>{content}</span>
+      <button
+        onClick={onClick}
+        className="font-medium -mt-0.5 underline underline-offset-2"
+      >
+        {actionText}
+      </button>
+    </div>
   )
 }

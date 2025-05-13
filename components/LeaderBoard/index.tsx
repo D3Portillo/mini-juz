@@ -32,6 +32,8 @@ export default function LeaderBoard() {
   const connectedUserAddress = user?.walletAddress!
   const isEmpty = leaderboard.length <= 0
 
+  console.debug({ leaderboard })
+
   return (
     <section className="px-4 mt-4 mb-10 flex flex-col gap-2">
       <div className="flex h-12 whitespace-nowrap px-5 gap-4 font-semibold rounded-2xl border-2 shadow-3d border-black items-center bg-gradient-to-bl from-juz-green-lime to-juz-green-ish">
