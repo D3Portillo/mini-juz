@@ -12,7 +12,7 @@ import { formatUSDC } from "@/lib/tokens"
 import { getDateFnsLocal } from "@/lib/date-locale"
 
 import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
-import { useAccountData, useGameRank } from "@/lib/atoms/user"
+import { useAccountData, useGameRank, useProfileImage } from "@/lib/atoms/user"
 import { beautifyAddress } from "@/lib/utils"
 
 export default function LeaderBoard() {
@@ -26,6 +26,7 @@ export default function LeaderBoard() {
   } = useLeaderboard()
 
   const { rank } = useGameRank(user?.walletAddress || null)
+  const { image } = useProfileImage()
 
   const connectedUsername = user?.username
   const connectedUserAddress = user?.walletAddress!
@@ -89,16 +90,14 @@ export default function LeaderBoard() {
               </JUZDistributionModal>
             </nav>
 
-            <nav className="flex mt-3 items-center gap-3">
+            <nav className="flex mt-3 items-center gap-2.5">
               <figure
                 style={{
-                  backgroundImage: `url(${
-                    user?.profilePictureUrl || "/marble.png"
-                  })`,
+                  backgroundImage: `url(${image})`,
                 }}
-                className="size-9 bg-cover bg-center bg-black/10 border-black border-2 rounded-full"
+                className="size-10 bg-cover bg-center bg-black/10 border-black border-2 rounded-full"
               />
-              <h3 className="font-semibold text-xl">
+              <h3 className="font-semibold text-[1.35rem]">
                 {connectedUsername ||
                   beautifyAddress(connectedUserAddress, 4, "")}{" "}
                 ({t("you")})

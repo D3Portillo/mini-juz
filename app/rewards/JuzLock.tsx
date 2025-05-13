@@ -78,7 +78,7 @@ export default function JuzLock() {
           {(lockedJUZ.formatted as any) > 1e-3 ? (
             <JUZDistributionModal>
               <button className="text-sm fade-in animate-in font-semibold">
-                JUZ {tglobal("locked")}: {shortifyDecimals(lockedJUZ.formatted)}
+                {tglobal("locked")}: {shortifyDecimals(lockedJUZ.formatted)} JUZ
               </button>
             </JUZDistributionModal>
           ) : null}

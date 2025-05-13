@@ -42,7 +42,10 @@
     "support": "Soporte",
     "totalJUZ": "Balance total de JUZ",
     "inviteYourFriends": "Invita a tus amigos",
-    "lockMyJUZ": "Generar ganancias"
+    "lockMyJUZ": "Generar ganancias",
+    "errors": {
+      "fileTooBig": "Archivo mayor a 2MB"
+    }
   },
   "ProfileMenu": {
     "clipboardCopied": "Copiado a la papelera",

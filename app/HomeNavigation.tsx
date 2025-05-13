@@ -6,12 +6,14 @@ import { useTranslations } from "next-intl"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { useRouter } from "next/navigation"
 
+import { useAccountBalances } from "@/lib/atoms/balances"
+import { useProfileImage } from "@/lib/atoms/user"
+import { shortifyDecimals } from "@/lib/numbers"
+
 import { FaRegLemon } from "react-icons/fa"
 
 import LemonIcon from "@/components/LemonIcon"
 import MainSelect from "@/components/MainSelect"
-import { useAccountBalances } from "@/lib/atoms/balances"
-import { shortifyDecimals } from "@/lib/numbers"
 import FixedTopContainer from "@/components/FixedTopContainer"
 
 export default function HomeNavigation() {
@@ -20,6 +22,7 @@ export default function HomeNavigation() {
   const tglobal = useTranslations("global")
 
   const { user, signIn, signOut, isConnected } = useWorldAuth()
+  const { image } = useProfileImage()
 
   const PROFILE = (
     <button
@@ -28,7 +31,7 @@ export default function HomeNavigation() {
     >
       <figure
         style={{
-          backgroundImage: `url(${user?.profilePictureUrl || "/marble.png"})`,
+          backgroundImage: `url(${image})`,
         }}
         className="size-10 bg-cover bg-center bg-black/3 border-2 shadow-3d-bottom border-black rounded-full overflow-hidden"
       />

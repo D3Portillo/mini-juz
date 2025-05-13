@@ -2,7 +2,7 @@ name: Update Leaderboard
 
 on:
   schedule:
-    - cron: "0 * * * *" # Each hour backup
+    - cron: "0 */2 * * *" # 2 hour backup (in case vercel down or smth else)
   workflow_dispatch: # Allow manual trigger
 
 jobs:

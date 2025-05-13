@@ -22,10 +22,11 @@ import {
 } from "react-icons/fa"
 
 import { TbWorldPin } from "react-icons/tb"
-import { RiHeartAdd2Fill } from "react-icons/ri"
+import { RiHeartAdd2Fill, RiUploadCloud2Fill } from "react-icons/ri"
 
 import { useAccountGameData } from "@/lib/atoms/game"
 import { useAccountBalances } from "@/lib/atoms/balances"
+import { useProfileImage } from "@/lib/atoms/user"
 import { shortifyDecimals } from "@/lib/numbers"
 
 import FixedTopContainer from "@/components/FixedTopContainer"
@@ -37,13 +38,17 @@ import LanguageMenu from "./LanguageMenu"
 
 import asset_bg from "@/assets/bg.png"
 
+// TODO: JUZ Royale mode - bet to be the king of the hill
+
 export default function PageProfile() {
+  const router = useRouter()
   const locale = useLocale()
+
   const tglobal = useTranslations("global")
   const t = useTranslations("Profile")
 
-  const router = useRouter()
   const { user, isConnected, signIn } = useWorldAuth()
+  const { image, setImage } = useProfileImage()
   const { played, won } = useAccountGameData()
   const { TotalJUZBalance } = useAccountBalances()
 
@@ -72,14 +77,32 @@ export default function PageProfile() {
         )}
 
         <div className="grid place-items-center">
-          <figure
+          <label
             style={{
-              backgroundImage: `url(${
-                user?.profilePictureUrl || "/marble.png"
-              })`,
+              backgroundImage: `url(${image})`,
             }}
-            className="bg-cover size-24 bg-center bg-black/3 border-2 shadow-3d border-black rounded-full overflow-hidden"
-          />
+            className="bg-cover relative size-24 bg-center bg-black/3 border-2 shadow-3d border-black rounded-full"
+          >
+            {isConnected ? (
+              <Fragment>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) return setImage(file)
+
+                    // Reset input value
+                    e.target.value = ""
+                  }}
+                  className="absolute inset-0 pointer-events-none opacity-0"
+                />
+                <div className="absolute size-7 rounded-xl flex items-center justify-center top-0 -right-1 bg-black/75 border border-black backdrop-blur text-white">
+                  <RiUploadCloud2Fill className="text-lg scale-90" />
+                </div>
+              </Fragment>
+            ) : null}
+          </label>
 
           <strong className="font-semibold text-xl mt-2">
             {isConnected ? user?.username : tglobal("not-connected")}

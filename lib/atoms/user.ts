@@ -1,8 +1,12 @@
 "use client"
 
-import { Address } from "viem"
+import type { Address } from "viem"
+
 import { useAtom } from "jotai"
 import useSWR from "swr"
+import { useWorldAuth } from "@radish-la/world-auth"
+import { useTranslations } from "next-intl"
+import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 
 import { getPlayerRank } from "@/actions/game"
 import { atomWithStorage } from "jotai/utils"
@@ -96,5 +100,41 @@ export const useGameRank = (address: Address | null) => {
 
   return {
     rank: data,
+  }
+}
+
+const atomImage = atomWithStorage("juz.imagePF", null as string | null)
+
+export const useProfileImage = () => {
+  const [localStorageImage, setLocalStorageImage] = useAtom(atomImage)
+
+  const t = useTranslations("Profile")
+  const { user, isConnected } = useWorldAuth()
+  const { toast } = useToast()
+
+  function setImage(image: File) {
+    if (image.size > 2 * 1024 * 1024) {
+      return toast.error({
+        title: t("errors.fileTooBig"),
+      })
+    }
+
+    if (image.type.startsWith("image/")) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const result = e.target?.result as string
+        if (result) setLocalStorageImage(result)
+      }
+
+      reader.readAsDataURL(image)
+    }
+  }
+
+  const WORLD_IMAGES = user?.profilePictureUrl || "/marble.png"
+
+  return {
+    setImage,
+    // Do not show localStorage image if user is not connected
+    image: isConnected ? localStorageImage || WORLD_IMAGES : WORLD_IMAGES,
   }
 }

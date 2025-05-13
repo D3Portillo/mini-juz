@@ -42,7 +42,10 @@
     "support": "Contact support",
     "totalJUZ": "Total JUZ Balance",
     "inviteYourFriends": "Invite your friends",
-    "lockMyJUZ": "Lock my JUZ"
+    "lockMyJUZ": "Lock my JUZ",
+    "errors": {
+      "fileTooBig": "File greater than 2MB"
+    }
   },
   "ProfileMenu": {
     "clipboardCopied": "Copied to clipboard",
@@ -70,7 +73,7 @@
       "juzBought": "Long live the Master of JUZ"
     },
     "templates": {
-      "buyJUZ": "<amount></amount> added to your balance",
+      "buyJUZ": "<amount></amount> to your balance",
       "confirmBuyJUZ": "Confirm to buy {amount} JUZ in JUZ Mini App",
       "heartPointsExplainer": "Buy a pack of {amount} hearts. Hearts will be added to your current heart points.",
       "buyHearts": "Confirm to buy a Pack of {amount} hearts in JUZ Mini App"
