@@ -21,7 +21,6 @@ export default function HomeNavigation() {
 
   const { user, signIn, signOut, isConnected } = useWorldAuth()
 
-  // TODO: Localstorage allow to set profile
   const PROFILE = (
     <button
       onClick={isConnected ? undefined : signIn}

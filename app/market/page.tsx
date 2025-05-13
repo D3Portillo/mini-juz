@@ -2,7 +2,7 @@
 
 import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { MiniKit } from "@worldcoin/minikit-js"
 import { erc20Abi, parseEther } from "viem"
@@ -97,24 +97,26 @@ export default function PageMarket() {
     }
   }
 
-  async function handleBuyJUZ() {
+  async function handleBuyJUZ(juzAmount: number, costInWLD: number) {
     const address = user?.walletAddress
     if (!address) return signIn()
 
     const result = await executeWorldPayment({
-      amount: 10, // 10 WLD
+      amount: costInWLD,
       initiatorAddress: address,
-      paymentDescription: "Confirm to buy the JUZ Master NFT in JUZ Mini App",
+      paymentDescription: t("templates.confirmBuyJUZ", {
+        amount: juzAmount,
+      }),
     })
 
     if (result) {
-      // TODO: Handle NFT Minting
       incrPlayerJUZEarned(
         address,
-        300 // Add JUZ bought
+        juzAmount // Add JUZ bought
       )
+
       return toast.success({
-        title: "Long live the Master of JUZ",
+        title: t("success.juzBought"),
       })
     }
   }
@@ -158,36 +160,87 @@ export default function PageMarket() {
         </nav>
 
         {isJUZPayment ? null : (
-          <section
-            // TODO: Include after mini app approval
-            className="p-4 hidden -flex gap-6 rounded-2xl border-2 border-black shadow-3d"
-          >
-            <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
-              <div className="text-5xl">🍋</div>
-            </figure>
+          <Fragment>
+            <section
+              // TODO: Include after mini app approval
+              className="p-4 hidden -flex gap-6 rounded-2xl border-2 border-black shadow-3d"
+            >
+              <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
+                <div className="text-5xl">🍋</div>
+              </figure>
 
-            <div>
-              <h2 className="font-medium text-xl">
-                JUZ Master <span className="text-juz-orange">NFT</span>
-              </h2>
+              <div>
+                <h2 className="font-medium text-xl">
+                  JUZ Master <span className="text-juz-orange">NFT</span>
+                </h2>
 
-              <p className="text-sm opacity-70">
-                Get an exclusive early adopter NFT in{" "}
-                <strong>worldchain</strong> your first purchase.
-              </p>
+                <p className="text-sm opacity-70">
+                  Get an exclusive early adopter NFT in{" "}
+                  <strong>worldchain</strong> your first purchase.
+                </p>
 
-              <p className="text-sm mt-2 opacity-70">
-                <strong>300 JUZ</strong> to your account.
-              </p>
+                <p className="text-sm mt-2 opacity-70">
+                  <strong>300 JUZ</strong> to your account.
+                </p>
 
-              <LemonButton
-                onClick={handleBuyJUZ}
-                className="py-3 rounded-full text-base w-full mt-5"
-              >
-                Buy for 10 WLD
-              </LemonButton>
-            </div>
-          </section>
+                <LemonButton className="py-3 rounded-full text-base w-full mt-5">
+                  Buy for 10 WLD
+                </LemonButton>
+              </div>
+            </section>
+
+            <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
+              <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
+                <div className="text-5xl scale-105">🍋</div>
+              </figure>
+
+              <div className="w-full">
+                <h2 className="font-medium text-xl">
+                  JUZ Pack <span className="text-juz-orange">#1</span>
+                </h2>
+
+                <p className="text-sm opacity-70">
+                  {t.rich("templates.buyJUZ", {
+                    amount: () => <strong>300 JUZ</strong>,
+                  })}
+                </p>
+
+                <LemonButton
+                  onClick={() => handleBuyJUZ(300, 3)}
+                  className="py-3 rounded-full text-base w-full mt-5"
+                >
+                  {t("buyFor")} 3 WLD
+                </LemonButton>
+              </div>
+            </section>
+
+            <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
+              <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
+                <div className="text-5xl">🍎</div>
+              </figure>
+
+              <div className="w-full">
+                <h2 className="font-medium text-xl">
+                  JUZ Pack <span className="text-juz-orange">#2</span>
+                </h2>
+
+                <p className="text-sm opacity-70">
+                  {t.rich("templates.buyJUZ", {
+                    amount: () => <strong>600 JUZ</strong>,
+                  })}
+                </p>
+
+                <LemonButton
+                  onClick={() => handleBuyJUZ(600, 5)}
+                  className="py-3 rounded-full text-base w-full mt-5"
+                >
+                  {t("buyFor")} 5 WLD
+                </LemonButton>
+              </div>
+            </section>
+
+            <hr className="-mx-4 my-1.5" />
+          </Fragment>
         )}
 
         <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">

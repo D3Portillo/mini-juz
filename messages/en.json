@@ -66,9 +66,12 @@
       "noBalance": "Insufficient JUZ balance"
     },
     "success": {
-      "purchagedHearts": "Paquete de corazones comprado!"
+      "purchagedHearts": "Pack of hearts purchased",
+      "juzBought": "Long live the Master of JUZ"
     },
     "templates": {
+      "buyJUZ": "<amount></amount> added to your balance",
+      "confirmBuyJUZ": "Confirm to buy {amount} JUZ in JUZ Mini App",
       "heartPointsExplainer": "Buy a pack of {amount} hearts. Hearts will be added to your current heart points.",
       "buyHearts": "Confirm to buy a Pack of {amount} hearts in JUZ Mini App"
     },
