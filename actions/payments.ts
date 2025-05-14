@@ -8,6 +8,8 @@ import {
 } from "@worldcoin/minikit-js"
 import { generateUUID, serializeBigint } from "@/lib/utils"
 import { ADDRESS_JUZ } from "@/lib/constants"
+import { getHardwareType } from "@/lib/window"
+import { incrPlayerJUZEarned, subtrPlayerJUZEarned } from "./game"
 
 export const MINI_APP_RECIPIENT = "0x05a700132Fb88D4F565453153E6b05F2049fCb45"
 
@@ -55,9 +57,33 @@ export const executeWorldPayment = async ({
 
 export const executeJUZPayment = async ({
   amount,
+  initiatorAddress,
 }: {
   amount: number | string
+  initiatorAddress: Address
 }) => {
+  const { isIOS } = getHardwareType()
+
+  if (isIOS) {
+    try {
+      // Use siganture request as a way to confirm the payment
+      const { finalPayload } = await MiniKit.commandsAsync.signMessage({
+        message: `Redeeming ${amount} JUZ`,
+      })
+
+      if (finalPayload.status !== "success") return null
+
+      // We only interact with "points" on iOS
+      await subtrPlayerJUZEarned(initiatorAddress, Number(amount))
+      return {
+        status: "success",
+        from: initiatorAddress,
+      }
+    } catch (_) {}
+
+    return null
+  }
+
   const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
     transaction: [
       {

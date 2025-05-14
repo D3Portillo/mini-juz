@@ -80,6 +80,7 @@
       "heartPointsExplainer": "Buy a pack of {amount} hearts. Hearts will be added to your current heart points.",
       "buyHearts": "Confirm to buy a Pack of {amount} hearts in JUZ Mini App"
     },
+    "exchangeFor": "Redeem for",
     "buyFor": "Buy for"
   },
   "JUZDistributionModal": {
@@ -93,7 +94,7 @@
       "claimed": "Yaay. {amount} JUZ claimed!"
     },
     "explainers": {
-      "points": "Trivia earned + ERC20 Tokens",
+      "points": "Trivia earned + {isIOS, select, true {other holdings} other {ERC20 Tokens}}",
       "locked": "Balance locked in pools",
       "earned": "Rewards claimed for JUZ locking"
     }
@@ -120,7 +121,7 @@
     "buyRefillMessage": "Confirm to refill a total of {hearts} hearts in JUZ Mini App",
     "claimFree": "Claim free refill",
     "refillNow": "Refill now",
-    "refillWithJUZ": "Refill For 7.5 JUZ",
+    "refillWithJUZ": "Refill For {amount} JUZ",
     "heartCount": "Your hearts ({hearts})"
   },
   "ModalGame": {

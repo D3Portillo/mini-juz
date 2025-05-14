@@ -80,6 +80,7 @@
       "heartPointsExplainer": "Compra un paquete de {amount} corazones. Se sumarán a tus corazones actuales.",
       "buyHearts": "Confirma para comprar un paquete de {amount} corazones en la Mini App de JUZ."
     },
+    "exchangeFor": "Cambiar por",
     "buyFor": "Comprar x "
   },
   "JUZDistributionModal": {
@@ -120,7 +121,7 @@
     "buyRefillMessage": "Confirma para recargar {hearts} corazones en JUZ Mini App.",
     "claimFree": "Refill gratis",
     "refillNow": "Comprar refill",
-    "refillWithJUZ": "Rellenar por 7.5 JUZ",
+    "refillWithJUZ": "Rellenar por {amount} JUZ",
     "heartCount": "Tus puntos ({hearts})"
   },
   "ModalGame": {

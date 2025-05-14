@@ -10,10 +10,12 @@ import { useAccountBalances } from "@/lib/atoms/balances"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { MiniKit } from "@worldcoin/minikit-js"
 import { formatEther } from "viem"
+
 import { shortifyDecimals } from "@/lib/numbers"
 import { getDispenserPayload } from "@/actions/dispenser"
 import { serializeBigint } from "@/lib/utils"
 import { trackEvent } from "@/components/posthog"
+import { useHardwareType } from "@/lib/window"
 import { getUnoDeeplinkUrl } from "@/lib/deeplinks"
 
 import ReusableDialog from "@/components/ReusableDialog"
@@ -30,6 +32,7 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
   const [lastClaim, setLastClaim] = useAtom(atomlastClaim)
   const { user, signIn } = useWorldAuth()
   const { toast } = useToast()
+  const { isIOS } = useHardwareType()
   const { JUZToken, JUZPoints, VE_JUZ, lockedJUZ, mutate, data } =
     useAccountBalances()
 
@@ -127,7 +130,11 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
         <nav className="flex justify-between gap-6 w-full">
           <div className="w-32">
             <strong className="text-juz-green text-lg">JUZ</strong>
-            <p className="text-xs opacity-75">{t("explainers.points")}</p>
+            <p className="text-xs opacity-75">
+              {t("explainers.points", {
+                isIOS: `${isIOS}`,
+              })}
+            </p>
           </div>
           <span className="text-xl mt-1 font-medium">
             {shortifyDecimals(formatEther(JUZHoldings), 5)}

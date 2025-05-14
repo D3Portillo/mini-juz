@@ -52,7 +52,10 @@ export const getHardwareType = () => {
     ["android", "Android"].some((v) => window[v as any])
 
   // Optimistically set for iOS
-  return { isIOS: !isAndroid, isAndroid }
+  return {
+    isIOS: !isAndroid,
+    isAndroid,
+  }
 }
 
 export const useHardwareType = () => getHardwareType()

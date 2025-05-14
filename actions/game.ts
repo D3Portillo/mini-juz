@@ -38,6 +38,23 @@ export const incrPlayerJUZEarned = async (address: Address, amount: number) => {
     redis.incrby(getJUZEarnedKey(address), amount),
   ])
 }
+
+export const subtrPlayerJUZEarned = async (
+  address: Address,
+  amount: number
+) => {
+  // We need to check if the amount is greater than the current balance
+  const currentBalance = await redis.get<number>(getJUZEarnedKey(address))
+  if ((currentBalance || 0) < amount) {
+    throw new Error("InsufficientBalance")
+  }
+
+  await Promise.all([
+    redis.sadd(KEY_BATCHED_PARTICIPANTS, address),
+    redis.decrby(getJUZEarnedKey(address), amount),
+  ])
+}
+
 const normalizeJUZEarned = ({
   erc20Claimed,
   gamePoints,

@@ -13,6 +13,7 @@ import { openHeartsDialog } from "@/lib/utils"
 import { trackEvent } from "@/components/posthog"
 
 import { useAccountBalances } from "@/lib/atoms/balances"
+import { useHardwareType } from "@/lib/window"
 
 import {
   incrementGamesPlayed,
@@ -47,6 +48,7 @@ export default function PageHome() {
   const { JUZPoints } = useAccountBalances()
 
   const [showGame, setShowGame] = useState(null as { topic?: string } | null)
+  const { isIOS } = useHardwareType()
   const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
   const address = user?.walletAddress
 
@@ -142,7 +144,10 @@ export default function PageHome() {
                   onClick={openHeartsDialog}
                 />
               )
-            ) : (JUZPoints.formatted as any) > 2 ? (
+            ) : (JUZPoints.formatted as any) >
+              // We try to hide a little more the JUZ distribution
+              // for iOS users, since they are not able to transact yet
+              (isIOS ? 9 : 2) ? (
               <JUZDistributionModal>
                 <HomeAlert
                   content={t("success.juzAvailable")}

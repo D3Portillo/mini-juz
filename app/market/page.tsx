@@ -16,7 +16,7 @@ import LemonButton from "@/components/LemonButton"
 import MainSelect from "@/components/MainSelect"
 import FixedTopContainer from "@/components/FixedTopContainer"
 
-import { getHardwareType } from "@/lib/window"
+import { getHardwareType, useHardwareType } from "@/lib/window"
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { shortifyDecimals } from "@/lib/numbers"
 import { usePlayerHearts } from "@/lib/atoms/user"
@@ -27,6 +27,7 @@ const HEART_HOLDING_LIMIT = 20 // 20 hearts
 export default function PageMarket() {
   const t = useTranslations("Market")
   const { toast } = useToast()
+  const { isIOS } = useHardwareType()
   const { signIn, user } = useWorldAuth()
 
   const [payingToken, setPayingToken] = useState(
@@ -36,7 +37,17 @@ export default function PageMarket() {
   )
 
   const { hearts, setHearts } = usePlayerHearts()
-  const { JUZToken, WLD, mutate: mutateBalances, data } = useAccountBalances()
+  const {
+    JUZToken: Token,
+    JUZPoints: Points,
+    WLD,
+    mutate: mutateBalances,
+    data,
+  } = useAccountBalances()
+
+  // So, new rule - we can only do transactions in points format not tokens
+  // for IOS devices
+  const JUZ = isIOS ? Points : Token
 
   // @ts-ignore
   const isJUZPayment = payingToken.value === CURRENCY_TOKENS.JUZ.value
@@ -52,9 +63,10 @@ export default function PageMarket() {
 
     let isSuccess = false
     if (!user?.walletAddress) return signIn()
+    const initiatorAddress = user.walletAddress
 
     if (isJUZPayment) {
-      if (cost > Number(JUZToken.formatted)) {
+      if (cost > Number(JUZ.formatted)) {
         return toast.error({
           title: t("errors.noBalance"),
         })
@@ -62,6 +74,7 @@ export default function PageMarket() {
 
       isSuccess = Boolean(
         await executeJUZPayment({
+          initiatorAddress,
           amount: cost, // in JUZ
         })
       )
@@ -72,7 +85,7 @@ export default function PageMarket() {
       isSuccess = Boolean(
         await executeWorldPayment({
           amount: cost, // in WLD
-          initiatorAddress: user.walletAddress,
+          initiatorAddress,
           paymentDescription: t("templates.buyHearts", {
             amount,
           }),
@@ -144,7 +157,7 @@ export default function PageMarket() {
           <div>
             Balance:{" "}
             <strong>
-              {shortifyDecimals((isJUZPayment ? JUZToken : WLD).formatted, 4)}{" "}
+              {shortifyDecimals((isJUZPayment ? JUZ : WLD).formatted, 4)}{" "}
               {PAYING_LABEL}
             </strong>
           </div>
@@ -259,7 +272,8 @@ export default function PageMarket() {
               }
               className="py-3 whitespace-nowrap rounded-full text-base w-full mt-5"
             >
-              {t("buyFor")} {isJUZPayment ? 10 : 1} {PAYING_LABEL}
+              {t(isIOS ? "exchangeFor" : "buyFor")} {isJUZPayment ? 10 : 1}{" "}
+              {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>
@@ -289,7 +303,8 @@ export default function PageMarket() {
               }
               className="py-3 whitespace-nowrap rounded-full text-base w-full mt-5"
             >
-              {t("buyFor")} {isJUZPayment ? 15 : 1.5} {PAYING_LABEL}
+              {t(isIOS ? "exchangeFor" : "buyFor")} {isJUZPayment ? 15 : 1.5}{" "}
+              {PAYING_LABEL}
             </LemonButton>
           </div>
         </section>
