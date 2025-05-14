@@ -68,7 +68,7 @@ export const executeJUZPayment = async ({
     try {
       // Use siganture request as a way to confirm the payment
       const { finalPayload } = await MiniKit.commandsAsync.signMessage({
-        message: `Redeeming ${amount} JUZ`,
+        message: `Using ${amount} JUZ Points`,
       })
 
       if (finalPayload.status !== "success") return null
