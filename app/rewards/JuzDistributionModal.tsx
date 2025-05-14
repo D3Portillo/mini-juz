@@ -96,12 +96,19 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
       title={t("title")}
       onClosePressed={() => {
         if (showClaimOnchain) return handleClaim()
-        window.open(
-          getUnoDeeplinkUrl({
-            fromToken: ADDRESS_WORLD_COIN,
-            toToken: ADDRESS_JUZ,
-          })
-        )
+        // Useful to know if people want to trade JUZ for WLD
+
+        trackEvent("tapped-uno-swap")
+        setTimeout(() => {
+          // Wait for event stack to be freed
+          // and open the deeplink
+          window.open(
+            getUnoDeeplinkUrl({
+              fromToken: ADDRESS_WORLD_COIN,
+              toToken: ADDRESS_JUZ,
+            })
+          )
+        })
       }}
       footNote={showClaimOnchain ? t("claimAvailable") : undefined}
       closeText={
