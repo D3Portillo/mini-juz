@@ -60,7 +60,7 @@ export default function PageMarket() {
         })
       }
 
-      const isSuccess = Boolean(
+      isSuccess = Boolean(
         await executeJUZPayment({
           amount: cost, // in JUZ
         })
