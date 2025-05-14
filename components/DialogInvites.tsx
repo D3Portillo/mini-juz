@@ -19,13 +19,11 @@ import { cn } from "@/lib/utils"
 import { FaSync } from "react-icons/fa"
 import { BiSolidCopy } from "react-icons/bi"
 
+import { getJUZAppId } from "@/lib/deeplinks"
 import { getTotalInteractions } from "@/actions/invites"
 import LemonButton from "./LemonButton"
 
-const APP_ID =
-  process.env.NODE_ENV === "development"
-    ? "app_4f327311775bc4da83fa474e36993b82"
-    : "app_0ffb335831bc585f54dec2755d917d6a"
+const APP_ID = getJUZAppId()
 
 export default function DialogInvites({
   trigger,

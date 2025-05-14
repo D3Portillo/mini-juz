@@ -1,23 +1,26 @@
 "use client"
 
-import type { PropsWithChildren } from "react"
+import { Fragment, type PropsWithChildren } from "react"
 import { atomWithStorage } from "jotai/utils"
 import { useAtom } from "jotai"
 import { useTranslations } from "next-intl"
 
+import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
+import { useAccountBalances } from "@/lib/atoms/balances"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { MiniKit } from "@worldcoin/minikit-js"
 import { formatEther } from "viem"
 import { shortifyDecimals } from "@/lib/numbers"
 import { getDispenserPayload } from "@/actions/dispenser"
 import { serializeBigint } from "@/lib/utils"
+import { trackEvent } from "@/components/posthog"
+import { getUnoDeeplinkUrl } from "@/lib/deeplinks"
 
 import ReusableDialog from "@/components/ReusableDialog"
-import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
-import { useAccountBalances } from "@/lib/atoms/balances"
+import { MdSwapCalls } from "react-icons/md"
+
 import { ABI_DISPENSER, ADDRESS_DISPENSER } from "@/actions/internals"
-import { ZERO } from "@/lib/constants"
-import { trackEvent } from "@/components/posthog"
+import { ADDRESS_JUZ, ADDRESS_WORLD_COIN, ZERO } from "@/lib/constants"
 
 const atomlastClaim = atomWithStorage("juz.canClaim", 0)
 export function JUZDistributionModal({ children }: PropsWithChildren) {
@@ -87,14 +90,30 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
     }
   }
 
+  // TODO: Show WLD payments only on Android since IOS is a little freak about it
   return (
     <ReusableDialog
       title={t("title")}
       onClosePressed={() => {
-        if (showClaimOnchain) handleClaim()
+        if (showClaimOnchain) return handleClaim()
+        window.open(
+          getUnoDeeplinkUrl({
+            fromToken: ADDRESS_WORLD_COIN,
+            toToken: ADDRESS_JUZ,
+          })
+        )
       }}
       footNote={showClaimOnchain ? t("claimAvailable") : undefined}
-      closeText={showClaimOnchain ? t("claimTokens") : tglobal("gotIt")}
+      closeText={
+        showClaimOnchain ? (
+          t("claimTokens")
+        ) : (
+          <Fragment>
+            <MdSwapCalls className="text-2xl scale-95" />
+            <span className="ml-0.5">UNO Swap</span>
+          </Fragment>
+        )
+      }
       trigger={children}
     >
       <p>

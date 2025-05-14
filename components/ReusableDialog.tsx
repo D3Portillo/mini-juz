@@ -10,6 +10,7 @@ import {
   AlertDialogTrigger,
   Button,
 } from "@worldcoin/mini-apps-ui-kit-react"
+import { MdSwapCalls } from "react-icons/md"
 
 export default function ReusableDialog({
   children,
@@ -18,11 +19,16 @@ export default function ReusableDialog({
   closeText = "Got it",
   footNote,
   title,
+  secondaryAction,
 }: PropsWithChildren<{
   title: string
   footNote?: string
   trigger?: JSX.Element | ReactNode
-  closeText?: string
+  secondaryAction?: {
+    text: string | JSX.Element
+    onPressed: () => void
+  }
+  closeText?: string | JSX.Element
   onClosePressed?: () => void
 }>) {
   return (
@@ -39,11 +45,25 @@ export default function ReusableDialog({
           </div>
         </AlertDialogDescription>
 
-        <AlertDialogFooter>
-          <AlertDialogClose asChild>
-            <Button onClick={onClosePressed}>{closeText}</Button>
-          </AlertDialogClose>
-        </AlertDialogFooter>
+        <div className="w-full [&_>_div]:!grid-cols-1">
+          <AlertDialogFooter>
+            {secondaryAction?.text ? (
+              <AlertDialogClose asChild>
+                <Button
+                  onClick={secondaryAction.onPressed}
+                  className="text-black/70"
+                  variant="secondary"
+                >
+                  {secondaryAction.text}
+                </Button>
+              </AlertDialogClose>
+            ) : null}
+
+            <AlertDialogClose asChild>
+              <Button onClick={onClosePressed}>{closeText}</Button>
+            </AlertDialogClose>
+          </AlertDialogFooter>
+        </div>
 
         <p className="text-xs mt-3 -mb-3 text-center max-w-xs mx-auto text-black/50">
           {footNote}
