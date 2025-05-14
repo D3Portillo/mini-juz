@@ -14,10 +14,13 @@ import {
   useToast,
 } from "@worldcoin/mini-apps-ui-kit-react"
 
-import { useTranslations } from "next-intl"
-import { executeWorldPayment } from "@/actions/payments"
-import { usePlayerHearts } from "@/lib/atoms/user"
 import { useWorldAuth } from "@radish-la/world-auth"
+import { useTranslations } from "next-intl"
+import { executeJUZPayment, executeWorldPayment } from "@/actions/payments"
+import { usePlayerHearts } from "@/lib/atoms/user"
+import { useHardwareType } from "@/lib/window"
+import { useAccountBalances } from "@/lib/atoms/balances"
+
 import { trackEvent } from "./posthog"
 
 export default function DialogHearts({
@@ -32,7 +35,9 @@ export default function DialogHearts({
   const tglobal = useTranslations("global")
 
   const { toast } = useToast()
+  const { isIOS } = useHardwareType()
   const { user, signIn, isConnected } = useWorldAuth()
+  const { JUZToken } = useAccountBalances()
   const { hearts, refill, canBeRefilled: canBeFreeRefilled } = usePlayerHearts()
   const isHeartFull = hearts >= 3
 
@@ -40,13 +45,29 @@ export default function DialogHearts({
     const initiatorAddress = user?.walletAddress
     if (!initiatorAddress) return signIn()
 
-    const result = await executeWorldPayment({
-      amount: 0.75, // 0.75 WLD
-      initiatorAddress,
-      paymentDescription: t("buyRefillMessage", {
-        hearts: 3 - hearts,
-      }),
-    })
+    // Fee: 0.75 WLD or 7.5 JUZ in IOS
+
+    let result = null
+
+    if (isIOS) {
+      if ((JUZToken.formatted as any) < 7.5) {
+        return toast.error({
+          title: t("errors.notEnoughJUZ"),
+        })
+      }
+      // Only payment in JUZ
+      result = await executeJUZPayment({
+        amount: 7.5,
+      })
+    } else {
+      result = await executeWorldPayment({
+        amount: 0.75,
+        initiatorAddress,
+        paymentDescription: t("buyRefillMessage", {
+          hearts: 3 - hearts,
+        }),
+      })
+    }
 
     if (result) {
       trackEvent("heart-refilled", {
@@ -80,7 +101,11 @@ export default function DialogHearts({
         </AlertDialogHeader>
 
         <AlertDialogDescription className="mb-4">
-          {isHeartFull ? t("explainers.full") : t("explainers.regular")}
+          {isHeartFull
+            ? t("explainers.full")
+            : t.rich("explainers.regular", {
+                token: isIOS ? "JUZ" : "WLD",
+              })}
         </AlertDialogDescription>
 
         <section className="border-t pt-4 pb-10">
@@ -106,6 +131,8 @@ export default function DialogHearts({
               {isConnected
                 ? canBeFreeRefilled
                   ? t("claimFree")
+                  : isIOS
+                  ? t("refillWithJUZ")
                   : t("refillNow")
                 : tglobal("connectWallet")}
             </Button>

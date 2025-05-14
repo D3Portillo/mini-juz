@@ -148,7 +148,7 @@ export default function PageProfile() {
                   <div className="flex-grow">
                     <span className="text-lg">{t("inviteYourFriends")}</span>
                     <nav className="flex my-1">
-                      <div className="pl-2 pr-3 py-1 text-xs font-semibold flex items-center gap-1 border rounded-full text-black border-juz-green-lime bg-juz-green-lime/15">
+                      <div className="pl-2 pr-3 py-1 text-sm font-semibold flex items-center gap-1.5 border rounded-full text-black border-juz-green-lime bg-juz-green-lime/15">
                         <FaLemon />
                         <span>10 JUZ / {tglobal("friend")}</span>
                       </div>

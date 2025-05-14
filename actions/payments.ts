@@ -1,4 +1,4 @@
-import type { Address } from "viem"
+import { erc20Abi, parseEther, type Address } from "viem"
 
 import {
   MiniKit,
@@ -6,7 +6,8 @@ import {
   Tokens,
   PayCommandInput,
 } from "@worldcoin/minikit-js"
-import { generateUUID } from "@/lib/utils"
+import { generateUUID, serializeBigint } from "@/lib/utils"
+import { ADDRESS_JUZ } from "@/lib/constants"
 
 export const MINI_APP_RECIPIENT = "0x05a700132Fb88D4F565453153E6b05F2049fCb45"
 
@@ -50,4 +51,26 @@ export const executeWorldPayment = async ({
   }
 
   return null
+}
+
+export const executeJUZPayment = async ({
+  amount,
+}: {
+  amount: number | string
+}) => {
+  const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+    transaction: [
+      {
+        abi: erc20Abi,
+        address: ADDRESS_JUZ,
+        functionName: "transfer",
+        args: serializeBigint([
+          MINI_APP_RECIPIENT,
+          parseEther(amount.toString()),
+        ]),
+      },
+    ],
+  })
+
+  return finalPayload.status === "success" ? finalPayload : null
 }

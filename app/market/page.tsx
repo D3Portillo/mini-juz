@@ -4,11 +4,9 @@ import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 
 import { Fragment, useState } from "react"
 import { useWorldAuth } from "@radish-la/world-auth"
-import { MiniKit } from "@worldcoin/minikit-js"
-import { erc20Abi, parseEther } from "viem"
 import { useTranslations } from "next-intl"
 
-import { executeWorldPayment, MINI_APP_RECIPIENT } from "@/actions/payments"
+import { executeJUZPayment, executeWorldPayment } from "@/actions/payments"
 import { incrPlayerJUZEarned } from "@/actions/game"
 
 import { FaChevronDown } from "react-icons/fa"
@@ -18,13 +16,12 @@ import LemonButton from "@/components/LemonButton"
 import MainSelect from "@/components/MainSelect"
 import FixedTopContainer from "@/components/FixedTopContainer"
 
+import { getHardwareType } from "@/lib/window"
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { shortifyDecimals } from "@/lib/numbers"
 import { usePlayerHearts } from "@/lib/atoms/user"
 
 import { CURRENCY_TOKENS } from "@/lib/atoms/token"
-import { ADDRESS_JUZ } from "@/lib/constants"
-import { serializeBigint } from "@/lib/utils"
 
 const HEART_HOLDING_LIMIT = 20 // 20 hearts
 export default function PageMarket() {
@@ -32,10 +29,14 @@ export default function PageMarket() {
   const { toast } = useToast()
   const { signIn, user } = useWorldAuth()
 
-  const [payingToken, setPayingToken] = useState(CURRENCY_TOKENS.WLD)
+  const [payingToken, setPayingToken] = useState(
+    // Set default token based on platform
+    // Since IOS wont allow WLD payments
+    getHardwareType().isIOS ? CURRENCY_TOKENS.JUZ : CURRENCY_TOKENS.WLD
+  )
 
   const { hearts, setHearts } = usePlayerHearts()
-  const { JUZToken, WLD, mutate, data } = useAccountBalances()
+  const { JUZToken, WLD, mutate: mutateBalances, data } = useAccountBalances()
 
   // @ts-ignore
   const isJUZPayment = payingToken.value === CURRENCY_TOKENS.JUZ.value
@@ -59,34 +60,24 @@ export default function PageMarket() {
         })
       }
 
-      const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
-        transaction: [
-          {
-            abi: erc20Abi,
-            address: ADDRESS_JUZ,
-            functionName: "transfer",
-            args: serializeBigint([
-              MINI_APP_RECIPIENT,
-              parseEther(cost.toString()),
-            ]),
-          },
-        ],
-      })
+      const isSuccess = Boolean(
+        await executeJUZPayment({
+          amount: cost, // in JUZ
+        })
+      )
 
-      isSuccess = finalPayload.status === "success"
-
-      // Revalidate account balance
-      if (isSuccess) mutate(data)
+      // Revalidate account balances
+      if (isSuccess) mutateBalances(data)
     } else {
-      const result = await executeWorldPayment({
-        amount: cost, // in WLD
-        initiatorAddress: user.walletAddress,
-        paymentDescription: t("templates.buyHearts", {
-          amount,
-        }),
-      })
-
-      isSuccess = Boolean(result)
+      isSuccess = Boolean(
+        await executeWorldPayment({
+          amount: cost, // in WLD
+          initiatorAddress: user.walletAddress,
+          paymentDescription: t("templates.buyHearts", {
+            amount,
+          }),
+        })
+      )
     }
 
     if (isSuccess) {

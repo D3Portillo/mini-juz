@@ -1,6 +1,7 @@
 "use client"
 
 import { atom, useAtom } from "jotai"
+import { getHardwareType } from "../window"
 
 export const WLD_TOKEN = {
   label: "WLD",
@@ -36,7 +37,14 @@ export const LEMON_TOKENS = {
 
 export const CURRENCY_TOKENS = {
   JUZ: LEMON_TOKENS.JUZ,
-  WLD: WLD_TOKEN,
+  ...(getHardwareType().isAndroid
+    ? {
+        // Only show WLD on Android
+        WLD: WLD_TOKEN,
+      }
+    : ({} as {
+        WLD: typeof WLD_TOKEN
+      })),
 } as const
 
 export const atomToken = atom(WLD_TOKEN)

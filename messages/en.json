@@ -109,14 +109,18 @@
     "title": "Manage game hearts",
     "explainers": {
       "full": "Hearts are used to play trivia games. When you miss a question, you lose a heart.",
-      "regular": "Hearts are refilled for free every 24 hours. You can also buy a refill with WLD."
+      "regular": "Hearts are refilled for free every 24 hours. You can also buy a refill with {token}."
     },
     "success": {
       "refilled": "Yaay. Hearts refilled"
     },
+    "errors": {
+      "notEnoughJUZ": "Insufficient JUZ balance"
+    },
     "buyRefillMessage": "Confirm to refill a total of {hearts} hearts in JUZ Mini App",
     "claimFree": "Claim free refill",
     "refillNow": "Refill now",
+    "refillWithJUZ": "Refill For 7.5 JUZ",
     "heartCount": "Your hearts ({hearts})"
   },
   "ModalGame": {

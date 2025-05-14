@@ -45,3 +45,14 @@ export function useToggleRouteOnActive({
     }
   }, [isActive, slug])
 }
+
+export const getHardwareType = () => {
+  const isAndroid =
+    typeof window !== "undefined" &&
+    ["android", "Android"].some((v) => window[v as any])
+
+  // Optimistically set for iOS
+  return { isIOS: !isAndroid, isAndroid }
+}
+
+export const useHardwareType = () => getHardwareType()
