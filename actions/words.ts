@@ -1,6 +1,6 @@
 "use server"
 
-import { GPT4OMini, GROK3Mini } from "@/lib/openai"
+import { GPT4OMini } from "@/lib/openai"
 import { generateObject } from "ai"
 import { z } from "zod"
 
@@ -13,7 +13,7 @@ export const generateTopicList = async (
   opts?: { omitted?: string[] }
 ) => {
   const { object } = await generateObject({
-    model: GROK3Mini,
+    model: GPT4OMini,
     schema: TopicsSchema,
     prompt: `
 Generate a list of 10 single word topics in ${lang} language that can be considered "fun" or "interesting" to have trivia about.
