@@ -1,6 +1,6 @@
 "use server"
 
-import { GPT4OMini } from "@/lib/openai"
+import { getModelForTask } from "@/lib/openai"
 import { generateObject } from "ai"
 import { z } from "zod"
 
@@ -22,7 +22,7 @@ export const generateQuestionsForTopic = async (
   history: string[] = []
 ) => {
   const { object } = await generateObject({
-    model: GPT4OMini,
+    model: getModelForTask(),
     schema: QuestionListSchema,
     prompt: `
 Generate a list of ${amount} questions about "${topic}".
