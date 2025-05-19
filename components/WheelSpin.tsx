@@ -114,7 +114,7 @@ export default function WheelSpin({
 
           {/* Segment 1 label */}
           <div
-            className="absolute text-lg font-bold text-black"
+            className="absolute capitalize text-lg font-bold text-black"
             style={{
               top: "15%",
               left: "45%",
@@ -130,7 +130,7 @@ export default function WheelSpin({
 
           {/* Segment 2 label */}
           <div
-            className="absolute text-lg font-bold text-black"
+            className="absolute capitalize text-lg font-bold text-black"
             style={{
               top: "75%",
               left: "45%",
@@ -146,7 +146,7 @@ export default function WheelSpin({
 
           {/* Segment 3 label */}
           <div
-            className="absolute text-lg font-bold text-black"
+            className="absolute capitalize text-lg font-bold text-black"
             style={{
               top: "45%",
               width: "60%",
