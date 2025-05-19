@@ -28,6 +28,19 @@ export const ABI_LOCKED_JUZ = parseAbi([
   "function getRewardData(address) external view returns (uint256 earned, uint256 claimable)",
 ])
 
+export const ABI_JUZ_POOLS = parseAbi([
+  "function depositWithPermit(uint256, uint256, ((address,uint256),uint256,uint256), (address,uint256), bytes, ((address,uint256),uint256,uint256), (address,uint256), bytes) external",
+  "function compound() external returns (uint256 reward0, uint256 reward1)",
+  "function addressShares(address) public view returns (uint256 shares)",
+  "function withdraw(uint256 shares) external",
+  "function totalShares() external view returns (uint256 shares)",
+  // Used to simulate the rewards for the user
+  // We need to passon the owner as account to view since its an onlyOwner function
+  "function recklesslyCompound() external returns (uint256 reward0, uint256 reward1, uint256 nextClaimTime, bool isTimeLocked)",
+  "function POSITION_NFT_ID() external view returns (uint256)",
+  "function totalValueInToken0() public view returns (uint256)",
+])
+
 export const getClaimedJUZ = async (address: Address) => {
   return await worldClient.readContract({
     abi: ABI_DISPENSER,

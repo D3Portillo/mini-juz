@@ -4,10 +4,22 @@ export const MANAGE_HEARTS_TRIGGER_ID = "view-hearts" as const
 export const ZERO = BigInt(0)
 export const ONE_HOUR_IN_BLOCK_TIME = 60 * 60 // 1 hour in seconds
 export const ONE_YEAR_IN_BLOCK_TIME = 60 * 60 * 24 * 365 // 1 year in seconds
+
+export const ADDRESS_DEV = "0xA353557ddfc96325a8ab18E6f6d9c1fC0d7C1eA6" as const
+
 export const ADDRESS_LOCK_CONTRACT =
   "0x0D34587468721386b6573caa608005D00B1F8431" as const
+
 export const ADDRESS_JUZ = "0x14ddC988bdF1E1aea0BFf8351DDC3F59176E56d3" as const
+
 export const ADDRESS_VE_JUZ =
   "0x7BA389d2E9C948C4882E6f199F2A8D926371f29C" as const
+
 export const ADDRESS_WORLD_COIN =
   "0x2cFc85d8E48F8EAB294be644d9E25C3030863003" as const
+
+export const ADDRESS_WETH =
+  "0x4200000000000000000000000000000000000006" as const
+
+// https://app.uniswap.org/positions/v3/worldchain/TOKEN_ID
+export const ADDRESS_POOL_WLD_ETH = "0x2031586cda96E3383b6D849d49A86Ed9e2DbB48c"
