@@ -1,6 +1,7 @@
 const POOL_FEES = 0.3 / 100 // 0.3% fees for Uniswap V3
 export async function GET(_: Request) {
   let result: any = {}
+  let tvl = 0
 
   try {
     const r = await fetch("https://interface.gateway.uniswap.org/v1/graphql", {
@@ -73,28 +74,45 @@ export async function GET(_: Request) {
     })
 
     result = await r.json()
+
+    // TODO: Limit to 300 req / min
+    // So we must cache in redis
+    const tvlR = await fetch(
+      "https://api.dexscreener.com/latest/dex/pairs/worldchain/0x494d68e3cab640fa50f4c1b3e2499698d1a173a0"
+    )
+
+    const data = (await tvlR.json()) as {
+      pair: {
+        liquidity: {
+          usd: number
+        }
+      }
+    }
+
+    tvl = data.pair.liquidity.usd ?? 0
   } catch (_) {}
 
-  const volumes = result.data.v3Pool.historicalVolume || []
+  const volumes: any[] = result.data.v3Pool.historicalVolume || []
 
   const totalDailyVolume = volumes.reduce(
-    (sum: number, { value }: { value: number }) => sum + value,
+    (sum: number, { value }: { value: number; timestamp: number }) =>
+      sum + value,
     0
   )
 
   const feesEarned = totalDailyVolume * POOL_FEES
-
-  const dailyRate = feesEarned / totalDailyVolume
-  const annualizedRate = dailyRate * 366 * 100
+  // Fallback to totalDailyVolume if tvl is not available
+  const dailyRate = feesEarned / (tvl ? tvl : totalDailyVolume)
+  const annualizedRate = dailyRate * 365 * 100
 
   const isFallback = !Number.isFinite(annualizedRate) || volumes.length === 0
 
   return Response.json({
     apr: isFallback
       ? 3 // 3% fallback APR
-      : 1.15 + // Base constant for Uniswap V3
-        annualizedRate,
+      : annualizedRate,
     feesEarned,
+    result,
     totalDailyVolume,
     isFallback,
   })

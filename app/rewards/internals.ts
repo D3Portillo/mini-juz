@@ -100,3 +100,12 @@ export const useCompoundRewardData = () => {
     ...query,
   }
 }
+
+export const useWLDPerETH = () => {
+  const { compoundRewardData } = useCompoundRewardData()
+
+  return {
+    wldPerETH: compoundRewardData?.wldPerETH ?? 1,
+    x96Price: compoundRewardData?.x96Price ?? BigInt(0),
+  }
+}

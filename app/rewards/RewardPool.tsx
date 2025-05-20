@@ -17,8 +17,6 @@ import { numberToShortWords, shortifyDecimals } from "@/lib/numbers"
 
 import { PiVaultFill } from "react-icons/pi"
 import { FaArrowRight, FaChevronDown, FaChevronRight } from "react-icons/fa"
-import { GiPieChart } from "react-icons/gi"
-import { FaArrowUpRightFromSquare } from "react-icons/fa6"
 
 import { ABI_JUZ_POOLS, worldClient } from "@/lib/atoms/holdings"
 
@@ -34,7 +32,9 @@ import MainSelect from "@/components/MainSelect"
 
 import ReusableDialog from "@/components/ReusableDialog"
 import APRDialogTrigger from "./APRDialogTrigger"
-import Link from "next/link"
+import RewardDialogTrigger from "./RewardDialogTrigger"
+import { useAccountPosition } from "./balances"
+import ViewDepositsDialogTrigger from "./ViewDepositsDialogTrigger"
 
 const OPTIONS_SORT_BY = {
   APR: "APR",
@@ -43,6 +43,9 @@ const OPTIONS_SORT_BY = {
 
 export default function RewardPool() {
   const { toast } = useToast()
+  const [showActive, setShowActive] = useState(true)
+  const [showDepositsOnly, setShowDepositsOnly] = useState(false)
+
   const [sortBy, setSortBy] = useState<keyof typeof OPTIONS_SORT_BY>("APR")
 
   const { user, signIn } = useWorldAuth()
@@ -65,6 +68,8 @@ export default function RewardPool() {
       return Number(formatEther(tvlInWLD)) * wldPriceInUSD
     }
   )
+
+  const { deposits } = useAccountPosition()
 
   async function handlePoolWithdraw() {
     if (!address) return signIn()
@@ -200,6 +205,13 @@ export default function RewardPool() {
     }
   }
 
+  const rawDeposits = deposits?.token0.value || deposits?.token1.value || 0
+  const isUserInPool = rawDeposits > 1e13 // 0.00001 WLD or WETH
+
+  // TODO: Make this dynamic to different pools
+  // leaving as placeholder for now
+  const isEmpty = !showActive || (showDepositsOnly && !isUserInPool)
+
   return (
     <Fragment>
       <h2 className="font-medium text-xl">Reward Pools</h2>
@@ -277,204 +289,86 @@ export default function RewardPool() {
 
         <div className="flex-grow" />
 
-        <label className="flex font-medium items-center gap-2">
-          <Checkbox defaultChecked />
+        <label className="flex select-none font-medium items-center gap-2">
+          <Checkbox onChange={setShowActive} checked={showActive} />
           <span>Active</span>
         </label>
 
-        <label className="flex whitespace-nowrap font-medium items-center gap-2">
-          <Checkbox />
+        <label className="flex select-none whitespace-nowrap font-medium items-center gap-2">
+          <Checkbox onChange={setShowDepositsOnly} checked={showDepositsOnly} />
           <span>My pools</span>
         </label>
       </nav>
 
-      <div className="mt-6 border-3 border-black shadow-3d-lg rounded-2xl p-4">
-        <nav className="flex gap-5 items-center">
-          <div className="flex shrink-0 -space-x-3.5">
-            <img
-              alt=""
-              className="size-[3.25rem] rounded-full border-3 border-black"
-              src="/token/WETH.png"
-            />
-            <img alt="" className="size-10 rounded-full" src="/token/WLD.png" />
-          </div>
+      {isEmpty ? (
+        <div className="grid min-h-40 place-content-center">
+          <p className="text-sm text-black/50 font-medium">Nothing to show</p>
+        </div>
+      ) : (
+        <div className="mt-6 border-3 border-black shadow-3d-lg rounded-2xl p-4">
+          <nav className="flex gap-5 items-center">
+            <div className="flex shrink-0 -space-x-3.5">
+              <img
+                alt=""
+                className="size-[3.25rem] rounded-full border-3 border-black"
+                src="/token/WETH.png"
+              />
+              <img
+                alt=""
+                className="size-10 rounded-full"
+                src="/token/WLD.png"
+              />
+            </div>
 
-          <div>
-            <h2 className="font-semibold whitespace-nowrap mb-0.5 text-lg">
-              WLD/WETH Pool
-            </h2>
-            <APRDialogTrigger />
-          </div>
+            <div>
+              <h2 className="font-semibold whitespace-nowrap mb-0.5 text-lg">
+                WLD/WETH Pool
+              </h2>
+              <APRDialogTrigger />
+            </div>
 
-          <div className="flex-grow" />
+            <div className="flex-grow" />
 
-          <FaChevronRight className="text-lg scale-110" />
-        </nav>
+            <FaChevronRight className="text-lg scale-110" />
+          </nav>
 
-        <hr className="mt-5" />
+          <hr className="mt-5" />
 
-        <nav className="flex mt-3 font-medium gap-6 items-center">
-          <ReusableDialog
-            title="Total Value Locked"
-            trigger={
-              <button className="flex min-w-[20%] gap-1.5 items-center">
-                <PiVaultFill className="text-lg scale-125" />
-                <span className="text-base">${numberToShortWords(TVL)}</span>
-              </button>
-            }
-          >
-            <p>
-              The total value locked in the WLD/WETH pool is the sum of the
-              assets deposited by all users.
-            </p>
-          </ReusableDialog>
-
-          <div className="flex-grow whitespace-nowrap shrink-0">
+          <nav className="flex mt-3 font-medium gap-6 items-center">
             <ReusableDialog
-              title="My Deposits"
-              closeText="Collect Rewards"
-              onClosePressed={handleCompound}
-              secondaryAction={{
-                text: "Withdraw",
-                onPressed: () => {
-                  // TODO: Show withdraw dialog
-                },
-              }}
+              title="Total Value Locked"
               trigger={
-                <button className="flex gap-1 items-center">
-                  <GiPieChart className="text-lg scale-110" />
-                  <span className="text-base">$24</span>
+                <button className="flex min-w-[20%] gap-1.5 items-center">
+                  <PiVaultFill className="text-lg scale-125" />
+                  <span className="text-base">${numberToShortWords(TVL)}</span>
                 </button>
               }
             >
-              <p>The total assets you have deposited in the WLD/WETH pool</p>
-
               <p>
-                <table className="mt-8 w-full [&_td]:py-1 [&_td]:px-2">
-                  <thead>
-                    <tr className="border-b text-black">
-                      <th />
-                      <th className="text-right font-medium py-1 px-2">
-                        Deposit
-                      </th>
-                      <th className="text-right font-medium py-1 px-2">
-                        Earned
-                      </th>
-                    </tr>
-                  </thead>
-
-                  <tbody>
-                    <tr>
-                      <td>WLD</td>
-                      <td className="text-right">0.0001</td>
-                      <td className="text-right">0.0001</td>
-                    </tr>
-
-                    <tr>
-                      <td>WETH</td>
-                      <td className="text-right">0.00004</td>
-                      <td className="text-right">0.00004</td>
-                    </tr>
-
-                    <tr className="border-t">
-                      <td className="text-black font-medium">TOTAL</td>
-                      <td className="text-right">0.00014</td>
-                      <td className="text-right text-juz-green font-medium">
-                        $0.00014
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                The total value locked (TVL) in the WLD/WETH pool is the sum of
+                all the assets deposited in the pool.
               </p>
+
+              <section className="p-4 -mb-5 rounded-2xl border-3 border-black shadow-3d-lg">
+                <h2 className="text-sm text-black">Current TVL</h2>
+                <p className="text-2xl text-black font-semibold">
+                  $
+                  {TVL.toLocaleString("en-US", {
+                    maximumFractionDigits: TVL < 1 ? 5 : 2,
+                    minimumFractionDigits: TVL > 1000 ? 0 : 2,
+                  })}
+                </p>
+              </section>
             </ReusableDialog>
-          </div>
 
-          <ReusableDialog
-            closeText="Earn now"
-            onClosePressed={() => {}}
-            title="Reward Tokens"
-            trigger={
-              <button className="flex -mb-1 flex-col items-end">
-                <div className="flex justify-end shrink-0 -space-x-1.5">
-                  <img
-                    alt=""
-                    className="size-6 rounded-full border-2 border-black"
-                    src="/token/WETH.png"
-                  />
-                  <img
-                    alt=""
-                    className="size-6 rounded-full"
-                    src="/token/WLD.png"
-                  />
-                  <img
-                    alt=""
-                    className="size-6 rounded-full border border-black"
-                    src="/token/JUZ.png"
-                  />
-                </div>
-                <div className="text-xs">REWARDS</div>
-              </button>
-            }
-          >
-            <p>
-              A list of assets to be earned by depositing in the WLD/WETH pool.
-            </p>
+            <div className="flex-grow whitespace-nowrap shrink-0">
+              <ViewDepositsDialogTrigger />
+            </div>
 
-            <p>
-              <div className="flex gap-2 flex-col shrink-0">
-                <div className="flex bg-black/3 rounded-2xl py-2 pl-2 pr-4 items-center gap-2">
-                  <div className="w-6 grid place-content-center text-black">
-                    1.
-                  </div>
-                  <nav className="flex pr-4 gap-2 items-center bg-gradient-to-br from-black/80 to-black/90 rounded-xl overflow-hidden">
-                    <img
-                      alt=""
-                      className="size-8 rounded-xl border-2 border-black"
-                      src="/token/WETH.png"
-                    />
-                    <span className="text-white text-sm font-medium">WETH</span>
-                  </nav>
-                  <div className="flex-grow" />
-                  <Link
-                    className="text-sm flex items-center gap-2"
-                    target="_blank"
-                    href="/"
-                  >
-                    <span>Worldscan</span>
-                    <FaArrowUpRightFromSquare className="text-sm" />
-                  </Link>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <div className="w-6 text-black">#2</div>
-
-                  <nav className="flex pr-4 gap-2 items-center bg-black rounded-full">
-                    <img
-                      alt=""
-                      className="size-8 rounded-full"
-                      src="/token/WLD.png"
-                    />
-                    <span className="text-white text-sm font-medium">WLD</span>
-                  </nav>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <div className="w-6 text-black">#3</div>
-
-                  <nav className="flex pr-4 gap-2 items-center bg-black rounded-full">
-                    <img
-                      alt=""
-                      className="size-8 rounded-full border border-black"
-                      src="/token/JUZ.png"
-                    />
-                    <span className="text-white text-sm font-medium">JUZ</span>
-                  </nav>
-                </div>
-              </div>
-            </p>
-          </ReusableDialog>
-        </nav>
-      </div>
+            <RewardDialogTrigger />
+          </nav>
+        </div>
+      )}
     </Fragment>
   )
 }

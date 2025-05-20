@@ -18,10 +18,12 @@ export default function ReusableDialog({
   closeText = "Got it",
   footNote,
   title,
+  enabled = true,
   secondaryAction,
 }: PropsWithChildren<{
   title: string
   footNote?: string
+  enabled?: boolean
   trigger?: JSX.Element | ReactNode
   secondaryAction?: {
     text: string | JSX.Element
@@ -30,6 +32,7 @@ export default function ReusableDialog({
   closeText?: string | JSX.Element
   onClosePressed?: () => void
 }>) {
+  if (!enabled) return trigger
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
