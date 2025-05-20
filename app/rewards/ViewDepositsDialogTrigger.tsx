@@ -5,7 +5,13 @@ import ReusableDialog from "@/components/ReusableDialog"
 import { useAccountPosition } from "./balances"
 import { cn } from "@/lib/utils"
 
-export default function ViewDepositsDialogTrigger() {
+export default function ViewDepositsDialogTrigger({
+  onIncreasePressed,
+  onWithdrawPressed,
+}: {
+  onIncreasePressed?: () => void
+  onWithdrawPressed?: () => void
+}) {
   const { deposits, poolShare } = useAccountPosition()
 
   const earningUSD = (poolShare?.totalUSD || 0) - (deposits?.totalUSD || 0)
@@ -15,24 +21,14 @@ export default function ViewDepositsDialogTrigger() {
       title="My Deposits"
       closeText="Increase"
       enabled={!!deposits?.totalUSD}
-      onClosePressed={() => {
-        // TODO: Handle deposit
-      }}
+      onClosePressed={() => onIncreasePressed?.()}
       secondaryAction={{
         text: "Withdraw",
-        onPressed: () => {
-          // TODO: Show withdraw dialog
-        },
+        onPressed: () => onWithdrawPressed?.(),
       }}
       trigger={
         <button
-          onClick={
-            deposits?.totalUSD
-              ? undefined
-              : () => {
-                  // TODO: Show deposit dialog
-                }
-          }
+          onClick={deposits?.totalUSD ? undefined : onIncreasePressed}
           className="flex gap-1 items-center"
         >
           <GiPieChart className="text-lg scale-110" />

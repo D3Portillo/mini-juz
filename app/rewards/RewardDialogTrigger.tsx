@@ -4,11 +4,15 @@ import Link from "next/link"
 import { FaArrowUpRightFromSquare } from "react-icons/fa6"
 import ReusableDialog from "@/components/ReusableDialog"
 
-export default function RewardDialogTrigger() {
+export default function RewardDialogTrigger({
+  onActionPressed,
+}: {
+  onActionPressed?: () => void
+}) {
   return (
     <ReusableDialog
       closeText="Earn now"
-      onClosePressed={() => {}}
+      onClosePressed={onActionPressed}
       title="Reward Tokens"
       trigger={
         <button className="flex -mb-1 flex-col items-end">

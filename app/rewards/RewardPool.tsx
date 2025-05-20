@@ -29,12 +29,15 @@ import {
 
 import LemonButton from "@/components/LemonButton"
 import MainSelect from "@/components/MainSelect"
-
 import ReusableDialog from "@/components/ReusableDialog"
+
 import APRDialogTrigger from "./APRDialogTrigger"
 import RewardDialogTrigger from "./RewardDialogTrigger"
-import { useAccountPosition } from "./balances"
 import ViewDepositsDialogTrigger from "./ViewDepositsDialogTrigger"
+import DialogWithdraw from "./DialogWithdraw"
+
+import { useAccountPosition } from "./balances"
+import DialogDeposit from "./DialogDeposit"
 
 const OPTIONS_SORT_BY = {
   APR: "APR",
@@ -45,6 +48,8 @@ export default function RewardPool() {
   const { toast } = useToast()
   const [showActive, setShowActive] = useState(true)
   const [showDepositsOnly, setShowDepositsOnly] = useState(false)
+  const [showWithdraw, setShowWithdraw] = useState(false)
+  const [showDeposit, setShowDeposit] = useState(false)
 
   const [sortBy, setSortBy] = useState<keyof typeof OPTIONS_SORT_BY>("APR")
 
@@ -214,6 +219,9 @@ export default function RewardPool() {
 
   return (
     <Fragment>
+      <DialogWithdraw open={showWithdraw} onOpenChange={setShowWithdraw} />
+      <DialogDeposit open={showDeposit} onOpenChange={setShowDeposit} />
+
       <h2 className="font-medium text-xl">Reward Pools</h2>
 
       <div className="flex justify-between items-start gap-7">
@@ -362,10 +370,13 @@ export default function RewardPool() {
             </ReusableDialog>
 
             <div className="flex-grow whitespace-nowrap shrink-0">
-              <ViewDepositsDialogTrigger />
+              <ViewDepositsDialogTrigger
+                onIncreasePressed={() => setShowDeposit(true)}
+                onWithdrawPressed={() => setShowWithdraw(true)}
+              />
             </div>
 
-            <RewardDialogTrigger />
+            <RewardDialogTrigger onActionPressed={() => setShowDeposit(true)} />
           </nav>
         </div>
       )}
