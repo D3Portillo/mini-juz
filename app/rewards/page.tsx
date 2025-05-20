@@ -28,17 +28,19 @@ import { JUZDistributionModal } from "./JuzDistributionModal"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { useTranslations } from "next-intl"
 import { shortifyDecimals } from "@/lib/numbers"
+import { trackEvent } from "@/components/posthog"
+
+import FixedTopContainer from "@/components/FixedTopContainer"
+import RewardPool, { APRBadge } from "./RewardPool"
 
 import asset_running from "@/assets/running.png"
 import asset_frog from "@/assets/frog.png"
-import FixedTopContainer from "@/components/FixedTopContainer"
-import { trackEvent } from "@/components/posthog"
 
 export default function PageRewards() {
   const t = useTranslations("Rewards")
   const APR = calculateAPR(Date.now() / 1_000)
 
-  const [activeTab, setActiveTab] = useState("lock")
+  const [activeTab, setActiveTab] = useState("pools")
   const { toast } = useToast()
   const router = useRouter()
 
@@ -121,7 +123,14 @@ export default function PageRewards() {
         <Fragment>
           <div className="bg-gradient-to-b from-juz-orange/7 to-juz-orange/0">
             <nav className="px-5 pb-16">
-              <TabsList className="border-b flex items-center border-b-black/5">
+              <TabsList className="border-b whitespace-nowrap flex items-center border-b-black/5">
+                <TabsTrigger
+                  className="border-b-2 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
+                  value="pools"
+                >
+                  Pools
+                </TabsTrigger>
+
                 <TabsTrigger
                   className="border-b-2 flex items-center gap-4 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
                   value="lock"
@@ -140,7 +149,7 @@ export default function PageRewards() {
           </div>
 
           <section className="-mt-8 px-5">
-            <div className={cn("mb-12", activeTab === "lock" || "hidden")}>
+            <div className={cn("mb-12", activeTab !== "lock" && "hidden")}>
               <h2 className="font-medium text-xl">JUZ Locking</h2>
 
               <div className="flex justify-between items-start gap-4">
@@ -184,9 +193,9 @@ export default function PageRewards() {
                   <ReusableDialog
                     title={t("aprBreakdown")}
                     trigger={
-                      <button className="rounded-full text-sm font-semibold text-center bg-juz-orange/10 border-2 border-juz-orange text-black py-1 px-3">
+                      <APRBadge>
                         🔥 {APR.toFixed(2).replace(".00", "")}% APR
-                      </button>
+                      </APRBadge>
                     }
                   >
                     {t("explainers.apr")}
@@ -213,7 +222,7 @@ export default function PageRewards() {
               </section>
             </div>
 
-            <div className={cn("mb-12", activeTab === "lock" && "hidden")}>
+            <div className={cn("mb-12", activeTab !== "drops" && "hidden")}>
               <h2 className="font-medium text-xl">Lemon Drops</h2>
 
               <div className="flex justify-between items-start gap-7">
@@ -233,6 +242,10 @@ export default function PageRewards() {
               <div className="mt-14 border border-dashed border-black/20 rounded-2xl p-4 text-center text-sm">
                 {t("comingSoon")}
               </div>
+            </div>
+
+            <div className={cn("mb-12", activeTab !== "pools" && "hidden")}>
+              <RewardPool />
             </div>
           </section>
         </Fragment>

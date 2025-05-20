@@ -5,7 +5,7 @@ import {
   ONE_HOUR_IN_BLOCK_TIME,
 } from "@/lib/constants"
 import { serializeBigint } from "@/lib/utils"
-import { PERMIT_SIGNATURE, usePermittedTransfer } from "./erc20"
+import { appendSignatureResult, usePermittedTransfer } from "./erc20"
 
 const ABI = parseAbi([
   "function lockJUZ(uint256 _amount, uint256 _duration, uint256 _nonce, uint256 _deadline, bytes calldata _signature) external",
@@ -34,7 +34,7 @@ export const useLockJUZ = (amount: bigint) => {
           ONE_HOUR_IN_BLOCK_TIME * 24 * 7 * periodInWeeks,
           nonce,
           deadline,
-          PERMIT_SIGNATURE,
+          appendSignatureResult(),
         ]),
       })
     },

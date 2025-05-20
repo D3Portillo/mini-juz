@@ -21,3 +21,22 @@ export function toPrecision(n: number | string, precision: number = 1) {
   }
   return `${whole}.${decimal}`
 }
+
+export const numberToShortWords = (_value: number | string): string => {
+  const value = Number(_value)
+  if (!Number.isFinite(value) || isNaN(value)) return "0"
+
+  const formatter = new Intl.NumberFormat("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 1,
+  })
+
+  if (value >= 1e12) return formatter.format(value / 1e12) + "T"
+  if (value >= 1e9) return formatter.format(value / 1e9) + "B"
+  if (value >= 1e6) return formatter.format(value / 1e6) + "M"
+  if (value >= 1e3) return formatter.format(value / 1e3) + "k"
+  if (value < 1e-4) return "<0.0001"
+  if (value < 1) return Number(value.toFixed(4)).toString()
+
+  return formatter.format(value)
+}

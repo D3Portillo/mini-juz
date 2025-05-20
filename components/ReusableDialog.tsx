@@ -10,7 +10,6 @@ import {
   AlertDialogTrigger,
   Button,
 } from "@worldcoin/mini-apps-ui-kit-react"
-import { MdSwapCalls } from "react-icons/md"
 
 export default function ReusableDialog({
   children,
@@ -40,7 +39,7 @@ export default function ReusableDialog({
         </AlertDialogHeader>
 
         <AlertDialogDescription asChild>
-          <div className="mb-4 [&_strong]:font-medium [&_p:not(:last-child)]:mb-2">
+          <div className="mb-4 leading-snug [&_strong]:font-medium [&_p:not(:last-child)]:mb-5">
             {children}
           </div>
         </AlertDialogDescription>
