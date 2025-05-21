@@ -15,6 +15,26 @@ import {
   ZERO,
 } from "@/lib/constants"
 
+const getERC20BalancesForPoolInTokens01 = async () => {
+  if (!worldClient) return [ZERO, ZERO]
+  const [token0, token1] = await Promise.all([
+    worldClient.readContract({
+      abi: erc20Abi,
+      functionName: "balanceOf",
+      address: ADDRESS_WORLD_COIN,
+      args: [ADDRESS_POOL_WLD_ETH],
+    }),
+    worldClient.readContract({
+      abi: erc20Abi,
+      functionName: "balanceOf",
+      address: ADDRESS_WETH,
+      args: [ADDRESS_POOL_WLD_ETH],
+    }),
+  ])
+
+  return [token0, token1]
+}
+
 export const useAccountPosition = () => {
   const { user } = useWorldAuth()
   const address = user?.walletAddress
@@ -67,7 +87,7 @@ export const useAccountPosition = () => {
       : null,
     async () => {
       if (!worldClient || !address) return null
-      const [totalShares, userShares, balanceOf0, balanceOf1] =
+      const [totalShares, userShares, erc20Balances, liquidityAmounts] =
         await Promise.all([
           worldClient.readContract({
             abi: ABI_JUZ_POOLS,
@@ -80,26 +100,16 @@ export const useAccountPosition = () => {
             args: [address],
             address: ADDRESS_POOL_WLD_ETH,
           }),
+          getERC20BalancesForPoolInTokens01(),
           worldClient.readContract({
-            abi: erc20Abi,
-            functionName: "balanceOf",
-            address: ADDRESS_WORLD_COIN,
-            args: [ADDRESS_POOL_WLD_ETH],
-          }),
-          worldClient.readContract({
-            abi: erc20Abi,
-            functionName: "balanceOf",
-            address: ADDRESS_WETH,
-            args: [ADDRESS_POOL_WLD_ETH],
+            abi: ABI_JUZ_POOLS,
+            functionName: "getLiquidityAmounts",
+            address: ADDRESS_POOL_WLD_ETH,
           }),
         ])
 
-      const [liquidityAmount0, liquidityAmount1] =
-        await worldClient.readContract({
-          abi: ABI_JUZ_POOLS,
-          functionName: "getLiquidityAmounts",
-          address: ADDRESS_POOL_WLD_ETH,
-        })
+      const [liquidityAmount0, liquidityAmount1] = liquidityAmounts
+      const [balanceOf0, balanceOf1] = erc20Balances
 
       // WLD
       const totalBalance0 = liquidityAmount0 + balanceOf0
@@ -139,5 +149,46 @@ export const useAccountPosition = () => {
   return {
     deposits,
     poolShare,
+  }
+}
+
+export const usePoolTVL = () => {
+  const { wldPriceInUSD } = useWLDPriceInUSD()
+  const { wldPerETH } = useWLDPerETH()
+
+  const { data = null } = useSWR(
+    `pools.metadata.${wldPriceInUSD}`,
+    async () => {
+      // Updated based on the WLD price
+      if (!worldClient) return null
+      const [tvlInWLD, ERC20balances] = await Promise.all([
+        worldClient.readContract({
+          abi: ABI_JUZ_POOLS,
+          functionName: "totalValueInToken0",
+          address: ADDRESS_POOL_WLD_ETH,
+        }),
+        getERC20BalancesForPoolInTokens01(),
+      ])
+
+      // WLD, WETH
+      const [balanceOf0, balanceOf1] = ERC20balances
+      // ETH in WLD terms
+      const balanceOf1InWLD = balanceOf1 * BigInt(wldPerETH)
+
+      // TLV becomes the sum of liquidity + pending deposits
+      // TVL is in WLD terms for USD
+      return {
+        tvl:
+          Number(formatEther(tvlInWLD + balanceOf0 + balanceOf1InWLD)) *
+          wldPriceInUSD,
+        liquidityInUSD: Number(formatEther(tvlInWLD)) * wldPriceInUSD,
+      }
+    }
+  )
+
+  return {
+    /** TVL in USD */
+    tvl: data?.tvl || 0,
+    liquidityInUSD: data?.liquidityInUSD || 0,
   }
 }

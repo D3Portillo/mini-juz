@@ -91,11 +91,11 @@ function TokenRow({
   index: number
 }) {
   return (
-    <div className="flex bg-black/3 rounded-2xl py-2 pl-2 pr-4 items-center gap-2">
-      <div className="w-7 grid font-medium place-content-center text-black">
+    <div className="flex shadow-inner bg-black/3 rounded-2xl py-2 pl-2 pr-4 items-center gap-2">
+      <div className="w-6 grid font-medium place-content-center text-black">
         {index + 1}
       </div>
-      <nav className="flex pr-4 gap-2 items-center bg-gradient-to-tl from-black/80 to-black/90 rounded-xl overflow-hidden">
+      <nav className="flex drop-shadow-md pr-3 gap-2 items-center bg-gradient-to-tl from-black/80 to-black/90 rounded-xl overflow-hidden">
         {icon}
         <span className="text-white text-sm font-medium uppercase">
           {symbol}

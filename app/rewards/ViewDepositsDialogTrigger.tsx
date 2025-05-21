@@ -19,7 +19,7 @@ export default function ViewDepositsDialogTrigger({
   return (
     <ReusableDialog
       title="My Deposits"
-      closeText="Increase"
+      closeText="Add balance"
       enabled={!!deposits?.totalUSD}
       onClosePressed={() => onIncreasePressed?.()}
       secondaryAction={{
@@ -41,22 +41,26 @@ export default function ViewDepositsDialogTrigger({
         </button>
       }
     >
-      <p>The total assets you have deposited in the WLD/WETH pool</p>
+      <p>
+        The total assets you have deposited in the WLD/WETH pool + earnings.
+      </p>
 
       <p>
-        <table className="mt-8 w-full [&_td]:py-1 [&_td]:px-2">
+        <table className="mt-8 table-fixed w-full [&_td]:py-1 [&_td]:px-3">
           <thead>
             <tr className="border-b text-black">
-              <th />
-              <th className="text-right font-medium py-1 px-2">Deposit</th>
-              <th className="text-right font-medium py-1 px-2">Earned</th>
+              <th className="w-20" />
+              <th className="text-right border-r font-medium py-1 px-3">
+                Deposit
+              </th>
+              <th className="text-right font-medium py-1 px-3">Earned</th>
             </tr>
           </thead>
 
           <tbody>
             <tr>
-              <td>WLD</td>
-              <td className="text-right">
+              <td className="w-20 border-r">WLD</td>
+              <td className="text-right border-r">
                 {shortifyDecimals(deposits?.token0.formatted || 0, 5)}
               </td>
               <td className="text-right">
@@ -70,8 +74,8 @@ export default function ViewDepositsDialogTrigger({
             </tr>
 
             <tr>
-              <td>WETH</td>
-              <td className="text-right">
+              <td className="w-20 border-r">WETH</td>
+              <td className="text-right border-r">
                 {shortifyDecimals(deposits?.token1.formatted || 0, 5)}
               </td>
               <td className="text-right">
@@ -85,8 +89,8 @@ export default function ViewDepositsDialogTrigger({
             </tr>
 
             <tr className="border-t">
-              <td className="text-black font-medium">TOTAL</td>
-              <td className="text-right">
+              <td className="w-20 border-r text-black font-medium">TOTAL</td>
+              <td className="text-right border-r">
                 ${shortifyDecimals(deposits?.totalUSD || 0, 5)}
               </td>
 
