@@ -36,7 +36,7 @@ export default function RewardDialogTrigger({
       <p>The list of assets to be earned by depositing in the WLD/WETH pool.</p>
 
       <p>
-        <div className="flex gap-2 flex-col shrink-0">
+        <div className="flex gap-3 flex-col shrink-0">
           <TokenRow
             index={0}
             symbol="WETH"
@@ -91,7 +91,7 @@ function TokenRow({
   index: number
 }) {
   return (
-    <div className="flex shadow-inner bg-black/3 rounded-2xl py-2 pl-2 pr-4 items-center gap-2">
+    <div className="flex border shadow-inner bg-black/3 rounded-2xl py-2 pl-2 pr-4 items-center gap-2">
       <div className="w-6 grid font-medium place-content-center text-black">
         {index + 1}
       </div>

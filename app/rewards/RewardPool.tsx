@@ -74,11 +74,9 @@ export default function RewardPool() {
     })
 
     if (finalPayload.status === "success") {
+      const amount = compoundRewardData?.totalUSD || 0
       toast.success({
-        title: `$${shortifyDecimals(
-          compoundRewardData?.totalUSD || 0,
-          5
-        )} collected`,
+        title: `$${shortifyDecimals(amount, amount < 1 ? 6 : 3)} collected`,
       })
     }
 

@@ -113,7 +113,7 @@ export default function DialogWithdraw({
       toast.success({
         title: `$${shortifyDecimals(
           withdrawWingLiquidity,
-          withdrawWingLiquidity < 1 ? 7 : 3
+          withdrawWingLiquidity < 1 ? 6 : 3
         )} withdrawn`,
       })
 
