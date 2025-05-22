@@ -111,6 +111,8 @@ export const useAccountPosition = () => {
           }),
         ])
 
+      const SCALE = BigInt(1e18)
+
       const [liquidityAmount0, liquidityAmount1] = liquidityAmounts
       const [balanceOf0, balanceOf1] = erc20Balances
 
@@ -121,11 +123,11 @@ export const useAccountPosition = () => {
 
       // Ratio of user shares to total shares
       const userShareFraction =
-        totalShares > 0 ? userShares / totalShares : ZERO
+        totalShares > 0 ? (userShares * SCALE) / totalShares : ZERO
 
       // Get user balances
-      const userToken0 = totalBalance0 * userShareFraction
-      const userToken1 = totalBalance1 * userShareFraction
+      const userToken0 = (totalBalance0 * userShareFraction) / SCALE
+      const userToken1 = (totalBalance1 * userShareFraction) / SCALE
 
       const formattedToken0 = formatEther(userToken0) as any
       const formattedToken1 = formatEther(userToken1) as any
