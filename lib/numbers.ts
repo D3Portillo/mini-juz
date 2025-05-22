@@ -1,11 +1,17 @@
 export const shortifyDecimals = (number: string | number, precision = 2) =>
   toPrecision(number, precision)
 
-export function toPrecision(n: number | string, precision: number = 1) {
-  const formatted = Number(n).toFixed(precision)
+export function toPrecision(_n: number | string, precision: number = 1) {
+  const n = Number(_n)
+
+  // Early return if the number is not finite
+  if (!Number.isFinite(n)) return "0"
+
+  const formatted = n.toFixed(precision)
   const [whole, decimal = 0] = formatted.split(".")
-  if (decimal == 0) return whole
+
   // Early return if no decimal part
+  if (decimal == 0) return whole
 
   const decimalParts = decimal.split(/0{1,}/g) ?? []
   const lastValuablePart = decimalParts.at(decimal.startsWith("0") ? 1 : 0)
