@@ -5,6 +5,7 @@ import { type FormEventHandler, useEffect, useState } from "react"
 import { MiniKit } from "@worldcoin/minikit-js"
 import { useWorldAuth } from "@radish-la/world-auth"
 
+import ReusableDialog from "@/components/ReusableDialog"
 import {
   AlertDialog,
   AlertDialogContent,
@@ -26,6 +27,8 @@ import { useWLDPriceInUSD } from "@/lib/atoms/prices"
 
 import { type ContractFunctionArgs, erc20Abi, formatEther } from "viem"
 import { appendSignatureResult } from "@/lib/atoms/erc20"
+
+import { FaQuestion } from "react-icons/fa"
 
 import { ABI_JUZ_POOLS, worldClient } from "@/lib/atoms/holdings"
 import {
@@ -65,7 +68,7 @@ export default function DialogDeposit({
   const { WLD } = useAccountBalances()
 
   const { data: wethBalance = null } = useSWR(
-    address ? `balances.deposit.weth.${address}` : null,
+    open && address ? `balances.deposit.weth.${address}` : null,
     async () => {
       if (!worldClient || !address) return null
 
@@ -80,11 +83,24 @@ export default function DialogDeposit({
         balance: weth,
         formatted: formatEther(weth) as any,
       }
+    },
+    {
+      keepPreviousData: true,
     }
   )
 
   const balance0 = WLD.balance
   const balance1 = wethBalance?.balance ?? ZERO
+
+  const MAX_FORMATTED_BALANCE_0 = shortifyDecimals(
+    (Number(formatEther(balance0)) * MAGIC_NUMBER_MAX) / 100,
+    SIGNIFICANT_DECIMALS
+  )
+
+  const MAX_FORMATTED_BALANCE_1 = shortifyDecimals(
+    (Number(formatEther(balance1)) * MAGIC_NUMBER_MAX) / 100,
+    SIGNIFICANT_DECIMALS
+  )
 
   // Get the MAX-normalized balances we can add to the pool
   // in terms of liquidity
@@ -96,6 +112,10 @@ export default function DialogDeposit({
 
   const formattedEffectiveBalance0 = formatEther(effectiveBalance0) as any
   const formattedEffectiveBalance1 = formatEther(effectiveBalance1) as any
+
+  const MAX_EFFECTIVE_BALANCE_USDC =
+    Number(formattedEffectiveBalance0) * wldPriceInUSD +
+    Number(formattedEffectiveBalance1) * wldPerETH * wldPriceInUSD
 
   const isCustomDeposit =
     handler0.formattedValue > effectiveBalance0 ||
@@ -243,6 +263,28 @@ export default function DialogDeposit({
     setDepositPercentage(newRatio)
   }
 
+  function handleMaxPressed({
+    amount0,
+    amount1,
+  }: {
+    amount0?: string
+    amount1?: string
+  }) {
+    if (amount0) handler0.setValue(MAX_FORMATTED_BALANCE_0)
+    if (amount1) handler1.setValue(MAX_FORMATTED_BALANCE_1)
+
+    const value0 = Number(amount0 || handler0.value || 0)
+    const value1 = Number(amount1 || handler1.value || 0)
+
+    const pricedValue0 = value0 * wldPriceInUSD
+    const pricedValue1 = value1 * wldPerETH * wldPriceInUSD
+
+    handlePercentageChange(
+      pricedValue0 + pricedValue1,
+      MAX_EFFECTIVE_BALANCE_USDC
+    )
+  }
+
   useEffect(() => {
     setDepositPercentage(DEFAULT_PERCENTAGE)
     handleUpdateInputsFromRatio(DEFAULT_PERCENTAGE)
@@ -258,12 +300,32 @@ export default function DialogDeposit({
         </AlertDialogHeader>
 
         <section className="flex items-center justify-between">
-          {
-            // TODO: Add explainer tooltip about what "effective balance" means
-            // This is the recommended amounts to deposit as per uniswap
-            // and the current price of the pool
-          }
-          <span>Effective balance</span>
+          <nav className="flex items-center gap-1">
+            <span>Effective balance</span>
+
+            <ReusableDialog
+              title="Effective balance"
+              trigger={
+                <button className="size-6 outline-none active:scale-95 bg-black/5 rounded-full grid place-content-center">
+                  <FaQuestion className="text-xs opacity-75" />
+                </button>
+              }
+            >
+              <p>
+                <strong className="font-medium">Effective balance (EB)</strong>:
+                The ideal amount to deposit, so we don't leave any dust or
+                overstate deposits. The EB is calculated using Uniswap V3's
+                formula for LP positions.
+              </p>
+
+              <p>
+                <strong className="font-medium">MOD</strong>: Flag to indicate
+                that the position is outside of EB amounts and that the user is
+                making a custom deposit.
+              </p>
+            </ReusableDialog>
+          </nav>
+
           <strong className="font-medium tabular-nums">
             $
             {DEPOSIT_IN_USD < 1
@@ -311,12 +373,7 @@ export default function DialogDeposit({
             value={handler0.value}
             isInvalid={handler0.formattedValue > balance0}
             onMaxPressed={() =>
-              handler0.setValue(
-                shortifyDecimals(
-                  (Number(formatEther(balance0)) * MAGIC_NUMBER_MAX) / 100,
-                  SIGNIFICANT_DECIMALS
-                )
-              )
+              handleMaxPressed({ amount0: MAX_FORMATTED_BALANCE_0 })
             }
             onChange={(e) => {
               handlePercentageChange(
@@ -334,12 +391,7 @@ export default function DialogDeposit({
             value={handler1.value}
             isInvalid={handler1.formattedValue > balance1}
             onMaxPressed={() =>
-              handler1.setValue(
-                shortifyDecimals(
-                  (Number(formatEther(balance1)) * MAGIC_NUMBER_MAX) / 100,
-                  SIGNIFICANT_DECIMALS
-                )
-              )
+              handleMaxPressed({ amount1: MAX_FORMATTED_BALANCE_1 })
             }
             onChange={(e) => {
               handlePercentageChange(

@@ -39,7 +39,7 @@ export default function DialogWithdraw({
   const { liquidityInUSD } = usePoolTVL()
 
   const { data: ownedShares = null } = useSWR(
-    address ? `user.shares.${address}` : null,
+    open && address ? `user.shares.${address}` : null,
     async () => {
       if (!address) return null
       const [shares, totalShares] = await Promise.all([
