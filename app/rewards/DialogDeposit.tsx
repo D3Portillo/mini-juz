@@ -288,7 +288,7 @@ export default function DialogDeposit({
   useEffect(() => {
     setDepositPercentage(DEFAULT_PERCENTAGE)
     handleUpdateInputsFromRatio(DEFAULT_PERCENTAGE)
-  }, [open])
+  }, [open, MAX_FORMATTED_BALANCE_0, MAX_FORMATTED_BALANCE_1])
 
   const PERCENTAGE = isCustomDeposit ? MAGIC_NUMBER_MAX : depositPercentage
 
