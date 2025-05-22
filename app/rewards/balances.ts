@@ -78,6 +78,9 @@ export const useAccountPosition = () => {
           amountUSD: amountUSD1,
         },
       }
+    },
+    {
+      keepPreviousData: true,
     }
   )
 
@@ -143,6 +146,9 @@ export const useAccountPosition = () => {
           amountUSD: amountUSD1,
         },
       }
+    },
+    {
+      keepPreviousData: true,
     }
   )
 

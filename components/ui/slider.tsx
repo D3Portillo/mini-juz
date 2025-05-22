@@ -22,7 +22,7 @@ const Slider = React.forwardRef<
       <SliderPrimitive.Range className="absolute h-full bg-primary" />
     </SliderPrimitive.Track>
     <SliderPrimitive.Thumb className="grid place-content-center size-8 rounded-full border-3 border-primary bg-juz-green-lime transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50">
-      <MdDragHandle className="text-xl scale-y-[1.6] scale-x-110" />
+      <MdDragHandle className="text-xl pointer-events-none scale-y-[1.6] scale-x-110" />
     </SliderPrimitive.Thumb>
   </SliderPrimitive.Root>
 ))

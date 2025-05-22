@@ -22,7 +22,7 @@ import {
 } from "@worldcoin/mini-apps-ui-kit-react"
 import { Slider } from "@/components/ui/slider"
 
-const DEFAULT_WITHDRAW_PERCENTAGE = 75
+const DEFAULT_PERCENTAGE = 75
 export default function DialogWithdraw({
   open,
   onOpenChange,
@@ -30,10 +30,8 @@ export default function DialogWithdraw({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
-  // Default to 75% of the total shares
-  const [withdrawPercentage, setShowWithdrawPercentage] = useState(
-    DEFAULT_WITHDRAW_PERCENTAGE
-  )
+  const [withdrawPercentage, setShowWithdrawPercentage] =
+    useState(DEFAULT_PERCENTAGE)
   const { user, signIn } = useWorldAuth()
   const { toast } = useToast()
   const address = user?.walletAddress
@@ -77,9 +75,7 @@ export default function DialogWithdraw({
   const withdrawWingLiquidity = (ownedLiquidityInUSD * withdrawPercentage) / 100
 
   useEffect(() => {
-    if (!open) {
-      setShowWithdrawPercentage(DEFAULT_WITHDRAW_PERCENTAGE)
-    }
+    if (!open) setShowWithdrawPercentage(DEFAULT_PERCENTAGE)
   }, [open])
 
   async function handlePoolWithdraw() {
@@ -113,8 +109,8 @@ export default function DialogWithdraw({
       toast.success({
         title: `$${shortifyDecimals(
           withdrawWingLiquidity,
-          withdrawWingLiquidity < 1 ? 6 : 3
-        )} withdrawn`,
+          withdrawWingLiquidity < 1 ? 5 : 3
+        )} claimed from pool`,
       })
 
       // Close the dialog
@@ -160,7 +156,7 @@ export default function DialogWithdraw({
               return (
                 <button
                   onClick={() => setShowWithdrawPercentage(ratio)}
-                  key={`lock-ratio-${ratio}`}
+                  key={`withdraw-ratio-${ratio}`}
                   className={cn(
                     "rounded-full outline-none text-center py-1 px-2",
                     isActive

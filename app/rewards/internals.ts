@@ -1,11 +1,12 @@
 "use client"
 
 import useSWR from "swr"
-import { formatEther, parseAbi } from "viem"
+import { formatEther } from "viem"
 
 import { useWLDPriceInUSD } from "@/lib/atoms/prices"
 import { ABI_JUZ_POOLS, worldClient } from "@/lib/atoms/holdings"
 import { ADDRESS_DEV, ADDRESS_POOL_WLD_ETH } from "@/lib/constants"
+import { ABI_UNI_V3 } from "@/lib/uniswap"
 
 export const usePoolAPRData = () => {
   const { data, ...query } = useSWR(
@@ -40,10 +41,6 @@ export const usePoolAPRData = () => {
     ...query,
   }
 }
-
-const ABI_UNI_V3 = parseAbi([
-  "function slot0() external view returns (uint160 sqrtPriceX96, int24 tick, uint16, uint16, uint16, uint8, bool)",
-])
 
 export const useCompoundRewardData = () => {
   const { wldPriceInUSD } = useWLDPriceInUSD()

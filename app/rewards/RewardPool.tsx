@@ -1,6 +1,6 @@
 "use client"
 
-import { Fragment, useState, type PropsWithChildren } from "react"
+import { Fragment, useEffect, useState, type PropsWithChildren } from "react"
 import { MiniKit } from "@worldcoin/minikit-js"
 
 import { Checkbox, useToast } from "@worldcoin/mini-apps-ui-kit-react"
@@ -91,6 +91,10 @@ export default function RewardPool() {
     setShowDeposit(true)
   }
 
+  useEffect(() => {
+    setShowDepositsOnly(Boolean(address))
+  }, [address])
+
   const rawDeposits = deposits?.token0.value || deposits?.token1.value || 0
   const isUserInPool = rawDeposits > 1e13 // 0.00001 WLD or WETH
 
@@ -180,14 +184,21 @@ export default function RewardPool() {
 
         <div className="flex-grow" />
 
+        <label className="flex select-none whitespace-nowrap font-medium items-center gap-2">
+          <Checkbox
+            onChange={(willActivate) => {
+              // If user is not logged in, show sign-in modal
+              if (!address && willActivate) return signIn()
+              setShowDepositsOnly(willActivate)
+            }}
+            checked={showDepositsOnly}
+          />
+          <span>My pools</span>
+        </label>
+
         <label className="flex select-none font-medium items-center gap-2">
           <Checkbox onChange={setShowActive} checked={showActive} />
           <span>Active</span>
-        </label>
-
-        <label className="flex select-none whitespace-nowrap font-medium items-center gap-2">
-          <Checkbox onChange={setShowDepositsOnly} checked={showDepositsOnly} />
-          <span>My pools</span>
         </label>
       </nav>
 
