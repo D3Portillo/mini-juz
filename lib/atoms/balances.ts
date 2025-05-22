@@ -29,7 +29,8 @@ export const useAccountBalances = () => {
       } as any
     },
     {
-      refreshInterval: 3_500, // 3.5 seconds
+      keepPreviousData: true,
+      refreshInterval: 4_500, // 4.5 seconds
     }
   )
 

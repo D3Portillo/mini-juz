@@ -7,7 +7,8 @@ import type {
 import { useWorldAuth } from "@radish-la/world-auth"
 import { MiniKit } from "@worldcoin/minikit-js"
 
-export const PERMIT_SIGNATURE = "PERMIT2_SIGNATURE_PLACEHOLDER_0"
+export const appendSignatureResult = (opts?: { slot: number }) =>
+  `PERMIT2_SIGNATURE_PLACEHOLDER_${opts?.slot || 0}` as const
 
 export const usePermittedTransfer = () => {
   const { isMiniApp, user } = useWorldAuth()
@@ -47,18 +48,17 @@ export const usePermittedTransfer = () => {
     }
 
     try {
-      const { finalPayload, commandPayload } =
-        await MiniKit.commandsAsync.sendTransaction({
-          transaction: [
-            {
-              address: recipient,
-              args: args as any,
-              functionName,
-              abi,
-            },
-          ],
-          permit2: [PERMITTED_TRANSFER],
-        })
+      const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+        transaction: [
+          {
+            address: recipient,
+            args: args as any,
+            functionName,
+            abi,
+          },
+        ],
+        permit2: [PERMITTED_TRANSFER],
+      })
 
       if (finalPayload.status === "success") {
         return finalPayload

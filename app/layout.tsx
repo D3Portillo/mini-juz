@@ -75,3 +75,5 @@ export default async function RootLayout({
     </html>
   )
 }
+
+// TODO: Find a logic to batch users getting erc20 tokens from external
