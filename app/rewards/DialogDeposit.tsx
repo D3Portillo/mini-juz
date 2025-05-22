@@ -197,7 +197,7 @@ export default function DialogDeposit({
         title: `Deposit of $${shortifyDecimals(
           DEPOSIT_IN_USD,
           DEPOSIT_IN_USD < 1 ? 5 : 3
-        )} confirmed`,
+        )} complete`,
       })
 
       // Close the dialog
@@ -258,6 +258,11 @@ export default function DialogDeposit({
         </AlertDialogHeader>
 
         <section className="flex items-center justify-between">
+          {
+            // TODO: Add explainer tooltip about what "effective balance" means
+            // This is the recommended amounts to deposit as per uniswap
+            // and the current price of the pool
+          }
           <span>Effective balance</span>
           <strong className="font-medium tabular-nums">
             $

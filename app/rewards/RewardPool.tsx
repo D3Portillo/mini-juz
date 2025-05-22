@@ -92,7 +92,10 @@ export default function RewardPool() {
   }
 
   useEffect(() => {
-    setShowDepositsOnly(Boolean(address))
+    if (!address) {
+      // Do not filter when user not connected
+      setShowDepositsOnly(false)
+    }
   }, [address])
 
   const rawDeposits = deposits?.token0.value || deposits?.token1.value || 0

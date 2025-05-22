@@ -93,7 +93,6 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
     }
   }
 
-  // TODO: Show WLD payments only on Android since IOS is a little freak about it
   return (
     <ReusableDialog
       title={t("title")}

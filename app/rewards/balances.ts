@@ -189,6 +189,9 @@ export const usePoolTVL = () => {
           wldPriceInUSD,
         liquidityInUSD: Number(formatEther(tvlInWLD)) * wldPriceInUSD,
       }
+    },
+    {
+      keepPreviousData: true,
     }
   )
 

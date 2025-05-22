@@ -5,6 +5,14 @@ import ReusableDialog from "@/components/ReusableDialog"
 import { useAccountPosition } from "./balances"
 import { cn } from "@/lib/utils"
 
+function formatNumber(num: number | string) {
+  return shortifyDecimals(num, 5).replace(
+    // Remove non valid number
+    "-0",
+    "0"
+  )
+}
+
 export default function ViewDepositsDialogTrigger({
   onIncreasePressed,
   onWithdrawPressed,
@@ -14,7 +22,17 @@ export default function ViewDepositsDialogTrigger({
 }) {
   const { deposits, poolShare } = useAccountPosition()
 
-  const earningUSD = (poolShare?.totalUSD || 0) - (deposits?.totalUSD || 0)
+  const earningUSD = formatNumber(
+    (poolShare?.totalUSD || 0) - (deposits?.totalUSD || 0)
+  )
+
+  const earningToken0 = formatNumber(
+    (poolShare?.token0.formatted || 0) - (deposits?.token0.formatted || 0)
+  ) as any
+
+  const earningToken1 = formatNumber(
+    (poolShare?.token1.formatted || 0) - (deposits?.token1.formatted || 0)
+  ) as any
 
   return (
     <ReusableDialog
@@ -64,12 +82,8 @@ export default function ViewDepositsDialogTrigger({
                 {shortifyDecimals(deposits?.token0.formatted || 0, 5)}
               </td>
               <td className="text-right">
-                {shortifyDecimals(
-                  // Subtract deposits from total share
-                  (poolShare?.token0.formatted || 0) -
-                    (deposits?.token0.formatted || 0),
-                  5
-                )}
+                {earningToken0 < 0 ? "-" : earningToken0 > 0 ? "+" : ""}
+                {earningToken0}
               </td>
             </tr>
 
@@ -79,12 +93,8 @@ export default function ViewDepositsDialogTrigger({
                 {shortifyDecimals(deposits?.token1.formatted || 0, 5)}
               </td>
               <td className="text-right">
-                {shortifyDecimals(
-                  // Subtract deposits from total share
-                  (poolShare?.token1.formatted || 0) -
-                    (deposits?.token1.formatted || 0),
-                  5
-                )}
+                {earningToken1 < 0 ? "-" : earningToken1 > 0 ? "+" : ""}
+                {earningToken1}
               </td>
             </tr>
 
@@ -96,9 +106,9 @@ export default function ViewDepositsDialogTrigger({
 
               <td
                 className={cn(
-                  earningUSD < 0
+                  (earningUSD as any) < 0
                     ? "text-juz-red"
-                    : earningUSD > 0
+                    : (earningUSD as any) > 0
                     ? "text-juz-green"
                     : "",
                   "text-right font-medium"

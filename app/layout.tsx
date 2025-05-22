@@ -76,5 +76,4 @@ export default async function RootLayout({
   )
 }
 
-// TODO:
-// - Find a logic to batch users getting erc20 tokens from external
+// TODO: Find a logic to batch users getting erc20 tokens from external

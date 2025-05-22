@@ -64,6 +64,9 @@ export default function DialogWithdraw({
           value: totalShares,
         },
       }
+    },
+    {
+      keepPreviousData: true,
     }
   )
 
@@ -97,9 +100,11 @@ export default function DialogWithdraw({
       ],
     })
 
-    const isError = Boolean((finalPayload as any)?.details?.debugUrl)
+    const debugUrl = (finalPayload as any)?.details?.debugUrl
+    const isError = Boolean(debugUrl)
 
     if (isError) {
+      console.debug("Error in transaction", debugUrl)
       return toast.error({
         title: "Transaction failed",
       })
@@ -110,7 +115,7 @@ export default function DialogWithdraw({
         title: `$${shortifyDecimals(
           withdrawWingLiquidity,
           withdrawWingLiquidity < 1 ? 5 : 3
-        )} claimed from pool`,
+        )} claimed`,
       })
 
       // Close the dialog
@@ -135,7 +140,7 @@ export default function DialogWithdraw({
         <hr className="mt-7" />
 
         <section className="mt-2 flex items-center justify-between">
-          <span>Balance</span>
+          <span>Remove</span>
           <strong className="font-medium">
             ${shortifyDecimals(withdrawWingLiquidity, 5)}
           </strong>
