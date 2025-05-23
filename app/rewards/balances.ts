@@ -35,6 +35,15 @@ const getERC20BalancesForPoolInTokens01 = async () => {
   return [token0, token1]
 }
 
+const getUserShares = async (address: `0x${string}`) => {
+  return await worldClient.readContract({
+    abi: ABI_JUZ_POOLS,
+    functionName: "addressShares",
+    args: [address],
+    address: ADDRESS_POOL_WLD_ETH,
+  })
+}
+
 export const useAccountPosition = () => {
   const { user } = useWorldAuth()
   const address = user?.walletAddress
@@ -49,12 +58,17 @@ export const useAccountPosition = () => {
     async () => {
       // Updated based on the WLD price
       if (!worldClient || !address) return null
-      const [token0, token1] = await worldClient.readContract({
-        abi: ABI_JUZ_POOLS,
-        functionName: "addressDeposits",
-        args: [address],
-        address: ADDRESS_POOL_WLD_ETH,
-      })
+      const [[token0, token1], shares] = await Promise.all([
+        worldClient.readContract({
+          abi: ABI_JUZ_POOLS,
+          functionName: "addressDeposits",
+          args: [address],
+          address: ADDRESS_POOL_WLD_ETH,
+        }),
+        getUserShares(address),
+      ])
+
+      const isZeroShare = shares <= ZERO
 
       // TODO: Return token decimals to format the numbers correctly
       // for now both are 18 decimals
@@ -66,16 +80,16 @@ export const useAccountPosition = () => {
       const amountUSD1 = Number(formattedToken1) * wldPerETH * wldPriceInUSD
 
       return {
-        totalUSD: amountUSD0 + amountUSD1,
+        totalUSD: isZeroShare ? 0 : amountUSD0 + amountUSD1,
         token0: {
-          value: token0,
-          formatted: formattedToken0,
-          amountUSD: amountUSD0,
+          value: isZeroShare ? 0 : token0,
+          formatted: isZeroShare ? "0" : formattedToken0,
+          amountUSD: isZeroShare ? 0 : amountUSD0,
         },
         token1: {
-          value: token1,
-          formatted: formattedToken1,
-          amountUSD: amountUSD1,
+          value: isZeroShare ? 0 : token1,
+          formatted: isZeroShare ? "0" : formattedToken1,
+          amountUSD: isZeroShare ? 0 : amountUSD1,
         },
       }
     },
@@ -134,6 +148,16 @@ export const useAccountPosition = () => {
 
       const amountUSD0 = Number(formattedToken0) * wldPriceInUSD
       const amountUSD1 = Number(formattedToken1) * wldPerETH * wldPriceInUSD
+
+      console.debug({
+        userShares,
+        totalBalance0,
+        totalBalance1,
+        amountUSD0,
+        formattedToken0,
+        amountUSD1,
+        formattedToken1,
+      })
 
       return {
         totalUSD: amountUSD0 + amountUSD1,

@@ -82,7 +82,7 @@ export default function ViewDepositsDialogTrigger({
                 {shortifyDecimals(deposits?.token0.formatted || 0, 5)}
               </td>
               <td className="text-right">
-                {earningToken0 < 0 ? "-" : earningToken0 > 0 ? "+" : ""}
+                {earningToken0 > 0 ? "+" : ""}
                 {earningToken0}
               </td>
             </tr>
@@ -93,7 +93,7 @@ export default function ViewDepositsDialogTrigger({
                 {shortifyDecimals(deposits?.token1.formatted || 0, 5)}
               </td>
               <td className="text-right">
-                {earningToken1 < 0 ? "-" : earningToken1 > 0 ? "+" : ""}
+                {earningToken1 > 0 ? "+" : ""}
                 {earningToken1}
               </td>
             </tr>

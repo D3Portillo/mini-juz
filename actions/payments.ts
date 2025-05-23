@@ -9,7 +9,7 @@ import {
 import { generateUUID, serializeBigint } from "@/lib/utils"
 import { ADDRESS_JUZ } from "@/lib/constants"
 import { getHardwareType } from "@/lib/window"
-import { incrPlayerJUZEarned, subtrPlayerJUZEarned } from "./game"
+import { subtrPlayerJUZEarned } from "./game"
 
 export const MINI_APP_RECIPIENT = "0x05a700132Fb88D4F565453153E6b05F2049fCb45"
 
