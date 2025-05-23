@@ -5,6 +5,7 @@ import { FaArrowRight } from "react-icons/fa"
 import APRDialogTrigger from "@/app/rewards/APRDialogTrigger"
 
 import LemonButton from "./LemonButton"
+import { trackEvent } from "./posthog"
 
 export default function BannerRewardPools() {
   const router = useRouter()
@@ -27,7 +28,10 @@ export default function BannerRewardPools() {
 
       <nav className="mt-5">
         <LemonButton
-          onClick={() => router.push("/rewards")}
+          onClick={() => {
+            trackEvent("tapped-join-juz-pools")
+            router.push("/rewards")
+          }}
           className="w-full bg-juz-green-lime rounded-xl text-base py-3.5 flex gap-4 justify-between items-center"
         >
           <span className="text-base">Join the pool now</span>

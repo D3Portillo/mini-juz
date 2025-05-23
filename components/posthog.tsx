@@ -17,6 +17,7 @@ type PostHogEvents =
   | "updated-locale" // added
   | "invite-accepted" // added
   | "tapped-uno-swap" // added
+  | "tapped-join-juz-pools" // added
 
 export const trackEvent = (
   event: PostHogEvents,
