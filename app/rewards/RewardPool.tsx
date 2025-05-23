@@ -24,7 +24,9 @@ import { useAccountPosition, usePoolTVL } from "./balances"
 
 import APRDialogTrigger from "./APRDialogTrigger"
 import RewardDialogTrigger from "./RewardDialogTrigger"
-import ViewDepositsDialogTrigger from "./ViewDepositsDialogTrigger"
+import ViewDepositsDialogTrigger, {
+  ID_VIEW_DEPOSITS,
+} from "./ViewDepositsDialogTrigger"
 import DialogWithdraw from "./DialogWithdraw"
 import DialogDeposit from "./DialogDeposit"
 
@@ -98,6 +100,12 @@ export default function RewardPool() {
     }
   }, [address])
 
+  useEffect(() => {
+    if (showWithdraw || showDeposit) {
+      ;(document.getElementById(ID_VIEW_DEPOSITS) as HTMLButtonElement)?.click()
+    }
+  }, [showWithdraw, showDeposit])
+
   const rawDeposits = deposits?.token0.value || deposits?.token1.value || 0
   const isUserInPool = rawDeposits > 1e13 // 0.00001 WLD or WETH
 
@@ -107,8 +115,10 @@ export default function RewardPool() {
 
   return (
     <Fragment>
-      <DialogWithdraw open={showWithdraw} onOpenChange={setShowWithdraw} />
+      {/**
+       *  <DialogWithdraw open={showWithdraw} onOpenChange={setShowWithdraw} />
       <DialogDeposit open={showDeposit} onOpenChange={setShowDeposit} />
+       */}
 
       <h2 className="font-medium text-xl">Reward Pools</h2>
 

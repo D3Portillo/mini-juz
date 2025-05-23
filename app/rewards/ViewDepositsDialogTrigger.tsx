@@ -4,6 +4,7 @@ import { GiPieChart } from "react-icons/gi"
 import ReusableDialog from "@/components/ReusableDialog"
 import { useAccountPosition } from "./balances"
 import { cn } from "@/lib/utils"
+import Link from "next/link"
 
 function formatNumber(num: number | string) {
   return shortifyDecimals(num, 5).replace(
@@ -13,6 +14,7 @@ function formatNumber(num: number | string) {
   )
 }
 
+export const ID_VIEW_DEPOSITS = "view-deposits"
 export default function ViewDepositsDialogTrigger({
   onIncreasePressed,
   onWithdrawPressed,
@@ -36,16 +38,24 @@ export default function ViewDepositsDialogTrigger({
 
   return (
     <ReusableDialog
-      title="My Deposits"
-      closeText="Add balance"
-      enabled={!!deposits?.totalUSD}
-      onClosePressed={() => onIncreasePressed?.()}
-      secondaryAction={{
+      title={
+        "Paused" // "My Deposits"
+      }
+      closeText="Request withdrawal" //"Add balance"
+      //enabled={!!deposits?.totalUSD}
+      onClosePressed={() => {
+        window.open("https://tally.so/r/wQyZLY", "_blank")
+        // onIncreasePressed?.()
+      }}
+      /**
+      *  secondaryAction={{
         text: "Withdraw",
         onPressed: () => onWithdrawPressed?.(),
       }}
+      */
       trigger={
         <button
+          id={ID_VIEW_DEPOSITS}
           onClick={deposits?.totalUSD ? undefined : onIncreasePressed}
           className="flex gap-1 items-center"
         >
@@ -59,8 +69,23 @@ export default function ViewDepositsDialogTrigger({
         </button>
       }
     >
-      <p>
+      <p className="hidden">
         The total assets you have deposited in the WLD/WETH pool + earnings.
+      </p>
+
+      <p>We are fixing issues with the withdraw contract.</p>
+
+      <p>
+        You see your balances and rewards, but won't be able to withdraw or add
+        liquidity. In the meantime if you want us to remove your assets + any
+        rewards fill out{" "}
+        <Link target="_blank" href="https://tally.so/r/wQyZLY">
+          this form
+        </Link>{" "}
+        or join the{" "}
+        <Link target="_blank" href="https://t.me/+KSntxdij5QwzYTkx">
+          support group.
+        </Link>
       </p>
 
       <p>
