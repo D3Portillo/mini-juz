@@ -20,6 +20,5 @@ export const ADDRESS_WORLD_COIN =
 
 export const ADDRESS_WETH =
   "0x4200000000000000000000000000000000000006" as const
-
 // Track Position: https://app.uniswap.org/positions/v3/worldchain/55846
 export const ADDRESS_POOL_WLD_ETH = "0x4D1DeC18368B4e7c62e4EbdD8dF22BA938B6a9d4"
