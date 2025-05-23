@@ -9,16 +9,24 @@ import { usePoolAPRData } from "./internals"
 import { shortifyDecimals } from "@/lib/numbers"
 import { APRBadge } from "./RewardPool"
 
-export default function APRDialogTrigger() {
+export default function APRDialogTrigger({
+  className,
+}: {
+  className?: string
+}) {
   const { aprData } = usePoolAPRData()
 
   return (
     <ReusableDialog
       title="APR Breakdown"
-      trigger={<APRBadge>🔥 {shortifyDecimals(aprData.total)}% APR</APRBadge>}
+      trigger={
+        <APRBadge className={className}>
+          🔥 {shortifyDecimals(aprData.total)}% APR
+        </APRBadge>
+      }
     >
       <p>
-        This Pool automatically compounds rewards and fees to create liquidity
+        The Pool automatically compounds rewards and fees to create liquidity
         positions in incentivized programs to extract the most yield.
       </p>
 

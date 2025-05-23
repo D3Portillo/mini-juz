@@ -36,6 +36,7 @@ import HomeNavigation from "./HomeNavigation"
 import ModalGame from "./ModalGame"
 
 import asset_limoncito from "@/assets/limoncito.png"
+import BannerRewardPools from "@/components/BannerRewardPools"
 
 export default function PageHome() {
   const { toast } = useToast()
@@ -82,7 +83,7 @@ export default function PageHome() {
 
   return (
     <Tabs asChild defaultValue="play">
-      <main>
+      <main className="bg-gradient-to-br from-juz-orange/0 via-juz-orange/0 to-juz-orange/7">
         <ModalGame
           topic={showGame?.topic}
           open={Boolean(showGame?.topic)}
@@ -177,10 +178,14 @@ export default function PageHome() {
               />
             </div>
 
+            <BannerRewardPools />
+
+            <div className="my-8 w-full border-black border-t-3 rounded-full overflow-hidden" />
+
             {isConfirmed ? (
               <DailyRefill />
             ) : (
-              <div className="border-3 mt-14 shadow-3d-lg border-black p-4 rounded-2xl">
+              <div className="border-3 shadow-3d-lg border-black p-4 rounded-2xl">
                 <nav className="flex justify-between gap-6 items-start">
                   <div>
                     <h1 className="text-xl font-semibold">

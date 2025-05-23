@@ -22,7 +22,7 @@ export default function DailyRefill() {
   const { elapsedTime } = useTimer(secondsToNextRefill)
 
   return (
-    <div className="border-3 bg-gradient-to-r from-juz-green-lime/0 via-juz-green-lime/0 to-juz-green-lime/70 relative overflow-hidden mt-14 shadow-3d-lg border-black p-4 !pr-0 rounded-2xl">
+    <div className="border-3 bg-gradient-to-r from-juz-green-lime/0 via-juz-green-lime/0 to-juz-green-lime/70 relative overflow-hidden shadow-3d-lg border-black p-4 !pr-0 rounded-2xl">
       <div className="pr-40">
         <h1 className="text-xl font-semibold">{t("dailyRefill.title")}</h1>
 
