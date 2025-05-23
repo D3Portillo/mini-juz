@@ -42,7 +42,7 @@ export default function ViewDepositsDialogTrigger({
         "Paused" // "My Deposits"
       }
       closeText="Request withdrawal" //"Add balance"
-      //enabled={!!deposits?.totalUSD}
+      enabled={!!deposits?.totalUSD}
       onClosePressed={() => {
         window.open("https://tally.so/r/wQyZLY", "_blank")
         // onIncreasePressed?.()
@@ -79,11 +79,19 @@ export default function ViewDepositsDialogTrigger({
         You see your balances and rewards, but won't be able to withdraw or add
         liquidity. In the meantime if you want us to remove your assets + any
         rewards fill out{" "}
-        <Link target="_blank" href="https://tally.so/r/wQyZLY">
+        <Link
+          className="underline underline-offset-4"
+          target="_blank"
+          href="https://tally.so/r/wQyZLY"
+        >
           this form
         </Link>{" "}
         or join the{" "}
-        <Link target="_blank" href="https://t.me/+KSntxdij5QwzYTkx">
+        <Link
+          className="underline underline-offset-4"
+          target="_blank"
+          href="https://t.me/+KSntxdij5QwzYTkx"
+        >
           support group.
         </Link>
       </p>
