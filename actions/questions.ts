@@ -10,7 +10,6 @@ const QuestionListSchema = z.object({
     z.object({
       question: z.string(),
       options: z.array(z.string()),
-      correctOptionIndex: z.number(),
     })
   ),
 })
@@ -28,7 +27,8 @@ export const generateQuestionsForTopic = async (
 Generate a list of ${amount} questions about "${topic}".
 - Each question should have 3 options.
 - Correct option should be in the list of options.
-- There can't be more than 1 correct option.
+- There can only be 1 (ONE) correct option.
+- The correct option should be the first element in the list.
 - The questions should be fun and interesting - for trivia or quiz games.
 - The questions should be in ${lang}.
 - Options should be in ${lang}.
@@ -42,7 +42,7 @@ ${
 Please avoid asking the following questions:
 ${history.map((q, i) => `${i + 1}. ${q}\n`)}
 
-And avoid permutations in this questions - Like I don't want shit to be:
+And avoid permutations in this question list - Like I don't want shit to be:
 - Question to avoid: What's the longest river in the World?
 - And you say: What's the worlds largest river?
 
@@ -55,24 +55,23 @@ Thanks.
 
   // The prompt wasn't giving me good "random" position results and for 3 elements
   // most of the time the "correct" option was the first one so was ass easy to get points.
-  const questions = object.questions.map(
-    ({ correctOptionIndex, options, question }) => {
-      const correctOptionContent = options[correctOptionIndex]
-      const shuffled = [...options]
+  const questions = object.questions.map(({ options, question }) => {
+    // Prompt has to give FIRST element as correct now
+    const correctOptionContent = options[0]
+    const shuffled = [...options]
 
-      // Shuffle by swapping random pairs
-      for (let i = shuffled.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
-      }
-
-      return {
-        question,
-        options: shuffled,
-        correctOptionIndex: shuffled.indexOf(correctOptionContent),
-      }
+    // Shuffle by swapping random pairs
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
     }
-  )
+
+    return {
+      question,
+      options: shuffled,
+      correctOptionIndex: shuffled.indexOf(correctOptionContent),
+    }
+  })
 
   return {
     questions,
