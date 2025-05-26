@@ -2,6 +2,7 @@
 
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { useState } from "react"
+import { FaArrowsSpin } from "react-icons/fa6"
 import { isAddress } from "viem"
 
 export default function SelfServicePage() {
@@ -41,6 +42,14 @@ export default function SelfServicePage() {
 
   return (
     <main className="w-full pt-6 mb-12 px-5 max-w-xl mx-auto">
+      <style>
+        {`
+          body,
+          html {
+            overflow: auto !important
+          }
+        `}
+      </style>
       <h2 className="text-2xl font-semibold">Self check service</h2>
 
       <p className="mt-1">
@@ -65,22 +74,32 @@ export default function SelfServicePage() {
         </button>
       </label>
 
-      <pre className="mt-4">
-        {jsonResponse
-          ? JSON.stringify(
-              {
-                status: "pending",
-                owed: jsonResponse.owed,
-                earned: {
-                  WLD: getEstimatedEarnings(jsonResponse.owed.amount0),
-                  WETH: getEstimatedEarnings(jsonResponse.owed.amount1),
+      {isLoading ? (
+        <div className="py-14 grid place-items-center px-4">
+          <FaArrowsSpin className="text-5xl animate-spin" />
+        </div>
+      ) : (
+        <pre className="mt-4">
+          {jsonResponse
+            ? JSON.stringify(
+                {
+                  status: "pending",
+                  owed: jsonResponse.owed,
+                  earned: {
+                    WLD: getEstimatedEarnings(
+                      jsonResponse.owed.amount0
+                    ).toFixed(9),
+                    WETH: getEstimatedEarnings(
+                      jsonResponse.owed.amount1
+                    ).toFixed(9),
+                  },
                 },
-              },
-              null,
-              2
-            )
-          : "Enter an address and click CHECK to see the response."}
-      </pre>
+                null,
+                2
+              )
+            : "Enter an address and click CHECK to see the response."}
+        </pre>
+      )}
     </main>
   )
 }
