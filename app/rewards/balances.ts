@@ -149,16 +149,6 @@ export const useAccountPosition = () => {
       const amountUSD0 = Number(formattedToken0) * wldPriceInUSD
       const amountUSD1 = Number(formattedToken1) * wldPerETH * wldPriceInUSD
 
-      console.debug({
-        userShares,
-        totalBalance0,
-        totalBalance1,
-        amountUSD0,
-        formattedToken0,
-        amountUSD1,
-        formattedToken1,
-      })
-
       return {
         totalUSD: amountUSD0 + amountUSD1,
         token0: {
