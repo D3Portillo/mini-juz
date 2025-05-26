@@ -80,11 +80,14 @@ export default function SelfServicePage() {
         </div>
       ) : (
         <pre className="mt-4">
-          {jsonResponse
+          {jsonResponse.owed
             ? JSON.stringify(
                 {
                   status: "pending",
-                  owed: jsonResponse.owed,
+                  owed: {
+                    WLD: jsonResponse.owed.amount0,
+                    ETH: jsonResponse.owed.amount1,
+                  },
                   earned: {
                     WLD: getEstimatedEarnings(
                       jsonResponse.owed.amount0
