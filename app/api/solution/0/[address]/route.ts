@@ -60,17 +60,21 @@ export async function GET(
     }
   })
 
-  const userWithdrwals = await client.getContractEvents({
-    abi: parseAbi([
-      "event Withdrawal(address indexed user,uint256 amount0,uint256 amount1,uint256 shares)",
-    ]),
-    args: {
-      user: address.toLowerCase(),
-    },
-    fromBlock: BigInt(14281964),
-    address: ADDRESS_POOL_WLD_ETH,
-    eventName: "Withdrawal",
-  })
+  const userWithdrwals =
+    // No need to call the contract if there are no deposits
+    depositHistry.length <= 0
+      ? []
+      : await client.getContractEvents({
+          abi: parseAbi([
+            "event Withdrawal(address indexed user,uint256 amount0,uint256 amount1,uint256 shares)",
+          ]),
+          args: {
+            user: address.toLowerCase(),
+          },
+          fromBlock: BigInt(14281964),
+          address: ADDRESS_POOL_WLD_ETH,
+          eventName: "Withdrawal",
+        })
 
   const withdrawHistry = userWithdrwals.map((e) => {
     return {
@@ -110,14 +114,18 @@ export async function GET(
     ).toString(),
   }
 
-  const paidEvents = await client.getContractEvents({
-    abi: BATCH_ABI,
-    address: BATCH_CONTRACT,
-    args: {
-      recipient: address.toLowerCase(),
-    },
-    fromBlock: BigInt(14486372),
-  })
+  const paidEvents =
+    // Do not call the contract if there are no deposits
+    depositHistry.length <= 0
+      ? []
+      : await client.getContractEvents({
+          abi: BATCH_ABI,
+          address: BATCH_CONTRACT,
+          args: {
+            recipient: address.toLowerCase(),
+          },
+          fromBlock: BigInt(14486372),
+        })
 
   const paymentTx = paidEvents?.[0]?.transactionHash || null
 
