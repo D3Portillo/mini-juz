@@ -195,25 +195,25 @@ export default function PageMarket() {
 
             <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
               <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
-                <div className="text-5xl scale-105">🍋</div>
+                <div className="text-5xl">🤠</div>
               </figure>
 
               <div className="w-full">
                 <h2 className="font-medium whitespace-nowrap text-xl">
-                  JUZ Pack <span className="text-juz-orange">#PRO</span>
+                  THE JUZ <span className="text-juz-orange">#MASTER</span>
                 </h2>
 
                 <p className="text-sm opacity-70">
                   {t.rich("templates.buyJUZ", {
-                    amount: () => <strong>300 JUZ</strong>,
+                    amount: () => <strong>1400 JUZ</strong>,
                   })}
                 </p>
 
                 <LemonButton
-                  onClick={() => handleBuyJUZ(300, 3)}
+                  onClick={() => handleBuyJUZ(1400, 10)}
                   className="py-3 rounded-full text-base w-full mt-5"
                 >
-                  {t("buyFor")} 3 WLD
+                  {t("buyFor")} 10 WLD
                 </LemonButton>
               </div>
             </section>
@@ -239,6 +239,31 @@ export default function PageMarket() {
                   className="py-3 rounded-full text-base w-full mt-5"
                 >
                   {t("buyFor")} 5 WLD
+                </LemonButton>
+              </div>
+            </section>
+
+            <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d">
+              <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
+                <div className="text-5xl scale-105">🍋</div>
+              </figure>
+
+              <div className="w-full">
+                <h2 className="font-medium whitespace-nowrap text-xl">
+                  JUZ Pack <span className="text-juz-orange">#PRO</span>
+                </h2>
+
+                <p className="text-sm opacity-70">
+                  {t.rich("templates.buyJUZ", {
+                    amount: () => <strong>300 JUZ</strong>,
+                  })}
+                </p>
+
+                <LemonButton
+                  onClick={() => handleBuyJUZ(300, 3)}
+                  className="py-3 rounded-full text-base w-full mt-5"
+                >
+                  {t("buyFor")} 3 WLD
                 </LemonButton>
               </div>
             </section>
