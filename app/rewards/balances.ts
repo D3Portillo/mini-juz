@@ -45,8 +45,7 @@ const getUserShares = async (address: `0x${string}`) => {
 }
 
 export const useAccountPosition = () => {
-  const { user } = useWorldAuth()
-  const address = user?.walletAddress
+  const { address } = useWorldAuth()
 
   const { wldPriceInUSD } = useWLDPriceInUSD()
   const { wldPerETH } = useWLDPerETH()

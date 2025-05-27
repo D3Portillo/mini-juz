@@ -27,8 +27,7 @@ export default function ViewDepositsDialogTrigger({
   onIncreasePressed?: () => void
   onWithdrawPressed?: () => void
 }) {
-  const { user } = useWorldAuth()
-  const address = user?.walletAddress
+  const { address } = useWorldAuth()
 
   const { data, error } = useSWR(
     address ? `/api/solution/0/${address}` : null,

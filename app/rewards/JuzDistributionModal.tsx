@@ -30,7 +30,7 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
   const tglobal = useTranslations("global")
 
   const [lastClaim, setLastClaim] = useAtom(atomlastClaim)
-  const { user, signIn } = useWorldAuth()
+  const { address, signIn } = useWorldAuth()
   const { toast } = useToast()
   const { isIOS } = useHardwareType()
   const { JUZToken, JUZPoints, VE_JUZ, lockedJUZ, mutate, data } =
@@ -41,7 +41,6 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
   const showClaimOnchain = canClaim && !JUZPoints.isOnchainSynced
 
   async function handleClaim() {
-    const address = user?.walletAddress
     if (!address) return signIn()
     if (!canClaim) {
       return toast.error({

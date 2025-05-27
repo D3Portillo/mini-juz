@@ -44,8 +44,7 @@ export default function RewardPool() {
 
   const [sortBy, setSortBy] = useState<keyof typeof OPTIONS_SORT_BY>("APR")
 
-  const { user, signIn } = useWorldAuth()
-  const address = user?.walletAddress
+  const { address, signIn } = useWorldAuth()
 
   const { tvl: TVL } = usePoolTVL()
   const { compoundRewardData } = useCompoundRewardData()
@@ -62,7 +61,7 @@ export default function RewardPool() {
     const nextClaim = compoundRewardData?.nextClaimTime
     if (
       true // avoid mess-up during migration
-       // nextClaim && nextClaim > new Date()
+      // nextClaim && nextClaim > new Date()
     ) {
       return genericError()
     }

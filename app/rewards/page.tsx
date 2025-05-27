@@ -44,8 +44,7 @@ export default function PageRewards() {
   const { toast } = useToast()
   const router = useRouter()
 
-  const { user, signIn } = useWorldAuth()
-  const address = user?.walletAddress
+  const { address, signIn } = useWorldAuth()
 
   const { data: claimable = 0 } = useSWR(
     address ? `juz.earned.${address}` : null,

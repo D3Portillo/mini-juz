@@ -26,8 +26,7 @@ export const useFormattedInputHandler = (config?: {
   initState?: any
 }) => {
   const DECIMALS = config?.decimals || 18
-  const { user, isConnected } = useWorldAuth()
-  const address = user?.walletAddress || ""
+  const { address, isConnected } = useWorldAuth()
 
   const [value, setValue] = useState<number>(config?.initState!)
 

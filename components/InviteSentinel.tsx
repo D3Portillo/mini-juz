@@ -25,7 +25,7 @@ const MAX_GIFTS_PER_RECIPIENT = 10 // 100 JUZ
 export default function InviteSentinel() {
   const t = useTranslations("InviteSentinel")
   const [isOpen, setIsOpen] = useState(false)
-  const { user, signIn } = useWorldAuth()
+  const { address, signIn } = useWorldAuth()
 
   const { toast } = useToast()
   const router = useRouter()
@@ -44,7 +44,6 @@ export default function InviteSentinel() {
   }
 
   async function handleClaimJUZ() {
-    const address = user?.walletAddress
     if (!address) return signIn()
 
     const nonce = (await getTotalInteractions(address)).totalInterations

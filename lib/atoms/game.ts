@@ -8,8 +8,7 @@ import { useWorldAuth } from "@radish-la/world-auth"
 import { getPlayerGameData } from "@/actions/game"
 
 export const useAccountGameData = () => {
-  const { user } = useWorldAuth()
-  const address = user?.walletAddress
+  const { address } = useWorldAuth()
 
   const { data = {} } = useSWR(
     address ? `played.games.${address}` : null,

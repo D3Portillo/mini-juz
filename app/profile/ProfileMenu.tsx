@@ -12,10 +12,9 @@ export default function ProfileMenu() {
   const t = useTranslations("ProfileMenu")
 
   const { toast } = useToast()
-  const { signOut, user } = useWorldAuth()
+  const { signOut, user, address } = useWorldAuth()
 
   function handleCopyAddress() {
-    const address = user?.walletAddress
     if (address) {
       copy(address)
       return toast.success({
@@ -29,10 +28,8 @@ export default function ProfileMenu() {
   }
 
   function handleViewTxs() {
-    const address = user?.walletAddress
     if (address) {
-      window.open(`https://worldscan.org/address/${address}`, "_blank")
-      return
+      return window.open(`https://worldscan.org/address/${address}`, "_blank")
     }
     toast.error({
       title: t("errors.noAddress"),

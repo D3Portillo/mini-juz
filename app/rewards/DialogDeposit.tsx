@@ -62,8 +62,7 @@ export default function DialogDeposit({
   const { wldPriceInUSD } = useWLDPriceInUSD()
 
   const { toast } = useToast()
-  const { user, signIn } = useWorldAuth()
-  const address = user?.walletAddress
+  const { address, signIn } = useWorldAuth()
 
   const { WLD } = useAccountBalances()
 

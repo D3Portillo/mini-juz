@@ -9,8 +9,7 @@ import { ZERO } from "@/lib/constants"
 import { getTotalUserHoldings } from "./holdings"
 
 export const useAccountBalances = () => {
-  const { user } = useWorldAuth()
-  const address = user?.walletAddress
+  const { address } = useWorldAuth()
 
   const { data: balances = {}, ...query } = useSWR(
     address ? `wallet.holdings.${address}` : null,

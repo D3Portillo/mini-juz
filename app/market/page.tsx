@@ -28,7 +28,7 @@ export default function PageMarket() {
   const t = useTranslations("Market")
   const { toast } = useToast()
   const { isIOS } = useHardwareType()
-  const { signIn, user } = useWorldAuth()
+  const { signIn, user, address } = useWorldAuth()
 
   const [payingToken, setPayingToken] = useState(
     // Set default token based on platform
@@ -102,7 +102,6 @@ export default function PageMarket() {
   }
 
   async function handleBuyJUZ(juzAmount: number, costInWLD: number) {
-    const address = user?.walletAddress
     if (!address) return signIn()
 
     const result = await executeWorldPayment({

@@ -31,9 +31,8 @@ export default function DialogInvites({
   trigger?: React.ReactNode
 }) {
   const t = useTranslations("DialogInvites")
+  const { address } = useWorldAuth()
 
-  const { user } = useWorldAuth()
-  const address = user?.walletAddress
   const {
     data: invited = 0,
     mutate,

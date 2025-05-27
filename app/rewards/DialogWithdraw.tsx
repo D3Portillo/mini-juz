@@ -32,9 +32,8 @@ export default function DialogWithdraw({
 }) {
   const [withdrawPercentage, setShowWithdrawPercentage] =
     useState(DEFAULT_PERCENTAGE)
-  const { user, signIn } = useWorldAuth()
+  const { address, signIn } = useWorldAuth()
   const { toast } = useToast()
-  const address = user?.walletAddress
 
   const { liquidityInUSD } = usePoolTVL()
 
