@@ -131,9 +131,16 @@ export const useAccountPosition = () => {
       const [balanceOf0, balanceOf1] = erc20Balances
 
       // WLD
-      const totalBalance0 = liquidityAmount0 + balanceOf0
+      const totalBalance0 =
+        // Migration started
+        BigInt(348688644529903218357) +
+        // liquidityAmount0
+        balanceOf0
       // WETH
-      const totalBalance1 = liquidityAmount1 + balanceOf1
+      const totalBalance1 =
+        BigInt(186712904087349902) +
+        // liquidityAmount1
+        balanceOf1
 
       // Ratio of user shares to total shares
       const userShareFraction =
@@ -183,7 +190,7 @@ export const usePoolTVL = () => {
     async () => {
       // Updated based on the WLD price
       if (!worldClient) return null
-      const [tvlInWLD, ERC20balances] = await Promise.all([
+      const [ztvlInWLD, ERC20balances] = await Promise.all([
         worldClient.readContract({
           abi: ABI_JUZ_POOLS,
           functionName: "totalValueInToken0",
@@ -197,6 +204,7 @@ export const usePoolTVL = () => {
       // ETH in WLD terms
       const balanceOf1InWLD = balanceOf1 * BigInt(wldPerETH)
 
+      const tvlInWLD = BigInt(697361564150661658911)
       // TLV becomes the sum of liquidity + pending deposits
       // TVL is in WLD terms for USD
       return {

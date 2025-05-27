@@ -60,7 +60,10 @@ export default function RewardPool() {
     if (!address) return signIn()
 
     const nextClaim = compoundRewardData?.nextClaimTime
-    if (nextClaim && nextClaim > new Date()) {
+    if (
+      true // avoid mess-up during migration
+       // nextClaim && nextClaim > new Date()
+    ) {
       return genericError()
     }
 
@@ -84,7 +87,7 @@ export default function RewardPool() {
 
     if (finalPayload.status === "error") {
       // Omit user rejection errors
-      if (finalPayload.details) return genericError()
+      if ((finalPayload as any).details) return genericError()
     }
   }
 
