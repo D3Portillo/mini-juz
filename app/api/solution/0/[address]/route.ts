@@ -17,6 +17,12 @@ const client = createPublicClient({
   ),
 })
 
+const BATCH_CONTRACT = "0x807f7A1bBe17CAF5122A3659A66b83044e3aF0fc"
+
+const BATCH_ABI = parseAbi([
+  "event TokensDispensed(address indexed recipient,address token,uint256 amount)",
+])
+
 export async function GET(
   _: Request,
   { params }: { params: { address: string } }
@@ -104,9 +110,20 @@ export async function GET(
     ).toString(),
   }
 
+  const paidEvents = await client.getContractEvents({
+    abi: BATCH_ABI,
+    address: BATCH_CONTRACT,
+    args: {
+      recipient: address.toLowerCase(),
+    },
+    fromBlock: BigInt(14486372),
+  })
+
+  const paymentTx = paidEvents?.[0]?.transactionHash || null
+
   const response = Response.json({
-    status: "pending",
-    paymentTx: null,
+    status: paymentTx ? "paid" : "in-pool",
+    paymentTx,
     owed: {
       amount0:
         (owed.amount0 as any) < 0 ? -formatEther(owed.amount0 as any) : "0",

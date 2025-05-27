@@ -1,7 +1,8 @@
 "use client"
 
+import LemonButton from "@/components/LemonButton"
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { FaArrowsSpin } from "react-icons/fa6"
 import { isAddress } from "viem"
 
@@ -79,29 +80,45 @@ export default function SelfServicePage() {
           <FaArrowsSpin className="text-5xl animate-spin" />
         </div>
       ) : (
-        <pre className="mt-4">
-          {jsonResponse?.owed
-            ? JSON.stringify(
-                {
-                  status: "pending",
-                  owed: {
-                    WLD: jsonResponse.owed.amount0,
-                    ETH: jsonResponse.owed.amount1,
+        <Fragment>
+          <pre className="mt-4">
+            {jsonResponse?.owed
+              ? JSON.stringify(
+                  {
+                    status: jsonResponse.status,
+                    owed: {
+                      WLD: jsonResponse.owed.amount0,
+                      ETH: jsonResponse.owed.amount1,
+                    },
+                    earned: {
+                      WLD: getEstimatedEarnings(
+                        jsonResponse.owed.amount0
+                      ).toFixed(9),
+                      WETH: getEstimatedEarnings(
+                        jsonResponse.owed.amount1
+                      ).toFixed(9),
+                    },
                   },
-                  earned: {
-                    WLD: getEstimatedEarnings(
-                      jsonResponse.owed.amount0
-                    ).toFixed(9),
-                    WETH: getEstimatedEarnings(
-                      jsonResponse.owed.amount1
-                    ).toFixed(9),
-                  },
-                },
-                null,
-                2
-              )
-            : "Enter an address and click CHECK to see the response."}
-        </pre>
+                  null,
+                  2
+                )
+              : "Enter an address and click CHECK to see the response."}
+          </pre>
+
+          {jsonResponse?.paymentTx ? (
+            <LemonButton
+              onClick={() =>
+                window.open(
+                  `https://worldscan.org/tx/${jsonResponse.paymentTx}`,
+                  "_blank"
+                )
+              }
+              className="py-3 w-full mt-8"
+            >
+              View transaction
+            </LemonButton>
+          ) : null}
+        </Fragment>
       )}
     </main>
   )
