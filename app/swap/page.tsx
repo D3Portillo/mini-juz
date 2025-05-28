@@ -287,7 +287,7 @@ export default function PageSwap() {
         </LemonButton>
 
         <div className="min-h-14 grid place-items-center">
-          {handler.value <= 0 ? null : (
+          {RECEIVING_JUZ > 0 && (
             <div className="max-w-md mx-auto text-center text-sm">
               You will receive{" "}
               <strong>{shortifyDecimals(RECEIVING_JUZ, 5)} JUZ</strong>
@@ -304,10 +304,15 @@ export default function PageSwap() {
             </div>
 
             {leaderboard.map(({ address, amount, timestamp }) => {
+              const date = new Date(timestamp)
+
               return (
-                <div className="text-xs gap-5 py-3 even:bg-black/3 whitespace-nowrap flex items-center">
+                <div
+                  key={`${address}-${date.getTime()}-${amount}`}
+                  className="text-xs gap-5 py-3 even:bg-black/3 whitespace-nowrap flex items-center"
+                >
                   <div className="w-20 pl-2">
-                    {new Date(timestamp).toLocaleTimeString("en-US", {
+                    {date.toLocaleTimeString("en-US", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}
