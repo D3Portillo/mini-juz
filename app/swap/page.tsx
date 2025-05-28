@@ -47,16 +47,17 @@ export default function PageSwap() {
   })
 
   const { data: queryResult = null } = useSWR(
-    address ? `token.${payingToken.address}` : null,
+    `juz-price-feed`,
     async () => {
-      if (!address) return null
       const [balance, juzPrice = 0] = await Promise.all([
-        worldClient.readContract({
-          abi: erc20Abi,
-          functionName: "balanceOf",
-          address: ALL_TOKENS["USDC.E"].address,
-          args: [address],
-        }),
+        address
+          ? worldClient.readContract({
+              abi: erc20Abi,
+              functionName: "balanceOf",
+              address: ALL_TOKENS["USDC.E"].address,
+              args: [address],
+            })
+          : Promise.resolve(0),
         fetch("/api/juz-price")
           .then((res) => res.json())
           .then((d) => d.price),
@@ -69,11 +70,12 @@ export default function PageSwap() {
     },
     {
       keepPreviousData: true,
-      refreshInterval: 3_000, // 3 seconds
+      revalidateOnFocus: false,
+      refreshInterval: 3_500, // 3.5 seconds
     }
   )
 
-  const JUZ_PRICE = Number(queryResult?.juzPrice || "0.03")
+  const JUZ_PRICE = Number(queryResult?.juzPrice || "0.0138")
 
   const BALANCE =
     payingToken.value === "WLD"

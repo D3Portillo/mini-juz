@@ -1,6 +1,6 @@
 export async function GET(_: Request) {
-  const min = 0.032
-  const max = 0.0943
+  const min = 0.00883
+  const max = 0.0113
 
   // Stable time bucket: one value every 30 seconds
   const now = Date.now()
