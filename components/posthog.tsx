@@ -18,6 +18,7 @@ type PostHogEvents =
   | "invite-accepted" // added
   | "tapped-uno-swap" // added
   | "tapped-join-juz-pools" // added
+  | "otc-swap" // added
 
 export const trackEvent = (
   event: PostHogEvents,

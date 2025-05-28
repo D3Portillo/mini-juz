@@ -27,6 +27,7 @@ import { ALL_TOKENS } from "@/lib/atoms/token"
 import { useFormattedInputHandler } from "@/lib/input"
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { useWLDPriceInUSD } from "@/lib/atoms/prices"
+import { trackEvent } from "@/components/posthog"
 
 const TOKENS = {
   WLD: ALL_TOKENS.WLD,
@@ -130,6 +131,12 @@ export default function PageSwap() {
     if (finalPayload) {
       // Update JUZ Earned
       incrPlayerJUZEarned(address, Number(RECEIVING_JUZ.toFixed(6)))
+      trackEvent("otc-swap", {
+        address,
+        token: payingToken.value,
+        amount: QUOTE,
+      })
+
       return toast.success({
         title: `${shortifyDecimals(QUOTE, 4)} JUZ received!`,
       })
