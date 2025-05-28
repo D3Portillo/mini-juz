@@ -103,8 +103,8 @@ export default function PageSwap() {
       return await data.json()
     },
     {
-      revalidateOnFocus: false,
-      refreshInterval: 6_500, // 6.5 seconds
+      keepPreviousData: true,
+      refreshInterval: 5_500, // 5.5 seconds
     }
   )
 
