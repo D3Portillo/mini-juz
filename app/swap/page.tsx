@@ -14,7 +14,7 @@ import MainSelect from "@/components/MainSelect"
 import FixedTopContainer from "@/components/FixedTopContainer"
 
 import { shortifyDecimals } from "@/lib/numbers"
-import { erc20Abi, formatEther } from "viem"
+import { type Address, erc20Abi, formatEther } from "viem"
 import { executeWorldPayment, MINI_APP_RECIPIENT } from "@/actions/payments"
 import { worldClient } from "@/lib/atoms/holdings"
 import { formatUSDC } from "@/lib/tokens"
@@ -31,6 +31,7 @@ import { useWLDPerETH } from "@/app/rewards/internals"
 import { useWLDPriceInUSD } from "@/lib/atoms/prices"
 import { trackEvent } from "@/components/posthog"
 import { ZERO } from "@/lib/constants"
+import { beautifyAddress } from "@/lib/utils"
 
 const TOKENS = ALL_TOKENS
 
@@ -85,6 +86,25 @@ export default function PageSwap() {
       keepPreviousData: true,
       revalidateOnFocus: false,
       refreshInterval: 3_500, // 3.5 seconds
+    }
+  )
+
+  const { data: leaderboard = [], error } = useSWR<
+    {
+      timestamp: string
+      amount: number
+      address: Address
+    }[]
+  >(
+    `buying-board`,
+    async () => {
+      const data = await fetch("/api/juz-price/buys")
+      console.debug({ data })
+      return await data.json()
+    },
+    {
+      revalidateOnFocus: false,
+      refreshInterval: 6_500, // 6.5 seconds
     }
   )
 
@@ -266,11 +286,46 @@ export default function PageSwap() {
           <FaArrowRight className="text-lg" />
         </LemonButton>
 
-        {handler.value <= 0 ? null : (
-          <div className="mt-5 max-w-md mx-auto text-center text-sm">
-            You will receive{" "}
-            <strong>{shortifyDecimals(RECEIVING_JUZ, 5)} JUZ</strong>
-          </div>
+        <div className="min-h-14 grid place-items-center">
+          {handler.value <= 0 ? null : (
+            <div className="max-w-md mx-auto text-center text-sm">
+              You will receive{" "}
+              <strong>{shortifyDecimals(RECEIVING_JUZ, 5)} JUZ</strong>
+            </div>
+          )}
+        </div>
+
+        {leaderboard.length > 0 && (
+          <section className="mt-5 flex flex-col">
+            <div className="text-sm font-medium gap-5 border-y py-3.5 whitespace-nowrap flex items-center">
+              <div className="w-20 pl-2">Time</div>
+              <div className="flex-grow text-juz-green">JUZ Bought</div>
+              <div className="w-20">User</div>
+            </div>
+
+            {leaderboard.map(({ address, amount, timestamp }) => {
+              return (
+                <div className="text-xs gap-5 py-3 even:bg-black/3 whitespace-nowrap flex items-center">
+                  <div className="w-20 pl-2">
+                    {new Date(timestamp).toLocaleTimeString("en-US", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </div>
+
+                  <div className="tabular-nums flex-grow">
+                    <strong className="tabular-nums">
+                      {shortifyDecimals(amount, 3)} JUZ
+                    </strong>
+                  </div>
+
+                  <div className="w-20 tabular-nums">
+                    {beautifyAddress(address)}
+                  </div>
+                </div>
+              )
+            })}
+          </section>
         )}
       </div>
     </main>
