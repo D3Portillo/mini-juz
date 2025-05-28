@@ -35,7 +35,7 @@ export const getPlayerGameData = async (address: Address) => {
 export const incrPlayerJUZEarned = async (address: Address, amount: number) => {
   await Promise.all([
     redis.sadd(KEY_BATCHED_PARTICIPANTS, address),
-    redis.incrby(getJUZEarnedKey(address), amount),
+    redis.incrbyfloat(getJUZEarnedKey(address), amount),
   ])
 }
 

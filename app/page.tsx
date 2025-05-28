@@ -45,13 +45,12 @@ export default function PageHome() {
 
   const { hearts } = usePlayerHearts()
   const { gameTopics, shuffleTopics, isEmpty } = useUserTopics()
-  const { user, signIn, isConnected } = useWorldAuth()
+  const { user, address, signIn, isConnected } = useWorldAuth()
   const { JUZPoints } = useAccountBalances()
 
   const [showGame, setShowGame] = useState(null as { topic?: string } | null)
   const { isIOS } = useHardwareType()
   const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
-  const address = user?.walletAddress
 
   function addPlayedGame() {
     if (address) incrementGamesPlayed(address)
@@ -83,7 +82,7 @@ export default function PageHome() {
 
   return (
     <Tabs asChild defaultValue="play">
-      <main className="bg-gradient-to-br from-juz-orange/0 via-juz-orange/0 to-juz-orange/7">
+      <main className="bg-gradient-to-br min-h-screen from-juz-orange/0 via-juz-orange/0 to-juz-orange/7">
         <ModalGame
           topic={showGame?.topic}
           open={Boolean(showGame?.topic)}

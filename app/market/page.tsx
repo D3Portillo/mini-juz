@@ -84,6 +84,7 @@ export default function PageMarket() {
     } else {
       isSuccess = Boolean(
         await executeWorldPayment({
+          token: "WLD",
           amount: cost, // in WLD
           initiatorAddress,
           paymentDescription: t("templates.buyHearts", {
@@ -105,6 +106,7 @@ export default function PageMarket() {
     if (!address) return signIn()
 
     const result = await executeWorldPayment({
+      token: "WLD",
       amount: costInWLD,
       initiatorAddress: address,
       paymentDescription: t("templates.confirmBuyJUZ", {

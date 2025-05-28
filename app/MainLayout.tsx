@@ -13,7 +13,7 @@ export default function MainLayout({ children }: PropsWithChildren) {
   return (
     <main className="h-dvh overflow-hidden flex flex-col bg-white w-full max-w-2xl mx-auto">
       <PostHogProvider>
-        <div className="[&_main]:overflow-auto [&_main]:pb-[4.5rem] [&_main]:max-h-[calc(100dvh-var(--safe-pb))]">
+        <div className="[&_main]:overflow-auto h-full [&_main]:pb-[4.5rem] [&_main]:max-h-[calc(100dvh-var(--safe-pb))]">
           {children}
         </div>
         <BottomNavigation />

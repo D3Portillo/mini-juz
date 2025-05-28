@@ -4,6 +4,7 @@ import { Fragment, type PropsWithChildren } from "react"
 import { atomWithStorage } from "jotai/utils"
 import { useAtom } from "jotai"
 import { useTranslations } from "next-intl"
+import { useRouter } from "next/navigation"
 
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { useAccountBalances } from "@/lib/atoms/balances"
@@ -28,6 +29,7 @@ const atomlastClaim = atomWithStorage("juz.canClaim", 0)
 export function JUZDistributionModal({ children }: PropsWithChildren) {
   const t = useTranslations("JUZDistributionModal")
   const tglobal = useTranslations("global")
+  const router = useRouter()
 
   const [lastClaim, setLastClaim] = useAtom(atomlastClaim)
   const { address, signIn } = useWorldAuth()
@@ -103,12 +105,7 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
         setTimeout(() => {
           // Wait for event stack to be freed
           // and open the deeplink
-          window.open(
-            getUnoDeeplinkUrl({
-              fromToken: ADDRESS_WORLD_COIN,
-              toToken: ADDRESS_JUZ,
-            })
-          )
+          router.push("/swap")
         })
       }}
       footNote={showClaimOnchain ? t("claimAvailable") : undefined}
@@ -118,7 +115,7 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
         ) : (
           <Fragment>
             <MdSwapCalls className="text-2xl scale-95" />
-            <span className="ml-0.5">UNO Swap</span>
+            <span className="ml-0.5">JUZ Swap</span>
           </Fragment>
         )
       }

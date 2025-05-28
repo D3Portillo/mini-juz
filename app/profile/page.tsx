@@ -110,12 +110,12 @@ export default function PageProfile() {
         </div>
 
         <div className="grid mt-2 grid-cols-2 gap-4">
-          <section className="p-4 rounded-2xl border-3 border-black shadow-3d-lg">
+          <section className="p-4 whitespace-nowrap rounded-2xl border-3 border-black shadow-3d-lg">
             <h2 className="text-sm">{t("gamesPlayed")}</h2>
             <p className="text-2xl font-semibold">{played}</p>
           </section>
 
-          <section className="p-4 rounded-2xl border-3 border-black shadow-3d-lg">
+          <section className="p-4 whitespace-nowrap rounded-2xl border-3 border-black shadow-3d-lg">
             <h2 className="text-sm">{t("gamesWon")}</h2>
             <p className="text-2xl font-semibold">{won}</p>
           </section>

@@ -8,6 +8,7 @@ import { Fragment } from "react"
 import { IoGameController, IoStorefront } from "react-icons/io5"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { FaGem, FaLemon } from "react-icons/fa"
+import { MdSwapCalls } from "react-icons/md"
 
 export default function BottomNavigation() {
   const t = useTranslations("BottomNavigation")
@@ -36,6 +37,10 @@ export default function BottomNavigation() {
       value: "market",
       label: t("market"),
     },
+    swap: {
+      href: "/swap",
+      value: "swap",
+    },
   } as const
 
   const activePathValue =
@@ -47,7 +52,7 @@ export default function BottomNavigation() {
     <Tabs value={activePathValue} asChild>
       <Fragment>
         <TabsList asChild>
-          <nav className="border-t shrink-0 [&_a]:shrink-0 z-2 fixed left-0 right-0 bottom-[--safe-pb] !bg-white rounded-none h-auto grid grid-cols-4">
+          <nav className="border-t shrink-0 [&_a]:shrink-0 z-2 fixed left-0 right-0 bottom-[--safe-pb] !bg-white rounded-none h-auto grid grid-cols-5">
             <NavItem
               onClick={() => {
                 // Focus on the play tab when navigating to the play route
@@ -61,6 +66,18 @@ export default function BottomNavigation() {
               route={ROUTES.profile}
               icon={<FaLemon className="text-xl scale-90" />}
             />
+
+            <TabsTrigger
+              asChild
+              className="grid place-items-center group text-black/70 data-[state=active]:text-black"
+              value={ROUTES.swap.value}
+            >
+              <Link href={ROUTES.swap.href}>
+                <div className="size-12 group-active:scale-105 rounded-full border-2 border-transparent bg-black/10 group-data-[state=active]:border-black group-data-[state=active]:bg-juz-green-lime grid place-items-center">
+                  <MdSwapCalls className="text-2xl scale-110" />
+                </div>
+              </Link>
+            </TabsTrigger>
 
             <NavItem
               route={ROUTES.market}

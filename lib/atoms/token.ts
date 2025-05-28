@@ -1,28 +1,31 @@
 "use client"
 
 import { atom, useAtom } from "jotai"
-import { getHardwareType } from "../window"
+import { getHardwareType } from "@/lib/window"
+import { ADDRESS_USDC, ADDRESS_WETH, ADDRESS_WORLD_COIN } from "@/lib/constants"
 
 const isIOS = () => getHardwareType().isIOS
 
 export const WLD_TOKEN = {
   label: "WLD",
   value: "WLD",
+  address: ADDRESS_WORLD_COIN,
+  decimals: 18,
 } as const
 
 export const ALL_TOKENS = {
   WLD: WLD_TOKEN,
   "USDC.E": {
-    label: "USDC.E",
+    label: "USDC",
     value: "USDC.E",
+    address: ADDRESS_USDC,
+    decimals: 6,
   },
   WETH: {
     label: "WETH",
     value: "WETH",
-  },
-  WBTC: {
-    label: "WBTC",
-    value: "WBTC",
+    address: ADDRESS_WETH,
+    decimals: 18,
   },
 } as const
 

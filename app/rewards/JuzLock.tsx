@@ -70,7 +70,7 @@ export default function JuzLock() {
 
   return (
     <div className="mt-8 border-3 border-black shadow-3d-lg rounded-2xl p-6">
-      <h2 className="font-semibold text-xl">{t("title")}</h2>
+      <h2 className="font-semibold whitespace-nowrap text-xl">{t("title")}</h2>
 
       <fieldset className="mt-4">
         <nav className="flex items-center justify-between">

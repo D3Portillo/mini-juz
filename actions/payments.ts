@@ -17,27 +17,33 @@ export const executeWorldPayment = async ({
   initiatorAddress,
   paymentDescription,
   amount,
+  token,
 }: {
   initiatorAddress: Address
   paymentDescription: string
   amount: number
+  token: "WLD" | "USDCE"
 }) => {
   if (!MiniKit.isInstalled()) return null
 
   const uuid = generateUUID()
+  const paymentToken = token === "WLD" ? Tokens.WLD : Tokens.USDCE
+
   const payload: PayCommandInput = {
     reference: uuid,
     to: MINI_APP_RECIPIENT,
     tokens: [
       {
-        symbol: Tokens.WLD,
-        token_amount: tokenToDecimals(amount, Tokens.WLD).toString(),
+        symbol: paymentToken,
+        token_amount: tokenToDecimals(amount, paymentToken).toString(),
       },
     ],
     description: paymentDescription,
   }
 
   const { finalPayload } = await MiniKit.commandsAsync.pay(payload)
+  console.debug({ paymentPayload: finalPayload })
+
   if (finalPayload.status == "success") {
     const req = await fetch(`/api/confirm-payment`, {
       method: "POST",

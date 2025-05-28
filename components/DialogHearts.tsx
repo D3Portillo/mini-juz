@@ -64,6 +64,7 @@ export default function DialogHearts({
       })
     } else {
       result = await executeWorldPayment({
+        token: "WLD",
         amount: 0.75,
         initiatorAddress,
         paymentDescription: t("buyRefillMessage", {
