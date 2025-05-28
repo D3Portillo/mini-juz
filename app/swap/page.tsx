@@ -137,6 +137,7 @@ export default function PageSwap() {
         amount: QUOTE,
       })
 
+      handler.resetValue()
       return toast.success({
         title: `${shortifyDecimals(QUOTE, 4)} JUZ received!`,
       })
