@@ -14,8 +14,8 @@ import MainSelect from "@/components/MainSelect"
 import FixedTopContainer from "@/components/FixedTopContainer"
 
 import { shortifyDecimals } from "@/lib/numbers"
-import { erc20Abi } from "viem"
-import { executeWorldPayment } from "@/actions/payments"
+import { erc20Abi, formatEther } from "viem"
+import { executeWorldPayment, MINI_APP_RECIPIENT } from "@/actions/payments"
 import { worldClient } from "@/lib/atoms/holdings"
 import { formatUSDC } from "@/lib/tokens"
 import { incrPlayerJUZEarned } from "@/actions/game"
@@ -23,16 +23,16 @@ import { incrPlayerJUZEarned } from "@/actions/game"
 import { JUZCounter } from "@/app/HomeNavigation"
 import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
 import { ALL_TOKENS } from "@/lib/atoms/token"
+import { MiniKit } from "@worldcoin/minikit-js"
 
 import { useFormattedInputHandler } from "@/lib/input"
 import { useAccountBalances } from "@/lib/atoms/balances"
+import { useWLDPerETH } from "@/app/rewards/internals"
 import { useWLDPriceInUSD } from "@/lib/atoms/prices"
 import { trackEvent } from "@/components/posthog"
+import { ZERO } from "@/lib/constants"
 
-const TOKENS = {
-  WLD: ALL_TOKENS.WLD,
-  "USDC.E": ALL_TOKENS["USDC.E"],
-}
+const TOKENS = ALL_TOKENS
 
 export default function PageSwap() {
   const { toast } = useToast()
@@ -41,6 +41,7 @@ export default function PageSwap() {
   const [payingToken, setPayingToken] = useState(TOKENS.WLD)
   const { WLD } = useAccountBalances()
   const { wldPriceInUSD } = useWLDPriceInUSD()
+  const { wldPerETH } = useWLDPerETH()
 
   const handler = useFormattedInputHandler({
     decimals: payingToken.decimals,
@@ -49,7 +50,7 @@ export default function PageSwap() {
   const { data: queryResult = null } = useSWR(
     `juz-price-feed`,
     async () => {
-      const [balance, juzPrice = 0] = await Promise.all([
+      const [usdcBalance, wethBalance, juzPrice = 0] = await Promise.all([
         address
           ? worldClient.readContract({
               abi: erc20Abi,
@@ -57,14 +58,26 @@ export default function PageSwap() {
               address: ALL_TOKENS["USDC.E"].address,
               args: [address],
             })
-          : Promise.resolve(0),
+          : Promise.resolve(ZERO),
+        address
+          ? worldClient.readContract({
+              abi: erc20Abi,
+              functionName: "balanceOf",
+              address: ALL_TOKENS.WETH.address,
+              args: [address],
+            })
+          : Promise.resolve(ZERO),
         fetch("/api/juz-price")
           .then((res) => res.json())
           .then((d) => d.price),
       ])
 
       return {
-        usdceBalance: formatUSDC(balance),
+        usdceBalance: formatUSDC(usdcBalance),
+        wethBalance: {
+          formatted: formatEther(wethBalance),
+          value: wethBalance,
+        },
         juzPrice: juzPrice as number,
       }
     },
@@ -78,18 +91,25 @@ export default function PageSwap() {
   const JUZ_PRICE = Number(queryResult?.juzPrice || "0.0138")
 
   const BALANCE =
-    payingToken.value === "WLD"
+    payingToken.value === TOKENS.WLD.value
       ? WLD.formatted
+      : payingToken.value === TOKENS.WETH.value
+      ? queryResult?.wethBalance?.formatted || "0"
       : queryResult?.usdceBalance || "0"
 
   function handleMax() {
     handler.setValue(shortifyDecimals(BALANCE, 5))
   }
 
-  const RECEIVING_JUZ =
-    payingToken.value === "WLD"
-      ? Number(handler.value) * (wldPriceInUSD / JUZ_PRICE)
-      : Number(handler.value) / JUZ_PRICE
+  function calculateJUZFromToken(token: string, amount: number | string) {
+    return token === TOKENS.WLD.value
+      ? Number(amount) * (wldPriceInUSD / JUZ_PRICE)
+      : token === TOKENS.WETH.value // WETH Calculation
+      ? Number(amount) * wldPerETH * (wldPriceInUSD / JUZ_PRICE)
+      : Number(amount) / JUZ_PRICE
+  }
+
+  const RECEIVING_JUZ = calculateJUZFromToken(payingToken.value, handler.value)
 
   async function handleConfirmSwap() {
     if (!address) return signIn()
@@ -99,38 +119,49 @@ export default function PageSwap() {
       })
     }
 
-    if (handler.value < 1e-1) {
-      return toast.error({
-        title: "Minimum amount is 0.1",
+    const QUOTE = RECEIVING_JUZ
+    let isSuccess = false
+
+    if ((payingToken as any).value === "WETH") {
+      // Process WETH transfer
+      const BIG_WETH_BALANCE = queryResult?.wethBalance?.value || ZERO
+      if (handler.formattedValue > BIG_WETH_BALANCE) {
+        return toast.error({
+          title: "Insufficient balance",
+        })
+      }
+
+      const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
+        transaction: [
+          {
+            abi: erc20Abi,
+            address: payingToken.address,
+            functionName: "transfer",
+            args: [MINI_APP_RECIPIENT, handler.formattedValue],
+          },
+        ],
       })
+
+      isSuccess = finalPayload.status === "success"
+    } else {
+      // We cotinuew with payment flow for WLD / USDC.E
+      if (handler.value < 1e-1) {
+        return toast.error({
+          title: "Minimum amount is 0.1",
+        })
+      }
+
+      const result = await executeWorldPayment({
+        token: payingToken.value === "WLD" ? "WLD" : "USDCE",
+        amount: Number(handler.value),
+        initiatorAddress: address,
+        paymentDescription: `Receiving ${shortifyDecimals(QUOTE, 4)} JUZ`,
+      })
+
+      isSuccess = result !== null
     }
 
-    const QUOTE = RECEIVING_JUZ
-
-    const finalPayload = await executeWorldPayment({
-      token: payingToken.value === "WLD" ? "WLD" : "USDCE",
-      amount: Number(handler.value),
-      initiatorAddress: address,
-      paymentDescription: `Receiving ${shortifyDecimals(QUOTE, 4)} JUZ`,
-    })
-
-    /**
-     * TODO: Replace with this logic when Approved from reviewers
-     * const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
-      transaction: [
-        {
-          abi: erc20Abi,
-          address: payingToken.address,
-          functionName: "transfer",
-          args: [MINI_APP_RECIPIENT, handler.formattedValue],
-        },
-      ],
-    })
-
-    const debuglUrl = (finalPayload as any)?.details?.debugUrl
-     */
-
-    if (finalPayload) {
+    if (isSuccess) {
       // Update JUZ Earned
       incrPlayerJUZEarned(address, Number(RECEIVING_JUZ.toFixed(6)))
       trackEvent("otc-swap", {
@@ -163,8 +194,8 @@ export default function PageSwap() {
 
       <div className="flex flex-grow [&_strong]:font-medium px-4 mt-4 mb-12 flex-col gap-5">
         <nav className="flex pt-1 items-center gap-4">
-          <span className="text-sm font-medium">JUZ Price (24h):</span>
-
+          <span className="text-sm font-medium">JUZ Price (5min)</span>
+          <div className="flex-grow" />
           <span className="rounded-full whitespace-nowrap text-sm font-semibold text-center bg-juz-orange/10 border-2 border-juz-orange text-black py-1 px-3">
             🍋 ${shortifyDecimals(JUZ_PRICE, 4)}
           </span>
@@ -199,13 +230,24 @@ export default function PageSwap() {
             </div>
           </nav>
 
-          <label className="flex px-1 pt-4 pb-2 gap-1 items-center">
-            <input
-              value={handler.value}
-              onChange={handler.onChangeHandler}
-              placeholder={`0 ${payingToken.label}`}
-              className="font-medium text-2xl w-full bg-transparent outline-none placeholder:text-black/50 flex-grow"
-            />
+          <label className="flex px-1 pt-4 gap-1 items-center">
+            <div className="w-full">
+              <input
+                value={handler.value}
+                onChange={handler.onChangeHandler}
+                placeholder={`0 ${payingToken.label}`}
+                className="font-medium text-2xl w-full bg-transparent outline-none placeholder:text-black/50 flex-grow"
+              />
+              <div className="text-xs text-black font-medium pointer-events-none mt-2 mb-0.5">
+                1 {payingToken.label} ={" "}
+                <strong className="text-juz-green">
+                  {shortifyDecimals(
+                    calculateJUZFromToken(payingToken.value, "1")
+                  )}{" "}
+                  JUZ
+                </strong>
+              </div>
+            </div>
 
             <LemonButton
               onClick={handleMax}
@@ -227,8 +269,7 @@ export default function PageSwap() {
         {handler.value <= 0 ? null : (
           <div className="mt-5 max-w-md mx-auto text-center text-sm">
             You will receive{" "}
-            <strong>{shortifyDecimals(RECEIVING_JUZ, 5)} JUZ</strong> for{" "}
-            <strong>{shortifyDecimals(handler.value, 5)} WLD</strong>
+            <strong>{shortifyDecimals(RECEIVING_JUZ, 5)} JUZ</strong>
           </div>
         )}
       </div>
