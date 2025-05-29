@@ -83,12 +83,9 @@ export default function PageRewards() {
     }
   )
 
-  const isLockPeriodEnded = false // Disabled until veJUZ token approved in World
-  /**
-   * lockData?.unlockTime
+  const isLockPeriodEnded = lockData?.unlockTime
     ? Date.now() / 1000 > lockData.unlockTime
     : false
-   */
 
   async function claimRewards() {
     if (!address) return signIn()
