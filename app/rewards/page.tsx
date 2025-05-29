@@ -126,14 +126,14 @@ export default function PageRewards() {
 
   async function recoverJUZLocked() {
     if (!address) return signIn()
-    const AMOUNT = lockData?.lockedJUZ || ZERO
-    if (AMOUNT <= 0) {
+    const JUZ_LOCKED = lockData?.veJUZClaimed || ZERO
+    if (JUZ_LOCKED <= 0) {
       return toast.error({
         title: "Nothing to withdraw",
       })
     }
 
-    const tx = await unlockJUZ(AMOUNT)
+    const tx = await unlockJUZ(JUZ_LOCKED)
 
     if (tx?.status === "success") {
       toast.success({
