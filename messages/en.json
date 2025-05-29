@@ -144,8 +144,11 @@
       "noClaims": "Nothing to be claimed"
     },
     "success": {
-      "claimed": "veJUZ claimed!"
+      "claimed": "veJUZ claimed!",
+      "juzRecovered": "JUZ recovered!"
     },
+    "juzAvailable": "JUZ Available",
+    "unlocked": "Unlocked 🔓",
     "comingSoon": "Coming soon ⚡",
     "explainers": {
       "apr": "APR is calculated based on the current veJUZ supply and the amount of JUZ locked in the pool. APR is variable and can change over time.",

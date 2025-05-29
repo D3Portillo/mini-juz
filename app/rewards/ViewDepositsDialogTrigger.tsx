@@ -43,7 +43,6 @@ export default function ViewDepositsDialogTrigger({
       revalidateIfStale: false,
     }
   )
-  console.debug({ data, error })
 
   const { deposits, poolShare } = useAccountPosition()
 

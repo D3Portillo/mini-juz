@@ -42,7 +42,6 @@ export const executeWorldPayment = async ({
   }
 
   const { finalPayload } = await MiniKit.commandsAsync.pay(payload)
-  console.debug({ paymentPayload: finalPayload })
 
   if (finalPayload.status == "success") {
     const req = await fetch(`/api/confirm-payment`, {

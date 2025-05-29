@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react"
 import { FaRegLemon } from "react-icons/fa"
 import { useWorldAuth } from "@radish-la/world-auth"
@@ -29,7 +31,7 @@ export default function JuzLock() {
   const [lockPeriod, setLockPeriod] = useState<string>(LOCK_1Y)
 
   const { toast } = useToast()
-  const { lock } = useLockJUZ(inputHandler.formattedValue)
+  const { lock } = useLockJUZ()
   const { isConnected, signIn } = useWorldAuth()
   const { JUZToken, lockedJUZ } = useAccountBalances()
 
@@ -52,7 +54,11 @@ export default function JuzLock() {
       })
     }
 
-    if (await lock(getPeriodInWeeks(lockPeriod))) {
+    const isSuccess = Boolean(
+      await lock(inputHandler.formattedValue, getPeriodInWeeks(lockPeriod))
+    )
+
+    if (isSuccess) {
       trackEvent("locked-JUZ", {
         amount: inputHandler.value,
         period: lockPeriod,

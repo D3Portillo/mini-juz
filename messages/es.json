@@ -144,8 +144,11 @@
       "noClaims": "Nada para reclamar"
     },
     "success": {
-      "claimed": "¡veJUZ reclamado!"
+      "claimed": "¡veJUZ reclamado!",
+      "juzRecovered": "!Ya tienes tu JUZ de vuelta!"
     },
+    "juzAvailable": "JUZ Disponible",
+    "unlocked": "🥳",
     "comingSoon": "Muy pronto ⚡",
     "explainers": {
       "apr": "El APR se calcula según la cantidad actual de veJUZ en circulación y la cantidad de JUZ bloqueado en el pool. El APR es variable y puede cambiar con el tiempo.",

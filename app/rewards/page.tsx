@@ -6,7 +6,7 @@ import { MiniKit } from "@worldcoin/minikit-js"
 
 import useSWR from "swr"
 import Image from "next/image"
-import { formatEther } from "viem"
+import { formatEther, parseEther } from "viem"
 
 import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
@@ -19,7 +19,7 @@ import LemonButton from "@/components/LemonButton"
 import ReusableDialog from "@/components/ReusableDialog"
 import { ABI_LOCKED_JUZ, worldClient } from "@/lib/atoms/holdings"
 
-import { ADDRESS_LOCK_CONTRACT } from "@/lib/constants"
+import { ADDRESS_LOCK_CONTRACT, ZERO } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 import { calculateAPR } from "@/lib/apr"
 
@@ -27,6 +27,8 @@ import JuzLock, { LockedJuzExplainer } from "./JuzLock"
 import { JUZDistributionModal } from "./JuzDistributionModal"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { useTranslations } from "next-intl"
+import { useLockJUZ } from "@/lib/atoms/lock"
+
 import { shortifyDecimals } from "@/lib/numbers"
 import { trackEvent } from "@/components/posthog"
 
@@ -45,6 +47,7 @@ export default function PageRewards() {
   const router = useRouter()
 
   const { address, signIn } = useWorldAuth()
+  const { unlockJUZ } = useLockJUZ()
 
   const { data: claimable = 0 } = useSWR(
     address ? `juz.earned.${address}` : null,
@@ -65,6 +68,27 @@ export default function PageRewards() {
       refreshInterval: 3_000, // 3 seconds
     }
   )
+
+  const { data: lockData = null } = useSWR(
+    address ? `locked.user.data.${address}` : null,
+    async () => {
+      if (!address) return null
+      const data = await worldClient.readContract({
+        abi: ABI_LOCKED_JUZ,
+        functionName: "getLockData",
+        address: ADDRESS_LOCK_CONTRACT,
+        args: [address],
+      })
+      return data
+    }
+  )
+
+  const isLockPeriodEnded = false // Disabled until veJUZ token approved in World
+  /**
+   * lockData?.unlockTime
+    ? Date.now() / 1000 > lockData.unlockTime
+    : false
+   */
 
   async function claimRewards() {
     if (!address) return signIn()
@@ -102,6 +126,32 @@ export default function PageRewards() {
       })
     }
   }
+
+  async function recoverJUZLocked() {
+    if (!address) return signIn()
+    const AMOUNT = lockData?.lockedJUZ || ZERO
+    if (AMOUNT <= 0) {
+      return toast.error({
+        title: "Nothing to withdraw",
+      })
+    }
+
+    const tx = await unlockJUZ(
+      AMOUNT +
+        // Force max withdrawal (add 1 JUZ extra)
+        parseEther("1")
+    )
+
+    if (tx?.status === "success") {
+      toast.success({
+        title: t("success.juzRecovered"),
+      })
+    }
+  }
+
+  const CLAIMABLE = isLockPeriodEnded
+    ? Number(formatEther(lockData?.lockedJUZ || ZERO))
+    : claimable
 
   return (
     <main>
@@ -187,32 +237,40 @@ export default function PageRewards() {
 
               <section className="p-4 bg-gradient-to-br from-juz-green-lime/5 to-juz-green-lime/0 mt-5 rounded-2xl border-3 border-black shadow-3d-lg">
                 <nav className="flex items-center justify-between">
-                  <p className="font-semibold text-xl">{t("earningVeJUZ")}</p>
+                  <p className="font-semibold text-xl">
+                    {isLockPeriodEnded ? t("juzAvailable") : t("earningVeJUZ")}
+                  </p>
 
-                  <ReusableDialog
-                    title={t("aprBreakdown")}
-                    trigger={
-                      <APRBadge>
-                        🔥 {APR.toFixed(2).replace(".00", "")}% APR
-                      </APRBadge>
-                    }
-                  >
-                    {t("explainers.apr")}
-                  </ReusableDialog>
+                  {isLockPeriodEnded ? (
+                    <APRBadge>{t("unlocked")}</APRBadge>
+                  ) : (
+                    <ReusableDialog
+                      title={t("aprBreakdown")}
+                      trigger={
+                        <APRBadge>
+                          🔥 {APR.toFixed(2).replace(".00", "")}% APR
+                        </APRBadge>
+                      }
+                    >
+                      {t("explainers.apr")}
+                    </ReusableDialog>
+                  )}
                 </nav>
 
                 <nav className="flex mt-1 items-end justify-between gap-2">
                   <p className="text-4xl tabular-nums font-semibold">
-                    {claimable <= 0
+                    {CLAIMABLE <= 0
                       ? "0.000000000"
-                      : claimable < 1e-9
+                      : CLAIMABLE < 1e-9
                       ? "<0.000000001"
-                      : claimable < 1
-                      ? Number(claimable).toFixed(9)
-                      : shortifyDecimals(claimable, 3)}
+                      : CLAIMABLE < 1
+                      ? Number(CLAIMABLE).toFixed(9)
+                      : shortifyDecimals(CLAIMABLE, 3)}
                   </p>
                   <button
-                    onClick={claimRewards}
+                    onClick={
+                      isLockPeriodEnded ? recoverJUZLocked : claimRewards
+                    }
                     className="underline font-medium underline-offset-2"
                   >
                     {t("claim")}
