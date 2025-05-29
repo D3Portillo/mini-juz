@@ -133,11 +133,7 @@ export default function PageRewards() {
       })
     }
 
-    const tx = await unlockJUZ(
-      AMOUNT +
-        // Force max withdrawal (add 1 JUZ extra)
-        parseEther("1")
-    )
+    const tx = await unlockJUZ(AMOUNT)
 
     if (tx?.status === "success") {
       toast.success({
