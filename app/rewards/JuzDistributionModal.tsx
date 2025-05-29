@@ -17,13 +17,12 @@ import { getDispenserPayload } from "@/actions/dispenser"
 import { serializeBigint } from "@/lib/utils"
 import { trackEvent } from "@/components/posthog"
 import { useHardwareType } from "@/lib/window"
-import { getUnoDeeplinkUrl } from "@/lib/deeplinks"
 
 import ReusableDialog from "@/components/ReusableDialog"
 import { MdSwapCalls } from "react-icons/md"
 
 import { ABI_DISPENSER, ADDRESS_DISPENSER } from "@/actions/internals"
-import { ADDRESS_JUZ, ADDRESS_WORLD_COIN, ZERO } from "@/lib/constants"
+import { ZERO } from "@/lib/constants"
 
 const atomlastClaim = atomWithStorage("juz.canClaim", 0)
 export function JUZDistributionModal({ children }: PropsWithChildren) {

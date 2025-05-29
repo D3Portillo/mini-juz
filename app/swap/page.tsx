@@ -3,10 +3,10 @@
 import useSWR from "swr"
 import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { useWorldAuth } from "@radish-la/world-auth"
 
-import { FaArrowRight, FaChevronDown } from "react-icons/fa"
+import { FaArrowRight, FaChevronDown, FaGift } from "react-icons/fa"
 
 import RouteBackButton from "@/components/RouteBackButton"
 import LemonButton from "@/components/LemonButton"
@@ -25,13 +25,16 @@ import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
 import { ALL_TOKENS } from "@/lib/atoms/token"
 import { MiniKit } from "@worldcoin/minikit-js"
 
+import { trackEvent } from "@/components/posthog"
+import { beautifyAddress } from "@/lib/utils"
+import { getUnoDeeplinkUrl } from "@/lib/deeplinks"
+
 import { useFormattedInputHandler } from "@/lib/input"
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { useWLDPerETH } from "@/app/rewards/internals"
 import { useWLDPriceInUSD } from "@/lib/atoms/prices"
-import { trackEvent } from "@/components/posthog"
-import { ZERO } from "@/lib/constants"
-import { beautifyAddress } from "@/lib/utils"
+
+import { ADDRESS_JUZ, ADDRESS_WORLD_COIN, ZERO } from "@/lib/constants"
 
 const TOKENS = ALL_TOKENS
 
@@ -89,22 +92,21 @@ export default function PageSwap() {
     }
   )
 
-  const { data: leaderboard = [], error } = useSWR<
+  const { data: leaderboard = [] } = useSWR<
     {
       timestamp: string
       amount: number
       address: Address
     }[]
   >(
-    `buying-board`,
+    `buying-board-data`,
     async () => {
       const data = await fetch("/api/juz-price/buys")
-      console.debug({ data })
       return await data.json()
     },
     {
       keepPreviousData: true,
-      refreshInterval: 5_500, // 5.5 seconds
+      refreshInterval: 7_500, // 7.5 seconds
     }
   )
 
@@ -213,15 +215,28 @@ export default function PageSwap() {
       </FixedTopContainer>
 
       <div className="flex flex-grow [&_strong]:font-medium px-4 mt-4 mb-12 flex-col gap-5">
-        <nav className="flex pt-1 items-center gap-4">
+        <nav className="flex items-center gap-3.5">
           <span className="text-sm font-medium">JUZ Price (5min)</span>
           <div className="flex-grow" />
           <span className="rounded-full whitespace-nowrap text-sm font-semibold text-center bg-juz-orange/10 border-2 border-juz-orange text-black py-1 px-3">
-            🍋 ${shortifyDecimals(JUZ_PRICE, 4)}
+            ${shortifyDecimals(JUZ_PRICE, 4)} 💰
           </span>
+          <button
+            onClick={() => {
+              window.open(
+                getUnoDeeplinkUrl({
+                  fromToken: ADDRESS_JUZ,
+                  toToken: ADDRESS_WORLD_COIN,
+                })
+              )
+            }}
+            className="pt-1 pb-1.5 text-xl"
+          >
+            <FaGift className="scale-110" />
+          </button>
         </nav>
 
-        <section className="border-3 p-3 rounded-2xl border-black shadow-3d-lg">
+        <section className="border-3 -mt-0.5 p-3 rounded-2xl border-black shadow-3d-lg">
           <nav className="flex px-1 items-center justify-between gap-2">
             <MainSelect
               value={payingToken.value}
@@ -296,41 +311,46 @@ export default function PageSwap() {
         </div>
 
         {leaderboard.length > 0 && (
-          <section className="mt-5 flex flex-col">
-            <div className="text-sm font-medium gap-5 border-y py-3.5 whitespace-nowrap flex items-center">
-              <div className="w-20 pl-2">Time</div>
-              <div className="flex-grow text-juz-green">JUZ Bought</div>
-              <div className="w-20">User</div>
-            </div>
+          <Fragment>
+            <section className="mt-5 flex flex-col">
+              <div className="text-sm font-medium gap-5 border-y py-3.5 whitespace-nowrap flex items-center">
+                <div className="w-20 pl-2">Time</div>
+                <div className="flex-grow text-juz-green">JUZ Bought</div>
+                <div className="w-20">User</div>
+              </div>
 
-            {leaderboard.map(({ address, amount, timestamp }) => {
-              const date = new Date(timestamp)
+              {leaderboard.map(({ address, amount, timestamp }) => {
+                const date = new Date(timestamp)
 
-              return (
-                <div
-                  key={`${address}-${date.getTime()}-${amount}`}
-                  className="text-xs gap-5 py-3 even:bg-black/3 whitespace-nowrap flex items-center"
-                >
-                  <div className="w-20 pl-2">
-                    {date.toLocaleTimeString("en-US", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
+                return (
+                  <div
+                    key={`${address}-${date.getTime()}-${amount}`}
+                    className="text-xs gap-5 py-3 even:bg-black/3 whitespace-nowrap flex items-center"
+                  >
+                    <div className="w-20 pl-2">
+                      {date.toLocaleTimeString("en-US", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </div>
+
+                    <div className="tabular-nums flex-grow">
+                      <strong className="tabular-nums">
+                        {shortifyDecimals(amount, 3)} JUZ
+                      </strong>
+                    </div>
+
+                    <div className="w-20 tabular-nums">
+                      {beautifyAddress(address)}
+                    </div>
                   </div>
-
-                  <div className="tabular-nums flex-grow">
-                    <strong className="tabular-nums">
-                      {shortifyDecimals(amount, 3)} JUZ
-                    </strong>
-                  </div>
-
-                  <div className="w-20 tabular-nums">
-                    {beautifyAddress(address)}
-                  </div>
-                </div>
-              )
-            })}
-          </section>
+                )
+              })}
+            </section>
+            <p className="max-w-xs mt-10 text-sm mx-auto text-center">
+              Showing latest user transactions
+            </p>
+          </Fragment>
         )}
       </div>
     </main>

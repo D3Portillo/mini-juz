@@ -1,6 +1,6 @@
 export async function GET(_: Request) {
-  const min = 0.00883
-  const max = 0.0113
+  const min = 0.008897
+  const max = 0.01154
 
   // Stable time bucket: one value every 30 seconds
   const now = Date.now()
@@ -27,7 +27,7 @@ export async function GET(_: Request) {
 
   response.headers.set(
     "Cache-Control",
-    "public, s-maxage=60, stale-while-revalidate=59"
+    "public, s-maxage=30, stale-while-revalidate=29"
   )
 
   return response
