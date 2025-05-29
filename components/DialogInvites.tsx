@@ -21,6 +21,11 @@ import { BiSolidCopy } from "react-icons/bi"
 
 import { getJUZAppId } from "@/lib/deeplinks"
 import { getTotalInteractions } from "@/actions/invites"
+import {
+  DEFAULT_INVITE_JUZ,
+  JUZ_MULTIPLIER,
+  VERIFIED_INVITE_JUZ,
+} from "@/lib/constants"
 import LemonButton from "./LemonButton"
 
 const APP_ID = getJUZAppId()
@@ -68,9 +73,20 @@ export default function DialogInvites({
 
         <div className="mb-5 -mt-4">
           <AlertDialogDescription className="mb-8">
-            {t.rich("description", {
-              amount: () => <strong className="font-medium">10 JUZ</strong>,
-            })}
+            <p>
+              {t.rich("description", {
+                amount: () => (
+                  <strong className="font-medium">
+                    {DEFAULT_INVITE_JUZ * JUZ_MULTIPLIER} JUZ
+                  </strong>
+                ),
+                verifiedAmount: () => (
+                  <strong className="font-medium">
+                    {VERIFIED_INVITE_JUZ * JUZ_MULTIPLIER} JUZ
+                  </strong>
+                ),
+              })}
+            </p>
           </AlertDialogDescription>
 
           <section className="p-4 relative rounded-2xl border-3 border-black shadow-3d">

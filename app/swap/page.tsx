@@ -315,7 +315,7 @@ export default function PageSwap() {
             <section className="mt-5 flex flex-col">
               <div className="text-sm font-medium gap-5 border-y py-3.5 whitespace-nowrap flex items-center">
                 <div className="w-20 pl-2">Time</div>
-                <div className="flex-grow text-juz-green">JUZ Bought</div>
+                <div className="flex-grow text-juz-green">JUZ Balance</div>
                 <div className="w-20">User</div>
               </div>
 
@@ -327,7 +327,7 @@ export default function PageSwap() {
                     key={`${address}-${date.getTime()}-${amount}`}
                     className="text-xs gap-5 py-3 even:bg-black/3 whitespace-nowrap flex items-center"
                   >
-                    <div className="w-20 pl-2">
+                    <div className="w-20 pl-2 tabular-nums">
                       {date.toLocaleTimeString("en-US", {
                         hour: "2-digit",
                         minute: "2-digit",

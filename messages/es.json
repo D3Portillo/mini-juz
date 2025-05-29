@@ -17,6 +17,7 @@
   "Home": {
     "play": "Jugar",
     "claimNow": "Reclamar",
+    "limeBoostTemplate": "¡Por tiempo limitado, puedes ganar <multiplier>veces</multiplier> más JUZ en la trivia y por invitar amigos!",
     "errors": {
       "noHeartsLeft": "😢 No tienes puntos para jugar",
       "connect": "Conecta tu wallet para continuar"
@@ -204,6 +205,6 @@
     "title": "Invita a tus amigos",
     "copyLink": "Copiar link",
     "totalInvited": "Amigos invitados",
-    "description": "Tú y tu amigo reciben <amount></amount> cada uno cuando se acepta y reclama la invitación."
+    "description": "Tú y tu amigo reciben <amount></amount> cada uno cuando se acepta y reclama la invitación. Y hasta <verifiedAmount></verifiedAmount> por usuarios verificados!"
   }
 }

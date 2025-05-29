@@ -36,6 +36,7 @@ import LemonIcon from "@/components/LemonIcon"
 import ProfileMenu from "./ProfileMenu"
 import LanguageMenu from "./LanguageMenu"
 
+import { DEFAULT_INVITE_JUZ, JUZ_MULTIPLIER } from "@/lib/constants"
 import asset_bg from "@/assets/bg.png"
 
 // TODO: JUZ Royale mode - bet to be the king of the hill
@@ -150,7 +151,10 @@ export default function PageProfile() {
                     <nav className="flex my-1">
                       <div className="pl-2 pr-3 py-1 text-sm font-semibold flex items-center gap-1.5 border rounded-full text-black border-juz-green-lime bg-juz-green-lime/15">
                         <FaLemon />
-                        <span>10 JUZ / {tglobal("friend")}</span>
+                        <span>
+                          {DEFAULT_INVITE_JUZ * JUZ_MULTIPLIER} JUZ /{" "}
+                          {tglobal("friend")}
+                        </span>
                       </div>
                     </nav>
                   </div>

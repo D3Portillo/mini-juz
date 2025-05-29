@@ -57,7 +57,6 @@ export default function InviteSentinel() {
       sender: inviting,
       deadline: Math.round(Date.now() / 1_000 + 60 * 3),
       recipient: address,
-      amount: 10,
       nonce,
     })
     const { finalPayload } = await MiniKit.commandsAsync.signMessage({

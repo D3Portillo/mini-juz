@@ -30,13 +30,14 @@ import DialogHearts from "@/components/DialogHearts"
 import DailyRefill from "@/components/banners/DailyRefill"
 
 import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
-import { MANAGE_HEARTS_TRIGGER_ID } from "@/lib/constants"
+import { JUZ_MULTIPLIER, MANAGE_HEARTS_TRIGGER_ID } from "@/lib/constants"
 
 import HomeNavigation from "./HomeNavigation"
 import ModalGame from "./ModalGame"
 
 import asset_limoncito from "@/assets/limoncito.png"
 import BannerRewardPools from "@/components/BannerRewardPools"
+import ReusableDialog from "@/components/ReusableDialog"
 
 export default function PageHome() {
   const { toast } = useToast()
@@ -45,7 +46,7 @@ export default function PageHome() {
 
   const { hearts } = usePlayerHearts()
   const { gameTopics, shuffleTopics, isEmpty } = useUserTopics()
-  const { user, address, signIn, isConnected } = useWorldAuth()
+  const { address, signIn, isConnected } = useWorldAuth()
   const { JUZPoints } = useAccountBalances()
 
   const [showGame, setShowGame] = useState(null as { topic?: string } | null)
@@ -71,12 +72,14 @@ export default function PageHome() {
 
   function handleGameWon(wonJUZ: number) {
     // TODO: Add a cute modal window that celebrates the win
+
+    const BALANCE = wonJUZ * JUZ_MULTIPLIER
     if (address) {
       incrementGamesWon(address)
-      incrPlayerJUZEarned(address, wonJUZ)
+      incrPlayerJUZEarned(address, BALANCE)
     }
     toast.success({
-      title: t("success.juzEarned", { amount: wonJUZ }),
+      title: t("success.juzEarned", { amount: BALANCE }),
     })
   }
 
@@ -101,10 +104,32 @@ export default function PageHome() {
           <TabsList className="border-b flex items-center border-b-black/3">
             <TabsTrigger
               id="play-tab"
-              className="border-b-2 flex items-center gap-4 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
+              className="border-b-2 flex items-center gap-3 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
               value="play"
             >
-              {t("play")}
+              <span>{t("play")}</span>
+              {JUZ_MULTIPLIER > 1 ? (
+                <ReusableDialog
+                  title="The Lime Boost"
+                  trigger={
+                    <button className="bg-juz-green-lime pb-px px-2.5 rounded-full">
+                      <strong className="font-semibold text-sm">
+                        {JUZ_MULTIPLIER}x
+                      </strong>
+                    </button>
+                  }
+                >
+                  <p>
+                    {t.rich("limeBoostTemplate", {
+                      multiplier: (timesInGivenLanguage) => (
+                        <strong className="whitespace-nowrap">
+                          {JUZ_MULTIPLIER} {timesInGivenLanguage}
+                        </strong>
+                      ),
+                    })}
+                  </p>
+                </ReusableDialog>
+              ) : null}
             </TabsTrigger>
 
             <TabsTrigger

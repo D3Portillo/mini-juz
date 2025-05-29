@@ -17,6 +17,7 @@
   "Home": {
     "play": "Play",
     "claimNow": "Claim now",
+    "limeBoostTemplate": "For a limited time, you can earn <multiplier>times</multiplier> more JUZ in the Trivia game and by inviting friends!",
     "errors": {
       "noHeartsLeft": "😢 No hearts left to play",
       "connect": "Connect your wallet to continue"
@@ -204,6 +205,6 @@
     "title": "Invite your friends",
     "copyLink": "Copy invite link",
     "totalInvited": "Total invited",
-    "description": "You and your friend get <amount></amount> each when invite is accepted and claimed."
+    "description": "You and your friend get <amount></amount> each when invite is accepted and claimed. And up to <verifiedAmount></verifiedAmount> for verified users!"
   }
 }

@@ -5,6 +5,12 @@ import ProtocolKit, { hashSafeMessage } from "@safe-global/protocol-kit"
 import { Redis } from "@upstash/redis"
 import { getPlayerPoints, incrPlayerJUZEarned, isValidPlayer } from "./game"
 import { worldchain } from "viem/chains"
+import {
+  DEFAULT_INVITE_JUZ,
+  JUZ_MULTIPLIER,
+  VERIFIED_INVITE_JUZ,
+} from "@/lib/constants"
+import { isWorldVerified } from "@/lib/world"
 
 const redis = Redis.fromEnv()
 
@@ -41,7 +47,6 @@ type ClaimMessage = {
   amount: number
 }
 
-const CLAIMABLE_AMOUNT = 10
 export const claimFriendRewards = async ({
   message,
   signature,
@@ -63,13 +68,14 @@ export const claimFriendRewards = async ({
     signature
   )
 
-  if (!isValidSignature) {
+  if (!isValidSignature || !formattedMessage) {
     return errorState("InvalidSigner")
   }
 
-  if (formattedMessage?.amount != CLAIMABLE_AMOUNT) {
-    return errorState("InvalidAmount")
-  }
+  const isVerifiedUser = await isWorldVerified(recipient)
+  const CLAIMABLE_AMOUNT = isVerifiedUser
+    ? VERIFIED_INVITE_JUZ
+    : DEFAULT_INVITE_JUZ
 
   const nowInSeconds = Math.floor(Date.now() / 1_000)
   if (nowInSeconds > formattedMessage.deadline) {
@@ -90,7 +96,7 @@ export const claimFriendRewards = async ({
   }
 
   const recipientPoints = (await getPlayerPoints(recipient)) || 0
-  if (recipientPoints > CLAIMABLE_AMOUNT * 3) {
+  if (recipientPoints > CLAIMABLE_AMOUNT * 5) {
     // Allow people to farm at most 3-4 times the gifted JUZ
     return errorState("NotFreshRecipient")
   }
@@ -111,8 +117,8 @@ export const claimFriendRewards = async ({
     redis.set(getInviteKey(sender, recipient), nowInSeconds),
 
     // Disburse each one CLAIMABLE_AMOUNT in JUZ
-    incrPlayerJUZEarned(sender, CLAIMABLE_AMOUNT),
-    incrPlayerJUZEarned(recipient, CLAIMABLE_AMOUNT),
+    incrPlayerJUZEarned(sender, CLAIMABLE_AMOUNT * JUZ_MULTIPLIER),
+    incrPlayerJUZEarned(recipient, CLAIMABLE_AMOUNT * JUZ_MULTIPLIER),
   ])
 
   return {
