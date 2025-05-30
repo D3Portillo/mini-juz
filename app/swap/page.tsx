@@ -129,6 +129,8 @@ export default function PageSwap() {
       ? WLD.formatted
       : payingToken.value === ALL_TOKENS.WETH.value
       ? queryResult?.wethBalance?.formatted || "0"
+      : payingToken.value === ALL_TOKENS.ORO.value
+      ? queryResult?.oroBalance?.formatted || "0"
       : queryResult?.usdceBalance || "0"
 
   function handleMax() {
