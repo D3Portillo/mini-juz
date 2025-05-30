@@ -100,3 +100,26 @@ export async function getWLDPriceinUSDC() {
 
   return Number(formatUSDC(amount1))
 }
+
+const USDC_ORO_POOL = "0x2765F0eee393FdD9F1164487f2C037B570561034" as const
+export async function getOROPriceInUSDC() {
+  const [sqrtPriceX96] = await worldClient.readContract({
+    abi: ABI_UNI_V3,
+    functionName: "slot0",
+    address: USDC_ORO_POOL,
+    args: [],
+  })
+
+  // amount 0 is USDC, amount 1 is ORO
+  const [amount0] = getPairDepositRequired({
+    sqrtPriceX96,
+    amount0: parseUnits(
+      // Lets assume for now the max value of ORO is 1k USDC
+      (1_000).toString(),
+      6
+    ),
+    amount1: parseUnits("1", 18),
+  })
+
+  return Number(formatUSDC(amount0))
+}

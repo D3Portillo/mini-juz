@@ -27,6 +27,12 @@ export const ALL_TOKENS = {
     address: ADDRESS_WETH,
     decimals: 18,
   },
+  ORO: {
+    label: "ORO",
+    value: "ORO",
+    address: "0xcd1E32B86953D79a6AC58e813D2EA7a1790cAb63",
+    decimals: 18,
+  },
 } as const
 
 export const LEMON_TOKENS = {

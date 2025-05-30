@@ -32,19 +32,18 @@ import { getUnoDeeplinkUrl } from "@/lib/deeplinks"
 import { useFormattedInputHandler } from "@/lib/input"
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { useWLDPerETH } from "@/app/rewards/internals"
-import { useWLDPriceInUSD } from "@/lib/atoms/prices"
+import { useOroPriceInUSD, useWLDPriceInUSD } from "@/lib/atoms/prices"
 
 import { ADDRESS_JUZ, ADDRESS_WORLD_COIN, ZERO } from "@/lib/constants"
-
-const TOKENS = ALL_TOKENS
 
 export default function PageSwap() {
   const { toast } = useToast()
   const { signIn, address } = useWorldAuth()
 
-  const [payingToken, setPayingToken] = useState(TOKENS.WLD)
+  const [payingToken, setPayingToken] = useState(ALL_TOKENS.WLD)
   const { WLD } = useAccountBalances()
   const { wldPriceInUSD } = useWLDPriceInUSD()
+  const { oroPriceInUSD } = useOroPriceInUSD()
   const { wldPerETH } = useWLDPerETH()
 
   const handler = useFormattedInputHandler({
@@ -54,30 +53,43 @@ export default function PageSwap() {
   const { data: queryResult = null } = useSWR(
     `juz-price-feed`,
     async () => {
-      const [usdcBalance, wethBalance, juzPrice = 0] = await Promise.all([
-        address
-          ? worldClient.readContract({
-              abi: erc20Abi,
-              functionName: "balanceOf",
-              address: ALL_TOKENS["USDC.E"].address,
-              args: [address],
-            })
-          : Promise.resolve(ZERO),
-        address
-          ? worldClient.readContract({
-              abi: erc20Abi,
-              functionName: "balanceOf",
-              address: ALL_TOKENS.WETH.address,
-              args: [address],
-            })
-          : Promise.resolve(ZERO),
-        fetch("/api/juz-price")
-          .then((res) => res.json())
-          .then((d) => d.price),
-      ])
+      const [usdcBalance, wethBalance, oroBalance, juzPrice = 0] =
+        await Promise.all([
+          address
+            ? worldClient.readContract({
+                abi: erc20Abi,
+                functionName: "balanceOf",
+                address: ALL_TOKENS["USDC.E"].address,
+                args: [address],
+              })
+            : Promise.resolve(ZERO),
+          address
+            ? worldClient.readContract({
+                abi: erc20Abi,
+                functionName: "balanceOf",
+                address: ALL_TOKENS.WETH.address,
+                args: [address],
+              })
+            : Promise.resolve(ZERO),
+          address
+            ? worldClient.readContract({
+                abi: erc20Abi,
+                functionName: "balanceOf",
+                address: ALL_TOKENS.ORO.address,
+                args: [address],
+              })
+            : Promise.resolve(ZERO),
+          fetch("/api/juz-price")
+            .then((res) => res.json())
+            .then((d) => d.price),
+        ])
 
       return {
         usdceBalance: formatUSDC(usdcBalance),
+        oroBalance: {
+          formatted: formatEther(oroBalance),
+          value: oroBalance,
+        },
         wethBalance: {
           formatted: formatEther(wethBalance),
           value: wethBalance,
@@ -113,9 +125,9 @@ export default function PageSwap() {
   const JUZ_PRICE = Number(queryResult?.juzPrice || "0.0138")
 
   const BALANCE =
-    payingToken.value === TOKENS.WLD.value
+    payingToken.value === ALL_TOKENS.WLD.value
       ? WLD.formatted
-      : payingToken.value === TOKENS.WETH.value
+      : payingToken.value === ALL_TOKENS.WETH.value
       ? queryResult?.wethBalance?.formatted || "0"
       : queryResult?.usdceBalance || "0"
 
@@ -124,9 +136,14 @@ export default function PageSwap() {
   }
 
   function calculateJUZFromToken(token: string, amount: number | string) {
-    return token === TOKENS.WLD.value
+    if (token === ALL_TOKENS.ORO.value) {
+      // ORO Calculation
+      return Number(amount) * (oroPriceInUSD / JUZ_PRICE)
+    }
+
+    return token === ALL_TOKENS.WLD.value
       ? Number(amount) * (wldPriceInUSD / JUZ_PRICE)
-      : token === TOKENS.WETH.value // WETH Calculation
+      : token === ALL_TOKENS.WETH.value // WETH Calculation
       ? Number(amount) * wldPerETH * (wldPriceInUSD / JUZ_PRICE)
       : Number(amount) / JUZ_PRICE
   }
@@ -144,10 +161,14 @@ export default function PageSwap() {
     const QUOTE = RECEIVING_JUZ
     let isSuccess = false
 
-    if ((payingToken as any).value === "WETH") {
-      // Process WETH transfer
-      const BIG_WETH_BALANCE = queryResult?.wethBalance?.value || ZERO
-      if (handler.formattedValue > BIG_WETH_BALANCE) {
+    if (["WETH", "ORO"].includes(payingToken.value)) {
+      // Process WETH/ORO transfer
+      const FORMATTED_BIG_BALANCE =
+        ((payingToken as any).value === "WETH"
+          ? queryResult?.wethBalance?.value
+          : queryResult?.oroBalance?.value) || ZERO
+
+      if (handler.formattedValue > FORMATTED_BIG_BALANCE) {
         return toast.error({
           title: "Insufficient balance",
         })
@@ -240,10 +261,10 @@ export default function PageSwap() {
           <nav className="flex px-1 items-center justify-between gap-2">
             <MainSelect
               value={payingToken.value}
-              options={Object.values(TOKENS)}
-              onValueChange={(value) => {
-                setPayingToken((TOKENS as any)[value])
-              }}
+              options={Object.values(ALL_TOKENS)}
+              onValueChange={(value) =>
+                setPayingToken((ALL_TOKENS as any)[value])
+              }
             >
               <button className="flex pt-1 outline-none items-center">
                 <figure
