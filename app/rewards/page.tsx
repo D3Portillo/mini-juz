@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation"
 import { MiniKit } from "@worldcoin/minikit-js"
 
 import useSWR from "swr"
+import { formatEther } from "viem"
 import Image from "next/image"
-import { formatEther, parseEther } from "viem"
 
 import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
@@ -82,6 +82,8 @@ export default function PageRewards() {
       return data
     }
   )
+
+  // TODO: Add time left for unlock
 
   const isLockPeriodEnded = lockData?.unlockTime
     ? Date.now() / 1000 > lockData.unlockTime
