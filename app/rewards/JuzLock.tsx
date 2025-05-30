@@ -43,7 +43,7 @@ export default function JuzLock() {
     !isStakingZero && LOCKED_PERIODS.includes(lockPeriod as any)
 
   function handleMax() {
-    inputHandler.setValue(JUZToken.formatted)
+    inputHandler.setValue(shortifyDecimals(JUZToken.formatted, 6))
   }
 
   async function handleLock() {

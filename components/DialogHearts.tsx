@@ -23,8 +23,6 @@ import { useAccountBalances } from "@/lib/atoms/balances"
 
 import { trackEvent } from "./posthog"
 
-const JUZ_POINTS_PRICE = 7 // JUZ Points
-
 export default function DialogHearts({
   trigger,
 }: {
@@ -41,6 +39,9 @@ export default function DialogHearts({
   const { user, signIn, isConnected } = useWorldAuth()
   const { JUZToken: Token, JUZPoints: Points } = useAccountBalances()
   const JUZ = isIOS ? Points : Token
+  const JUZ_COST_FOR_REFILL = isIOS
+    ? 10 // IOS user pay more (since it's with points)
+    : 7
 
   const { hearts, refill, canBeRefilled: canBeFreeRefilled } = usePlayerHearts()
   const isHeartFull = hearts >= 3
@@ -52,14 +53,14 @@ export default function DialogHearts({
     let result = null
 
     if (isIOS) {
-      if ((JUZ.formatted as any) < JUZ_POINTS_PRICE) {
+      if ((JUZ.formatted as any) < JUZ_COST_FOR_REFILL) {
         return toast.error({
           title: t("errors.notEnoughJUZ"),
         })
       }
       // Only payment in JUZ
       result = await executeJUZPayment({
-        amount: JUZ_POINTS_PRICE,
+        amount: JUZ_COST_FOR_REFILL,
         initiatorAddress,
       })
     } else {
@@ -136,7 +137,7 @@ export default function DialogHearts({
                 ? canBeFreeRefilled
                   ? t("claimFree")
                   : isIOS
-                  ? t("refillWithJUZ", { amount: JUZ_POINTS_PRICE })
+                  ? t("refillWithJUZ", { amount: JUZ_COST_FOR_REFILL })
                   : t("refillNow")
                 : tglobal("connectWallet")}
             </Button>
