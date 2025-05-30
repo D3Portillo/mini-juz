@@ -59,10 +59,7 @@ export default function RewardPool() {
     if (!address) return signIn()
 
     const nextClaim = compoundRewardData?.nextClaimTime
-    if (
-      true // avoid mess-up during migration
-      // nextClaim && nextClaim > new Date()
-    ) {
+    if (nextClaim && nextClaim > new Date()) {
       return genericError()
     }
 
