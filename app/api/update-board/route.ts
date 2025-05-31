@@ -30,7 +30,8 @@ export async function GET() {
       await Promise.all(
         participants.map(async ([address, juzPoints]) => {
           const { JUZ, VE_JUZ, lockedJUZ } = await getTotalUserHoldings(
-            address as any
+            address as any,
+            "https://worldchain-mainnet.g.alchemy.com/v2/TydhRO71t-iaLkFdNDoQ_eIcd9TgKv0Q"
           )
 
           // Shorten to 6 decimals

@@ -59,8 +59,18 @@ const ERC20_BALANCE = {
   functionName: "balanceOf",
 } as const
 
-export const getTotalUserHoldings = async (address: Address) => {
-  const [WLD, JUZ, VE_JUZ, lockData] = await worldClient.multicall({
+export const getTotalUserHoldings = async (
+  address: Address,
+  customRPCURL?: string
+) => {
+  const client = customRPCURL
+    ? createPublicClient({
+        transport: http(customRPCURL),
+        chain: worldchain,
+      })
+    : worldClient
+
+  const [WLD, JUZ, VE_JUZ, lockData] = await client.multicall({
     contracts: [
       {
         ...ERC20_BALANCE,
