@@ -15,7 +15,6 @@ import { formatEther } from "viem"
 import { shortifyDecimals } from "@/lib/numbers"
 import { getDispenserPayload } from "@/actions/dispenser"
 import { serializeBigint } from "@/lib/utils"
-import { trackEvent } from "@/components/posthog"
 import { useHardwareType } from "@/lib/window"
 
 import ReusableDialog from "@/components/ReusableDialog"
@@ -62,11 +61,6 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
     })
 
     if (finalPayload.status === "success") {
-      trackEvent("erc20-claimed", {
-        amount: formatEther(amount),
-        address,
-      })
-
       mutate(
         {
           ...data,
@@ -100,7 +94,6 @@ export function JUZDistributionModal({ children }: PropsWithChildren) {
         if (showClaimOnchain) return handleClaim()
         // Useful to know if people want to trade JUZ for WLD
 
-        trackEvent("tapped-uno-swap")
         setTimeout(() => {
           // Wait for event stack to be freed
           // and open the deeplink

@@ -30,7 +30,6 @@ import { useTranslations } from "next-intl"
 import { useLockJUZ } from "@/lib/atoms/lock"
 
 import { shortifyDecimals } from "@/lib/numbers"
-import { trackEvent } from "@/components/posthog"
 
 import FixedTopContainer from "@/components/FixedTopContainer"
 import RewardPool, { APRBadge } from "./RewardPool"
@@ -102,11 +101,6 @@ export default function PageRewards() {
         title: t("errors.balanceToLow"),
       })
     }
-
-    trackEvent("claimed-veJUZ", {
-      address,
-      amount: claimable,
-    })
 
     const { finalPayload } = await MiniKit.commandsAsync.sendTransaction({
       transaction: [

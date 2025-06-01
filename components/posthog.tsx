@@ -10,17 +10,11 @@ import { PostHogProvider as PHProvider } from "posthog-js/react"
 // e.g. pageviews, tap-roulette, etc - to avoid high volume of events and reduce PH costs
 
 type PostHogEvents =
-  | "tap-roulette" // added
-  | "erc20-claimed" // added
-  | "claimed-veJUZ" // added
   | "locked-JUZ" // added
   | "topic-selected" // added
   | "heart-refilled" // added
-  | "new-player" // added
   | "updated-locale" // added
   | "invite-accepted" // added
-  | "tapped-uno-swap" // added
-  | "tapped-join-juz-pools" // added
   | "otc-swap" // added
 
 export const trackEvent = (

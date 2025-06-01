@@ -6,7 +6,6 @@ import Image from "next/image"
 import { useAudioMachine } from "@/lib/sounds"
 import { motion, useAnimationControls } from "framer-motion"
 import { cn } from "@/lib/utils"
-import { trackEvent } from "./posthog"
 
 import asset_bg from "@/assets/spin-bg.svg"
 import asset_control from "@/assets/spin-control.svg"
@@ -71,7 +70,6 @@ export default function WheelSpin({
       className="relative group select-none cursor-pointer"
       onClick={() => {
         onClick?.()
-        trackEvent("tap-roulette")
 
         if (enableSpin) spinWheel()
         else playSound("failure")
