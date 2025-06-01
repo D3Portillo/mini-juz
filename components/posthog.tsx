@@ -1,6 +1,5 @@
 "use client"
 
-import { usePathname } from "next/navigation"
 import { useEffect } from "react"
 
 import posthog, { type Properties } from "posthog-js"
@@ -45,23 +44,5 @@ export function PostHogProvider({ children }: { children: React.ReactNode }) {
     })
   }, [])
 
-  return (
-    <PHProvider client={posthog}>
-      <CapturePageView />
-      {children}
-    </PHProvider>
-  )
-}
-
-function CapturePageView() {
-  const pathname = usePathname()
-
-  useEffect(() => {
-    if (pathname && posthog) {
-      // Track pageview
-      posthog.capture("$pageview", { $current_url: window.origin + pathname })
-    }
-  }, [pathname])
-
-  return null
+  return <PHProvider client={posthog}>{children}</PHProvider>
 }
