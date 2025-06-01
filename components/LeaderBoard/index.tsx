@@ -11,9 +11,17 @@ import { shortifyDecimals } from "@/lib/numbers"
 import { formatUSDC } from "@/lib/tokens"
 import { getDateFnsLocal } from "@/lib/date-locale"
 
+import ReusableDialog from "@/components/ReusableDialog"
 import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
 import { useAccountData, useGameRank, useProfileImage } from "@/lib/atoms/user"
 import { beautifyAddress } from "@/lib/utils"
+import { useAddressMote } from "@/lib/motes"
+
+// TODO: Add user tags (whale, shark, shrimps) to add curiosity for others to see
+// TODO: Notifications "It's trivia time!" at least once a day
+// TODO: Make Lime Boosts a game item
+// TODO: Add "shield" game item - which essentially is having a second heart when only one heart is left
+// TODO: As Duolingo add a "unlimited hearts" game item that last for 15 minutes
 
 export default function LeaderBoard() {
   const locale = useLocale()
@@ -32,12 +40,14 @@ export default function LeaderBoard() {
   const connectedUserAddress = user?.walletAddress!
   const isEmpty = leaderboard.length <= 0
 
-  console.debug({ leaderboard })
+  const { mote: connectedUserMote } = useAddressMote(
+    Number(TotalJUZBalance.formatted)
+  )
 
   return (
     <section className="px-4 mt-4 mb-10 flex flex-col gap-2">
       <div className="flex h-12 whitespace-nowrap px-5 gap-4 font-semibold rounded-2xl border-2 shadow-3d border-black items-center bg-gradient-to-bl from-juz-green-lime to-juz-green-ish">
-        <div className="w-12">#</div>
+        <div className="w-10">#</div>
         <div className="flex-grow">{t("user")}</div>
         <div className="w-24 text-end">{t("totalJUZ")}</div>
       </div>
@@ -80,10 +90,31 @@ export default function LeaderBoard() {
           <hr className="mt-10 mb-5" />
 
           <div className="p-5 gap-4 font-semibold rounded-2xl shadow-3d-lg border-3 border-black">
-            <nav className="flex items-center justify-between">
+            <nav className="flex items-center">
               <span className="text-2xl text-juz-green">
                 #{rank ? rank : "99+"}
               </span>
+
+              <div className="flex-grow" />
+
+              {connectedUserMote ? (
+                <ReusableDialog
+                  title={`${connectedUserMote.mote} ${connectedUserMote.emoji}`}
+                  trigger={
+                    <button className="text-xl px-1.5">
+                      {connectedUserMote.emoji}
+                    </button>
+                  }
+                >
+                  <p>
+                    You have accumulated more than{" "}
+                    <strong className="whitespace-nowrap">
+                      {connectedUserMote.unlockPercentage}%
+                    </strong>{" "}
+                    of the total supply of JUZ.
+                  </p>
+                </ReusableDialog>
+              ) : null}
 
               <JUZDistributionModal>
                 <button className="bg-juz-green-lime text-sm px-3 py-0.5 rounded-full font-semibold text-black border-2 border-black">
@@ -121,17 +152,35 @@ function PlayerData({
   address: string
   points: number
 }) {
+  const POINTS = Number(formatUSDC(points))
+  const { mote } = useAddressMote(POINTS)
   const { data = null } = useAccountData(address as any)
 
   return (
     <div className="flex h-14 whitespace-nowrap px-5 gap-4 font-semibold rounded-xl border-2 shadow-3d border-black items-center bg-juz-green-ish/20 even:bg-juz-green-ish/3">
-      <div className="w-12">{position}</div>
+      <div className="w-10">{position}</div>
       <div className="flex-grow">
-        {data?.username || beautifyAddress(address, 4, "")}
+        {data?.username || beautifyAddress(address, 4, "")}{" "}
+        {mote ? (
+          <ReusableDialog
+            title={`${mote.mote} ${mote.emoji}`}
+            trigger={
+              <button className="p-1 scale-110 -translate-y-0.5 underline underline-offset-4 decoration-dashed">
+                {mote.emoji}
+              </button>
+            }
+          >
+            <p>
+              This player has accumulated more than{" "}
+              <strong className="whitespace-nowrap">
+                {mote.unlockPercentage}%
+              </strong>{" "}
+              of the total supply of JUZ.
+            </p>
+          </ReusableDialog>
+        ) : null}
       </div>
-      <div className="w-24 text-end">
-        {shortifyDecimals(formatUSDC(points), 3)}
-      </div>
+      <div className="w-24 text-end">{shortifyDecimals(POINTS)}</div>
     </div>
   )
 }
@@ -139,7 +188,7 @@ function PlayerData({
 function PlayerSkeleton() {
   return (
     <div className="flex h-14 whitespace-nowrap px-3 gap-4 rounded-xl border-2 shadow-3d border-black items-center bg-juz-green-ish/20 even:bg-juz-green-ish/3">
-      <div className="w-12 bg-black/10 h-8 rounded-lg animate-pulse" />
+      <div className="w-10 bg-black/10 h-8 rounded-lg animate-pulse" />
       <div className="flex-grow bg-black/10 delay-100 h-8 rounded-lg animate-pulse" />
     </div>
   )
