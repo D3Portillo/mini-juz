@@ -111,7 +111,7 @@
     "title": "Manage game hearts",
     "explainers": {
       "full": "Hearts are used to play trivia games. When you miss a question, you lose a heart.",
-      "regular": "Hearts are refilled for free every 24 hours. Or get an instant refill by swapping WLD."
+      "regular": "Hearts are refilled for free every 24 hours. Or get an instant refill with WLD."
     },
     "success": {
       "refilled": "Yaay. Hearts refilled"
