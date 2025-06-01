@@ -29,7 +29,7 @@ export default function ViewDepositsDialogTrigger({
 }) {
   const { address } = useWorldAuth()
 
-  const { data, error } = useSWR(
+  const { data: paymentData = null } = useSWR(
     address ? `/api/solution/0/${address}` : null,
     async () => {
       const r = await fetch(`/api/solution/0/${address}`)
@@ -43,6 +43,8 @@ export default function ViewDepositsDialogTrigger({
       revalidateIfStale: false,
     }
   )
+
+  const paymentTx = paymentData?.paymentTx || null
 
   const { deposits, poolShare } = useAccountPosition()
 
@@ -61,16 +63,13 @@ export default function ViewDepositsDialogTrigger({
   return (
     <ReusableDialog
       title={
-        data?.paymentTx ? "Withdrawal complete" : "Paused" // "My Deposits"
+        paymentTx ? "Withdrawal complete" : "Paused" // "My Deposits"
       }
-      closeText={data?.paymentTx ? "View transaction" : "Request withdrawal"} //"Add balance"
+      closeText={paymentTx ? "View transaction" : "Request withdrawal"} //"Add balance"
       enabled={!!deposits?.totalUSD}
       onClosePressed={() => {
-        if (data?.paymentTx) {
-          return window.open(
-            `https://worldscan.org/tx/${data.paymentTx}`,
-            "_blank"
-          )
+        if (paymentTx) {
+          return window.open(`https://worldscan.org/tx/${paymentTx}`, "_blank")
         }
 
         window.open("https://tally.so/r/wQyZLY", "_blank")
@@ -98,7 +97,7 @@ export default function ViewDepositsDialogTrigger({
         </button>
       }
     >
-      {data?.paymentTx ? null : (
+      {paymentTx ? null : (
         <Fragment>
           <p className="hidden">
             The total assets you have deposited in the WLD/WETH pool + earnings.
@@ -129,7 +128,7 @@ export default function ViewDepositsDialogTrigger({
         </Fragment>
       )}
 
-      {data?.paymentTx ? (
+      {paymentTx ? (
         <p>
           You requested us to withdraw your assets from the WLD/WETH. And we've
           completed your request. Below you can see the transaction with the
