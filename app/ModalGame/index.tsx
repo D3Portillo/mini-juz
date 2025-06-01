@@ -79,7 +79,6 @@ export default function ModalGame({
   const QUESTION = questions?.[currentQuestion - 1]
   const correctOptionIndex = QUESTION?.correctOptionIndex
   const isGameFinished = currentQuestion >= TOTAL_QUESTIONS
-  const isGameWon = isGameFinished && selectedOption === correctOptionIndex
 
   function handleContinue() {
     // Include question to user's history
@@ -87,8 +86,10 @@ export default function ModalGame({
 
     if (isGameFinished) {
       // Handle game termination and success
+      const pointsLostInGame = gameStartHeartCount - hearts
+      const isGameWon = pointsLostInGame < 3 // Won if lost less than 2 hearts
+
       if (isGameWon) {
-        const pointsLostInGame = gameStartHeartCount - hearts
         const MAX_JUZ = 3
         const MIN_JUZ = 1
         onGameWon?.(
