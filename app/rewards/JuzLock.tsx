@@ -42,8 +42,10 @@ export default function JuzLock() {
   const isValidStaking =
     !isStakingZero && LOCKED_PERIODS.includes(lockPeriod as any)
 
+  const VALUE_MAX = shortifyDecimals(JUZToken.formatted, 6) as any
+
   function handleMax() {
-    inputHandler.setValue(shortifyDecimals(JUZToken.formatted, 6))
+    inputHandler.setValue(VALUE_MAX)
   }
 
   async function handleLock() {
@@ -109,7 +111,7 @@ export default function JuzLock() {
 
         <div className="mt-2 text-sm font-semibold items-center gap-2 grid grid-cols-5">
           {[0, 25, 50, 75, 100].map((lockRatio) => {
-            const lockingAmount = (Number(JUZToken.formatted) * lockRatio) / 100
+            const lockingAmount = (VALUE_MAX * lockRatio) / 100
             const isActivePeriod =
               lockRatio == 0
                 ? inputHandler.value == 0
