@@ -13,6 +13,10 @@ import { parseUSDC } from "@/lib/tokens"
 const redis = Redis.fromEnv()
 const STALE_WINDOW = 20 * 60 // 20 minutes
 
+// TODO: Batch process users by 400 to avoid API limits
+// We need to update to a reversed sorted set to process latest in the store
+// and keep residuals for next batches (FIFO queue)
+
 export async function GET() {
   const now = Math.floor(Date.now() / 1000)
   const lastRun = await getLastLeaderboardUpdate()

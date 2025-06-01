@@ -111,18 +111,14 @@
     "title": "Puntos de juego",
     "explainers": {
       "full": "Usa corazones para jugar trivia. Si te equivocas, ¡pierdes uno!",
-      "regular": "Los corazones se recargan gratis cada 24 horas. También puedes comprar una recarga con {token}"
+      "regular": "Los corazones se recargan gratis cada 24 horas. También puedes hacer una recarga instantánea con WLD"
     },
     "success": {
       "refilled": "¡Yuju! Corazones recargados."
     },
-    "errors": {
-      "notEnoughJUZ": "No tienes suficiente JUZ"
-    },
     "buyRefillMessage": "Confirma para recargar {hearts} corazones en JUZ Mini App.",
     "claimFree": "Refill gratis",
-    "refillNow": "Comprar refill",
-    "refillWithJUZ": "Rellenar por {amount} JUZ",
+    "refillNow": "Recargar ahora",
     "heartCount": "Tus puntos ({hearts})"
   },
   "ModalGame": {

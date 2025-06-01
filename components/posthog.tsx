@@ -6,6 +6,9 @@ import { useEffect } from "react"
 import posthog, { type Properties } from "posthog-js"
 import { PostHogProvider as PHProvider } from "posthog-js/react"
 
+// TODO: Dedupe events that are emitted many times from a single session
+// e.g. pageviews, tap-roulette, etc - to avoid high volume of events and reduce PH costs
+
 type PostHogEvents =
   | "tap-roulette" // added
   | "erc20-claimed" // added
