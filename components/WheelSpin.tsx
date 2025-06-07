@@ -67,7 +67,7 @@ export default function WheelSpin({
   return (
     <div
       role="button"
-      className="relative group select-none cursor-pointer"
+      className="relative rounded-full overflow-hidden group select-none cursor-pointer"
       onClick={() => {
         onClick?.()
 

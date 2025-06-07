@@ -38,6 +38,7 @@ import ModalGame from "./ModalGame"
 import asset_limoncito from "@/assets/limoncito.png"
 import BannerRewardPools from "@/components/BannerRewardPools"
 import ReusableDialog from "@/components/ReusableDialog"
+import DialogPowerups from "@/components/DialogPowerups"
 
 export default function PageHome() {
   const { toast } = useToast()
@@ -86,6 +87,7 @@ export default function PageHome() {
   return (
     <Tabs asChild defaultValue="play">
       <main className="bg-gradient-to-br min-h-screen from-juz-orange/0 via-juz-orange/0 to-juz-orange/7">
+        <DialogPowerups />
         <ModalGame
           topic={showGame?.topic}
           open={Boolean(showGame?.topic)}
