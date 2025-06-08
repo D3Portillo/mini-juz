@@ -15,12 +15,15 @@ import {
   calculateBoostPriceInWLD,
   MAX_BOOST_PERCENT,
   MIN_BOOST_PERCENT,
+  UNLOCK_BOOST_VALUE,
 } from "./internals"
 import asset_bg from "@/assets/bg.png"
 import { usePowerups } from "./atoms"
+import { executeWorldPayment } from "@/actions/payments"
 
 const DEFAULT_MINUTES = 5 // Default duration in minutes
 const DEFAULT_RATIO = 75 // Default boost ratio in percentage
+const GIFT_TIME_IN_MS = 1_000 * 15 // 15 seconds as "gift" for modal actions + game start
 
 export default function DialogBooster() {
   const [isOpen, setIsOpen] = useState(false)
@@ -28,10 +31,11 @@ export default function DialogBooster() {
   const [minutes, setMinutes] = useState(DEFAULT_MINUTES)
 
   const { toast } = useToast()
-  const { address, signIn } = useWorldAuth()
+  const { address, isConnected, signIn } = useWorldAuth()
 
   const {
     powerups: { booster },
+    setState,
   } = usePowerups()
 
   useEffect(() => {
@@ -47,34 +51,57 @@ export default function DialogBooster() {
 
   async function handleSetupBooster() {
     if (!address) return signIn()
-    if (boost <= 0) {
+    if (boost < 15) {
       return toast.error({
         title: "Invalid boost amount",
       })
     }
 
-    toast.success({
-      title: "Boost setup complete",
+    const price = calculateBoostPriceInWLD({
+      boostPercent: boost,
+      durationMinutes: minutes,
     })
 
-    // TODO: Implement the actual booster setup logic here
+    const result = await executeWorldPayment({
+      token: "WLD",
+      amount: price,
+      initiatorAddress: address,
+      paymentDescription: `Setting up ${boost}% boost for ${minutes} minutes`,
+    })
+
+    if (result !== null) {
+      toast.success({
+        title: "Boost setup complete",
+      })
+
+      setState((prev) => ({
+        ...prev,
+        booster: {
+          durationInMinutes: minutes,
+          ratioInPercentage: boost,
+          isActive: true,
+          timeSet: Date.now() + GIFT_TIME_IN_MS, // Set the current time as the start time
+        },
+      }))
+    }
   }
 
   return (
     <ReusableDialog
       title="JUZ Booster"
+      closeOnActionPressed={booster.isActive ? false : isConnected}
       footNote={
         booster.isActive
           ? undefined
           : minutes > 5
-          ? `Nice. ${boost > 50 ? 10 : 5}% bonus unlocked`
+          ? `Nice. ${boost >= UNLOCK_BOOST_VALUE ? 10 : 5}% bonus unlocked`
           : "Boost for 10+ minutes to unlock a bonus"
       }
       closeText={
         booster.isActive
           ? "Okay, thanks!"
           : address
-          ? `Confirm (${PRICE} WLD)`
+          ? `Confirm ${PRICE ? `${PRICE} WLD` : "setup"}`
           : "Connect Wallet"
       }
       onOpenChange={setIsOpen}
@@ -140,7 +167,7 @@ export default function DialogBooster() {
             <IoSparklesSharp
               className={cn(
                 "shrink-0 text-juz-green inline-block -mt-2 mr-1",
-                boost > 50 || "hidden"
+                boost >= UNLOCK_BOOST_VALUE || "hidden"
               )}
             />
             )

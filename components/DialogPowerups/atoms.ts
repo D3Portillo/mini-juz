@@ -13,12 +13,13 @@ const DEFAULT_STATE = {
     ratioInPercentage: 0,
   },
   shields: {
-    amount: 0,
+    // Gift the user 2 shield to test out the feature
+    amount: 2,
   },
   broom: {
     // Broom is a consumable item, so it can be used multiple times
     // and do not requires to have a equipped state
-    amount: 0,
+    amount: 2,
   },
 }
 
@@ -26,7 +27,36 @@ const atomPowerups = atomWithStorage("juz.powerups", DEFAULT_STATE)
 
 export const usePowerups = () => {
   const [state, setState] = useAtom(atomPowerups)
+
+  const { booster } = state
+  const isBoostActive = booster.timeSet
+    ? booster.timeSet + booster.durationInMinutes * 60 * 1_000 > Date.now()
+    : false
+
   return {
-    powerups: state,
+    powerups: {
+      ...state,
+      booster: {
+        ...state.booster,
+        isActive: isBoostActive,
+        // Keep consistent to "active boost" state
+        ratioInPercentage: isBoostActive ? booster.ratioInPercentage : 0,
+      },
+    },
+    setState,
+    consumeItem: (item: keyof typeof state) => {
+      const STATE =
+        item === "booster"
+          ? // Reset state when consuming booster
+            DEFAULT_STATE.booster
+          : {
+              amount: Math.max(0, state[item].amount - 1),
+            }
+
+      setState((prev) => ({
+        ...prev,
+        [item]: STATE,
+      }))
+    },
   }
 }

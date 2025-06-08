@@ -1,7 +1,11 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { Drawer, DrawerContent } from "@worldcoin/mini-apps-ui-kit-react"
+import {
+  Drawer,
+  DrawerContent,
+  useToast,
+} from "@worldcoin/mini-apps-ui-kit-react"
 
 import LemonButton from "@/components/LemonButton"
 
@@ -17,10 +21,15 @@ import { useAudioMachine } from "@/lib/sounds"
 import { useIsGameActive } from "@/lib/atoms/game"
 import { useGameQuestions, useQuestionHistory } from "./atoms"
 
+import { usePowerups } from "@/components/DialogPowerups/atoms"
 import HeartsVisualizer from "./HeartsVisualizer"
 
 const TOTAL_QUESTIONS = 5
-const PER_QUESTION_TIME = 10 // seconds
+const PER_QUESTION_TIME = 15 // seconds
+const DEFAULT_ITEM_STATE = {
+  shields: 0,
+  brooms: 0,
+}
 
 export default function ModalGame({
   open,
@@ -38,6 +47,10 @@ export default function ModalGame({
   const { playSound } = useAudioMachine(["success", "failure"])
   const { elapsedTime, restart, stop } = useTimer(PER_QUESTION_TIME)
   const [, setIsGameActive] = useIsGameActive()
+  const { powerups, consumeItem } = usePowerups()
+
+  const [usedItems, setUsedItems] = useState(DEFAULT_ITEM_STATE)
+  const { toast } = useToast()
 
   // Used to track the total points earned
   const gameStartHeartCount = useMemo(() => hearts, [open])
@@ -125,6 +138,7 @@ export default function ModalGame({
       setIsAnswered(false)
       setSelectedOption(null)
       setCurrentQuestion(1)
+      setUsedItems(DEFAULT_ITEM_STATE)
       restart()
 
       // Mark game as ACTIVE
@@ -139,7 +153,19 @@ export default function ModalGame({
   }, [isError])
 
   const triggerFailure = () => {
-    removeHeart()
+    // Shield can only be used once per game
+    const canUseShield = powerups.shields.amount > 0 && usedItems.shields < 1
+    if (canUseShield && hearts <= 1) {
+      // Save the heart if user has shields
+      consumeItem("shields")
+      setUsedItems({ ...usedItems, shields: usedItems.shields + 1 })
+      toast.success({
+        title: "🛡️ Shield activated! Heart saved.",
+      })
+    } else {
+      removeHeart()
+    }
+
     playSound("failure")
   }
 

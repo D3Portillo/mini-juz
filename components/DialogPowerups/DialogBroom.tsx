@@ -14,8 +14,8 @@ import { usePowerups } from "./atoms"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { executeWorldPayment } from "@/actions/payments"
 
-const BONUS_DISCOUNT = 10 // 10% discount for buying 5 or more brooms
-const BONUS_UNLOCK_AMOUNT = 5 // Amount of brooms to unlock the bonus
+const BONUS_DISCOUNT = 10 // 10% discount for buying 5 or more items
+const BONUS_UNLOCK_AMOUNT = 5 // Amount of items to unlock the bonus
 const PRICE_PER_ITEM_IN_WLD = 0.1 // 0.1 WLD per broom
 const MAX_ITEMS = 25
 
@@ -27,6 +27,7 @@ export default function DialogBroom() {
 
   const {
     powerups: { broom: ownedBrooms },
+    setState,
   } = usePowerups()
 
   const [brooms, setBrooms] = useState(ownedBrooms.amount)
@@ -37,8 +38,6 @@ export default function DialogBroom() {
   async function handleFinalizeSetup() {
     if (!address) return signIn()
 
-    const BUYING_BROOMS = isBuyingBrooms ? brooms - ownedBrooms.amount : 0
-
     if (brooms > MAX_ITEMS) {
       // User can hold at most MAX_ITEMS
       return toast.error({
@@ -46,6 +45,7 @@ export default function DialogBroom() {
       })
     }
 
+    const BUYING_BROOMS = isBuyingBrooms ? brooms - ownedBrooms.amount : 0
     if (BUYING_BROOMS <= 0) {
       // Just in case we reach this edge case
       return toast.error({
@@ -65,15 +65,21 @@ export default function DialogBroom() {
     })
 
     if (result !== null) {
-      // TODO: Update the ownedBrooms state in SWR
       toast.success({
         title: "Brooms setup successful",
       })
+
+      setState((prev) => ({
+        ...prev,
+        broom: {
+          amount: brooms,
+        },
+      }))
     }
   }
 
   useEffect(() => {
-    // Sync owned items with swr and reset brooms when dialog opens
+    // Sync owned items with swr and reset state when dialog opens
     setBrooms(ownedBrooms.amount)
   }, [ownedBrooms.amount, isOpen])
 

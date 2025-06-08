@@ -14,8 +14,8 @@ import { usePowerups } from "./atoms"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { executeWorldPayment } from "@/actions/payments"
 
-const BONUS_DISCOUNT = 10 // 10% discount for buying 5 or more brooms
-const BONUS_UNLOCK_AMOUNT = 5 // Amount of brooms to unlock the bonus
+const BONUS_DISCOUNT = 10 // 10% discount for buying 5 or more items
+const BONUS_UNLOCK_AMOUNT = 5 // Amount of items to unlock the bonus
 const PRICE_PER_ITEM_IN_WLD = 0.2 // 0.2 WLD per shield
 const MAX_ITEMS = 25
 
@@ -27,6 +27,7 @@ export default function DialogShield() {
 
   const {
     powerups: { shields: ownedShields },
+    setState,
   } = usePowerups()
 
   const [shields, setShields] = useState(ownedShields.amount)
@@ -37,8 +38,6 @@ export default function DialogShield() {
   async function handleFinalizeSetup() {
     if (!address) return signIn()
 
-    const BUYING_BROOMS = isBuyingShields ? shields - ownedShields.amount : 0
-
     if (shields > MAX_ITEMS) {
       // User can hold at most MAX_ITEMS
       return toast.error({
@@ -46,6 +45,7 @@ export default function DialogShield() {
       })
     }
 
+    const BUYING_BROOMS = isBuyingShields ? shields - ownedShields.amount : 0
     if (BUYING_BROOMS <= 0) {
       // Just in case we reach this edge case
       return toast.error({
@@ -65,15 +65,21 @@ export default function DialogShield() {
     })
 
     if (result !== null) {
-      // TODO: Update the ownedBrooms state in SWR
       toast.success({
-        title: "Brooms setup successful",
+        title: "Shields setup successful",
       })
+
+      setState((prev) => ({
+        ...prev,
+        shields: {
+          amount: shields,
+        },
+      }))
     }
   }
 
   useEffect(() => {
-    // Sync owned items with swr and reset brooms when dialog opens
+    // Sync owned items with swr and reset state when dialog opens
     setShields(ownedShields.amount)
   }, [ownedShields.amount, isOpen])
 
