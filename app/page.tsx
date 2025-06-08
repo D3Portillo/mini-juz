@@ -87,7 +87,6 @@ export default function PageHome() {
   return (
     <Tabs asChild defaultValue="play">
       <main className="bg-gradient-to-br min-h-screen from-juz-orange/0 via-juz-orange/0 to-juz-orange/7">
-        <DialogPowerups />
         <ModalGame
           topic={showGame?.topic}
           open={Boolean(showGame?.topic)}
@@ -163,6 +162,8 @@ export default function PageHome() {
 
         <TabsContent asChild value="play">
           <div className="px-4 mb-12">
+            <DialogPowerups />
+
             {JUZPoints.isOnchainSynced ? (
               hearts > 0 ? null : (
                 <HomeAlert
