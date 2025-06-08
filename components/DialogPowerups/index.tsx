@@ -42,7 +42,7 @@ export default function DialogPowerups() {
         })
       }}
       className={cn(
-        "from-black/90",
+        "from-black/90 outline-none",
         isOpen ? "to-black/80" : "to-black/90",
         "bg-gradient-to-b drop-shadow-lg backdrop-blur-md border-2 border-black fixed p-0.5 text-white z-[3] top-[calc(30vh+5rem)] right-3 rounded-full"
       )}

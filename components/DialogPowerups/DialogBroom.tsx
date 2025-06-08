@@ -73,7 +73,7 @@ export default function DialogBroom() {
   }
 
   useEffect(() => {
-    // Sync owned brrooms with swr and reset brooms when dialog opens
+    // Sync owned items with swr and reset brooms when dialog opens
     setBrooms(ownedBrooms.amount)
   }, [ownedBrooms.amount, isOpen])
 
@@ -104,7 +104,7 @@ export default function DialogBroom() {
       closeText={
         isBuyingBrooms
           ? address
-            ? "Finalize setup"
+            ? "Confirm setup"
             : "Connect Wallet"
           : "Okay, thanks!"
       }

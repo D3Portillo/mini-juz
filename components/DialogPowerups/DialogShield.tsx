@@ -73,7 +73,7 @@ export default function DialogShield() {
   }
 
   useEffect(() => {
-    // Sync owned brrooms with swr and reset brooms when dialog opens
+    // Sync owned items with swr and reset brooms when dialog opens
     setShields(ownedShields.amount)
   }, [ownedShields.amount, isOpen])
 
@@ -106,7 +106,7 @@ export default function DialogShield() {
       closeText={
         isBuyingShields
           ? address
-            ? "Finalize setup"
+            ? "Confirm setup"
             : "Connect Wallet"
           : "Okay, thanks!"
       }
