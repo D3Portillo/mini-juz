@@ -40,5 +40,9 @@ export function useTimer(timeInSeconds: number) {
     return stop
   }, [timeInSeconds])
 
-  return { elapsedTime, restart, stop }
+  return {
+    elapsedTime,
+    restart,
+    stop,
+  }
 }

@@ -13,7 +13,7 @@ import { usePlayerHearts } from "@/lib/atoms/user"
 import { useTimer } from "@/lib/time"
 import { cn } from "@/lib/utils"
 
-import { GiDiceTarget } from "react-icons/gi"
+import { GiBroom, GiDiceTarget } from "react-icons/gi"
 import { MdError, MdOutlineExitToApp } from "react-icons/md"
 
 import { useTranslations } from "next-intl"
@@ -28,7 +28,9 @@ const TOTAL_QUESTIONS = 5
 const PER_QUESTION_TIME = 15 // seconds
 const DEFAULT_ITEM_STATE = {
   shields: 0,
-  brooms: 0,
+  broom: {
+    hiddenOptionIndex: -1,
+  },
 }
 
 export default function ModalGame({
@@ -44,7 +46,13 @@ export default function ModalGame({
 
   const { addQuestion } = useQuestionHistory(topic || null)
   const { hearts, removeHeart } = usePlayerHearts()
-  const { playSound } = useAudioMachine(["success", "failure"])
+  const { playSound } = useAudioMachine([
+    "success",
+    "failure",
+    "broom",
+    "shield",
+  ])
+
   const { elapsedTime, restart, stop } = useTimer(PER_QUESTION_TIME)
   const [, setIsGameActive] = useIsGameActive()
   const { powerups, consumeItem } = usePowerups()
@@ -121,6 +129,9 @@ export default function ModalGame({
     setCurrentQuestion((current) => current + 1)
     setIsAnswered(false)
     setSelectedOption(null)
+
+    // Reset items except for SHIELD (used once per game)
+    setUsedItems({ ...usedItems, broom: { hiddenOptionIndex: -1 } })
   }
 
   function handleForceExit() {
@@ -160,13 +171,53 @@ export default function ModalGame({
       consumeItem("shields")
       setUsedItems({ ...usedItems, shields: usedItems.shields + 1 })
       toast.success({
-        title: "🛡️ Shield activated! Heart saved.",
+        title: "🛡️ Shield activated! Heart saved",
       })
+      playSound("shield")
     } else {
       removeHeart()
+      playSound("failure")
+    }
+  }
+
+  function handleBroomOption() {
+    if (!powerups.broom.amount) {
+      return toast.error({
+        title: "No brooms available",
+      })
     }
 
-    playSound("failure")
+    if (usedItems.broom.hiddenOptionIndex !== -1) {
+      // Broom already used
+      return toast.error({
+        title: "Already used for this question",
+      })
+    }
+
+    // Create an array of options excluding the correct one
+    const options = Array.from({
+      length: 3,
+    })
+      .map((_, index) => index)
+      .filter((index) => index !== correctOptionIndex)
+
+    // Randomly pick one of the options to hide
+    const hiddenOptionIndex =
+      options[Math.floor(Math.random() * options.length)]
+
+    setUsedItems({
+      ...usedItems,
+      broom: {
+        hiddenOptionIndex,
+      },
+    })
+
+    consumeItem("broom")
+    playSound("broom")
+
+    toast.success({
+      title: "🧹 Broom used! Option hidden",
+    })
   }
 
   return (
@@ -219,10 +270,13 @@ export default function ModalGame({
               const isCorrectAnswer =
                 isAnswered && isSelected && isCorrectOption
 
+              const isBroomedOption =
+                usedItems.broom.hiddenOptionIndex === itemIndex
+
               return (
                 <button
                   onClick={() => {
-                    if (isAnswered) return
+                    if (isAnswered || isBroomedOption) return
 
                     setIsAnswered(true)
                     setSelectedOption(itemIndex)
@@ -231,7 +285,13 @@ export default function ModalGame({
                     } else triggerFailure()
                   }}
                   key={`option-${option}`}
+                  onAnimationEnd={(e) =>
+                    e.currentTarget.classList.add("hidden")
+                  }
                   className={cn(
+                    isBroomedOption && isAnswered && "hidden",
+                    isBroomedOption &&
+                      "fade-out duration-500 bg-red-200 animate-out fill-mode-forwards",
                     "border-2 border-black",
                     "text-sm font-medium py-3 px-4 whitespace-nowrap rounded-full",
                     isCorrectAnswer &&
@@ -244,6 +304,23 @@ export default function ModalGame({
                 </button>
               )
             })}
+
+            {isAnswered ? null : (
+              <button
+                onClick={handleBroomOption}
+                className="flex rounded-full px-4 py-1 fixed bg-black text-white bottom-[4.5rem] right-5 items-center justify-center"
+              >
+                <span className="font-black text-base">
+                  {powerups.broom.amount}
+                </span>
+                <GiBroom
+                  className={cn(
+                    "text-xl scale-105 translate-x-0.5",
+                    powerups.broom.amount ? "text-yellow-200" : "text-white/80"
+                  )}
+                />
+              </button>
+            )}
           </div>
         )}
 
@@ -294,7 +371,9 @@ export default function ModalGame({
             <div className="flex text-sm items-center justify-between">
               <div>
                 {t("timeLeft")}:{" "}
-                <strong>{PER_QUESTION_TIME - elapsedTime}s</strong>
+                <strong>
+                  {elapsedTime ? PER_QUESTION_TIME - elapsedTime : 0}s
+                </strong>
               </div>
               <div>
                 {t("progress")}:{" "}

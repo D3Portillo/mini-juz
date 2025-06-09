@@ -186,7 +186,9 @@ export default function PageHome() {
 
             <div className="size-full rounded-full mt-12 overflow-clip grid place-items-center">
               <WheelSpin
-                enableSpin={isConnected && hearts > 0 && !isEmpty}
+                enableSpin={
+                  // isConnected &&
+                  hearts > 0 && !isEmpty}
                 onClick={() => {
                   if (!isConnected) return signIn()
                   if (hearts <= 0) openHeartsDialog()
