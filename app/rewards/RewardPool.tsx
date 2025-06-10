@@ -20,6 +20,7 @@ import LemonButton from "@/components/LemonButton"
 import MainSelect from "@/components/MainSelect"
 import ReusableDialog from "@/components/ReusableDialog"
 
+import { isAnyModalOpen } from "@/lib/window"
 import { useAccountPosition, usePoolTVL } from "./balances"
 
 import APRDialogTrigger from "./APRDialogTrigger"
@@ -224,12 +225,8 @@ export default function RewardPool() {
             role="button"
             tabIndex={-1}
             onClick={(e) => {
-              const isAnyModalOpen = Boolean(
-                document.querySelector("[data-scroll-locked]")
-              )
-
               // Early return if any modal is open
-              if (isAnyModalOpen) return
+              if (isAnyModalOpen()) return
 
               // Early return if propagation is from children
               if ((e.target as HTMLButtonElement).tagName === "BUTTON") return

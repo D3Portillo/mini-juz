@@ -2,10 +2,12 @@ import { useEffect, useRef } from "react"
 import { noOp } from "./utils"
 
 const ASSETS = {
-  success: "/success.mp3",
-  failure: "/error.mp3",
-  wheelSpin: "/spin.mp3",
-  bell: "/bell.mp3",
+  success: "/sound/success.mp3",
+  failure: "/sound/error.mp3",
+  wheelSpin: "/sound/spin.mp3",
+  bell: "/sound/bell.mp3",
+  shield: "/sound/shield.mp3",
+  broom: "/sound/broom.mp3",
 }
 
 type AudioAssets = keyof typeof ASSETS

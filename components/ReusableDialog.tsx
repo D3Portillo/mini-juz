@@ -1,4 +1,4 @@
-import type { PropsWithChildren, ReactNode } from "react"
+import { Fragment, type PropsWithChildren, type ReactNode } from "react"
 
 import {
   AlertDialog,
@@ -11,18 +11,9 @@ import {
   Button,
 } from "@worldcoin/mini-apps-ui-kit-react"
 
-export default function ReusableDialog({
-  children,
-  trigger,
-  onClosePressed,
-  closeText = "Got it",
-  footNote,
-  title,
-  enabled = true,
-  secondaryAction,
-}: PropsWithChildren<{
+export type Props = PropsWithChildren<{
   title: string
-  footNote?: string
+  footNote?: string | JSX.Element
   enabled?: boolean
   trigger?: JSX.Element | ReactNode
   secondaryAction?: {
@@ -31,10 +22,29 @@ export default function ReusableDialog({
   }
   closeText?: string | JSX.Element
   onClosePressed?: () => void
-}>) {
+  open?: boolean
+  closeOnActionPressed?: boolean
+  onOpenChange?: (open: boolean) => void
+}>
+
+export default function ReusableDialog({
+  children,
+  trigger,
+  onClosePressed,
+  closeText = "Got it",
+  footNote,
+  title,
+  closeOnActionPressed = true,
+  enabled = true,
+  secondaryAction,
+  open,
+  onOpenChange,
+}: Props) {
+  const ActionContainer = closeOnActionPressed ? AlertDialogClose : Fragment
+
   if (!enabled) return trigger
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
       <AlertDialogContent className="[&_.size-10]:translate-x-2 [&_[aria-role=header]]:items-start [&_.size-10]:-translate-y-2">
         <AlertDialogHeader aria-role="header">
@@ -50,7 +60,7 @@ export default function ReusableDialog({
         <div className="w-full [&_>_div]:!grid-cols-1">
           <AlertDialogFooter>
             {secondaryAction?.text ? (
-              <AlertDialogClose asChild>
+              <ActionContainer asChild>
                 <Button
                   onClick={secondaryAction.onPressed}
                   className="text-black/70"
@@ -58,12 +68,12 @@ export default function ReusableDialog({
                 >
                   {secondaryAction.text}
                 </Button>
-              </AlertDialogClose>
+              </ActionContainer>
             ) : null}
 
-            <AlertDialogClose asChild>
+            <ActionContainer asChild>
               <Button onClick={onClosePressed}>{closeText}</Button>
-            </AlertDialogClose>
+            </ActionContainer>
           </AlertDialogFooter>
         </div>
 

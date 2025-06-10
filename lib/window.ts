@@ -59,3 +59,6 @@ export const getHardwareType = () => {
 }
 
 export const useHardwareType = () => getHardwareType()
+
+export const isAnyModalOpen = () =>
+  Boolean(document.querySelector("[data-scroll-locked]"))

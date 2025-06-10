@@ -17,10 +17,7 @@ import { useAccountData, useGameRank, useProfileImage } from "@/lib/atoms/user"
 import { beautifyAddress } from "@/lib/utils"
 import { useAddressMote } from "@/lib/motes"
 
-// TODO: Add user tags (whale, shark, shrimps) to add curiosity for others to see
 // TODO: Notifications "It's trivia time!" at least once a day
-// TODO: Make Lime Boosts a game item
-// TODO: Add "shield" game item - which essentially is having a second heart when only one heart is left
 // TODO: As Duolingo add a "unlimited hearts" game item that last for 15 minutes
 
 export default function LeaderBoard() {

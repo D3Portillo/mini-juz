@@ -1,7 +1,11 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { Drawer, DrawerContent } from "@worldcoin/mini-apps-ui-kit-react"
+import {
+  Drawer,
+  DrawerContent,
+  useToast,
+} from "@worldcoin/mini-apps-ui-kit-react"
 
 import LemonButton from "@/components/LemonButton"
 
@@ -9,18 +13,26 @@ import { usePlayerHearts } from "@/lib/atoms/user"
 import { useTimer } from "@/lib/time"
 import { cn } from "@/lib/utils"
 
-import { GiDiceTarget } from "react-icons/gi"
+import { GiBroom, GiDiceTarget } from "react-icons/gi"
 import { MdError, MdOutlineExitToApp } from "react-icons/md"
+import { FaFireAlt } from "react-icons/fa"
 
 import { useTranslations } from "next-intl"
 import { useAudioMachine } from "@/lib/sounds"
 import { useIsGameActive } from "@/lib/atoms/game"
 import { useGameQuestions, useQuestionHistory } from "./atoms"
 
+import { usePowerups } from "@/components/DialogPowerups/atoms"
 import HeartsVisualizer from "./HeartsVisualizer"
 
 const TOTAL_QUESTIONS = 5
-const PER_QUESTION_TIME = 10 // seconds
+const PER_QUESTION_TIME = 120 // seconds
+const DEFAULT_ITEM_STATE = {
+  shields: 0,
+  broom: {
+    hiddenOptionIndex: -1,
+  },
+}
 
 export default function ModalGame({
   open,
@@ -35,9 +47,19 @@ export default function ModalGame({
 
   const { addQuestion } = useQuestionHistory(topic || null)
   const { hearts, removeHeart } = usePlayerHearts()
-  const { playSound } = useAudioMachine(["success", "failure"])
+  const { playSound } = useAudioMachine([
+    "success",
+    "failure",
+    "broom",
+    "shield",
+  ])
+
   const { elapsedTime, restart, stop } = useTimer(PER_QUESTION_TIME)
   const [, setIsGameActive] = useIsGameActive()
+  const { powerups, consumeItem } = usePowerups()
+
+  const [usedItems, setUsedItems] = useState(DEFAULT_ITEM_STATE)
+  const { toast } = useToast()
 
   // Used to track the total points earned
   const gameStartHeartCount = useMemo(() => hearts, [open])
@@ -47,6 +69,11 @@ export default function ModalGame({
     // request from same topics fresh with swr
     return Date.now()
   }, [open])
+
+  // We want to allow users to claim a boosted reward
+  // if they start a game with the booster active
+  // and, even if the boost goes inactive during the game
+  const boost = useMemo(() => powerups.booster, [open])
 
   const closeModal = () => {
     onOpenChange?.(false)
@@ -92,11 +119,15 @@ export default function ModalGame({
       if (isGameWon) {
         const MAX_JUZ = 3
         const MIN_JUZ = 1
-        onGameWon?.(
+
+        const JUZ_EARNED =
           // 1 JUZ for winning and lost 2 hearts
           // 2 JUZ for losing 1 heart
           // 3 JUZ for winning without losing any heart
           Math.min(MAX_JUZ, Math.max(MIN_JUZ, MAX_JUZ - pointsLostInGame))
+
+        onGameWon?.(
+          JUZ_EARNED * (boost.isActive ? 1 + boost.ratioInPercentage / 100 : 1)
         )
       }
       return closeModal()
@@ -108,6 +139,9 @@ export default function ModalGame({
     setCurrentQuestion((current) => current + 1)
     setIsAnswered(false)
     setSelectedOption(null)
+
+    // Reset items except for SHIELD (used once per game)
+    setUsedItems({ ...usedItems, broom: { hiddenOptionIndex: -1 } })
   }
 
   function handleForceExit() {
@@ -125,6 +159,7 @@ export default function ModalGame({
       setIsAnswered(false)
       setSelectedOption(null)
       setCurrentQuestion(1)
+      setUsedItems(DEFAULT_ITEM_STATE)
       restart()
 
       // Mark game as ACTIVE
@@ -139,15 +174,78 @@ export default function ModalGame({
   }, [isError])
 
   const triggerFailure = () => {
-    removeHeart()
-    playSound("failure")
+    // Shield can only be used once per game
+    const canUseShield = powerups.shields.amount > 0 && usedItems.shields < 1
+    if (canUseShield && hearts <= 1) {
+      // Save the heart if user has shields
+      consumeItem("shields")
+      setUsedItems({ ...usedItems, shields: usedItems.shields + 1 })
+      toast.success({
+        title: "🛡️ Shield activated! Heart saved",
+      })
+      playSound("shield")
+    } else {
+      removeHeart()
+      playSound("failure")
+    }
+  }
+
+  function handleBroomOption() {
+    if (!powerups.broom.amount) {
+      return toast.error({
+        title: "No brooms available",
+      })
+    }
+
+    if (usedItems.broom.hiddenOptionIndex !== -1) {
+      // Broom already used
+      return toast.error({
+        title: "Already used for this question",
+      })
+    }
+
+    // Create an array of options excluding the correct one
+    const options = Array.from({
+      length: 3,
+    })
+      .map((_, index) => index)
+      .filter((index) => index !== correctOptionIndex)
+
+    // Randomly pick one of the options to hide
+    const hiddenOptionIndex =
+      options[Math.floor(Math.random() * options.length)]
+
+    setUsedItems({
+      ...usedItems,
+      broom: {
+        hiddenOptionIndex,
+      },
+    })
+
+    consumeItem("broom")
+    playSound("broom")
+
+    toast.success({
+      title: "🧹 Broom used! Option hidden",
+    })
   }
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent id="ModalGame" className="p-5">
-        <nav className="flex justify-between items-center">
+        <nav className="flex gap-5 items-center">
           <HeartsVisualizer hearts={hearts} />
+          <div className="flex-grow" />
+
+          {boost.isActive ? (
+            <div className="flex items-center gap-1 justify-center">
+              <FaFireAlt className="text-sm scale-125 text-juz-orange" />
+              <span className="font-black text-sm scale-105">
+                {boost.ratioInPercentage}%
+              </span>
+            </div>
+          ) : null}
+
           <button onClick={handleForceExit} className="text-2xl">
             <MdOutlineExitToApp />
           </button>
@@ -193,10 +291,13 @@ export default function ModalGame({
               const isCorrectAnswer =
                 isAnswered && isSelected && isCorrectOption
 
+              const isBroomedOption =
+                usedItems.broom.hiddenOptionIndex === itemIndex
+
               return (
                 <button
                   onClick={() => {
-                    if (isAnswered) return
+                    if (isAnswered || isBroomedOption) return
 
                     setIsAnswered(true)
                     setSelectedOption(itemIndex)
@@ -205,7 +306,13 @@ export default function ModalGame({
                     } else triggerFailure()
                   }}
                   key={`option-${option}`}
+                  onAnimationEnd={(e) =>
+                    e.currentTarget.classList.add("hidden")
+                  }
                   className={cn(
+                    isBroomedOption && isAnswered && "hidden",
+                    isBroomedOption &&
+                      "fade-out duration-500 bg-red-200 animate-out fill-mode-forwards",
                     "border-2 border-black",
                     "text-sm font-medium py-3 px-4 whitespace-nowrap rounded-full",
                     isCorrectAnswer &&
@@ -218,6 +325,23 @@ export default function ModalGame({
                 </button>
               )
             })}
+
+            {isAnswered ? null : (
+              <button
+                onClick={handleBroomOption}
+                className="flex rounded-full px-4 py-1 fixed bg-black text-white bottom-[4.5rem] right-5 items-center justify-center"
+              >
+                <span className="font-black text-base">
+                  {powerups.broom.amount}
+                </span>
+                <GiBroom
+                  className={cn(
+                    "text-xl scale-105 translate-x-0.5",
+                    powerups.broom.amount ? "text-yellow-200" : "text-white/80"
+                  )}
+                />
+              </button>
+            )}
           </div>
         )}
 
@@ -268,7 +392,9 @@ export default function ModalGame({
             <div className="flex text-sm items-center justify-between">
               <div>
                 {t("timeLeft")}:{" "}
-                <strong>{PER_QUESTION_TIME - elapsedTime}s</strong>
+                <strong>
+                  {elapsedTime ? PER_QUESTION_TIME - elapsedTime : 0}s
+                </strong>
               </div>
               <div>
                 {t("progress")}:{" "}

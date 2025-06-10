@@ -2,6 +2,8 @@ export const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000 // 24 hours
 export const SIX_HOURS_IN_MS = 6 * 60 * 60 * 1000 // 6 hours
 export const MANAGE_HEARTS_TRIGGER_ID = "view-hearts" as const
 export const ZERO = BigInt(0)
+/** 100 in BigInt */
+export const HUNDRED_BN = BigInt(100)
 export const ONE_HOUR_IN_BLOCK_TIME = 60 * 60 // 1 hour in seconds
 export const ONE_YEAR_IN_BLOCK_TIME = 60 * 60 * 24 * 365 // 1 year in seconds
 

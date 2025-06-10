@@ -67,14 +67,19 @@ export default function WheelSpin({
   return (
     <div
       role="button"
-      className="relative group select-none cursor-pointer"
+      style={{
+        width: size,
+        height: size,
+        clipPath: "circle(50%)",
+        WebkitClipPath: "circle(50%)", // For iOS WebViews
+      }}
+      className="relative rounded-full overflow-hidden group select-none cursor-pointer"
       onClick={() => {
         onClick?.()
 
         if (enableSpin) spinWheel()
         else playSound("failure")
       }}
-      style={{ width: size, height: size }}
     >
       <figure className="relative size-full object-cover">
         <div

@@ -334,30 +334,6 @@ export default function PageMarket() {
             </LemonButton>
           </div>
         </section>
-
-        <section
-          // TODO: Include after mini app approval
-          className="p-4 hidden -flex gap-6 rounded-2xl border-2 border-black shadow-3d"
-        >
-          <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
-            <div className="text-5xl mt-1">🛡️</div>
-          </figure>
-
-          <div>
-            <h2 className="font-medium text-xl">
-              Last resort <span className="text-juz-orange">(Powerup)</span>
-            </h2>
-
-            <p className="text-sm text-black/70">
-              Use a shield to give your <strong>last heart</strong> a second
-              chance in the trivia. Item will expire after use.
-            </p>
-
-            <LemonButton className="py-3 rounded-full text-base w-full mt-5">
-              Buy for {isJUZPayment ? 2 : 0.5} {PAYING_LABEL}
-            </LemonButton>
-          </div>
-        </section>
       </div>
     </main>
   )

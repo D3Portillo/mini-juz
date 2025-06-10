@@ -38,6 +38,7 @@ import ModalGame from "./ModalGame"
 import asset_limoncito from "@/assets/limoncito.png"
 import BannerRewardPools from "@/components/BannerRewardPools"
 import ReusableDialog from "@/components/ReusableDialog"
+import DialogPowerups from "@/components/DialogPowerups"
 
 export default function PageHome() {
   const { toast } = useToast()
@@ -161,6 +162,8 @@ export default function PageHome() {
 
         <TabsContent asChild value="play">
           <div className="px-4 mb-12">
+            <DialogPowerups />
+
             {JUZPoints.isOnchainSynced ? (
               hearts > 0 ? null : (
                 <HomeAlert
