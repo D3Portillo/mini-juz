@@ -1,5 +1,6 @@
 "use client"
 
+import useSWR from "swr"
 import { useAtom } from "jotai"
 import { atomWithStorage } from "jotai/utils"
 
@@ -29,9 +30,17 @@ export const usePowerups = () => {
   const [state, setState] = useAtom(atomPowerups)
 
   const { booster } = state
-  const isBoostActive = booster.timeSet
-    ? booster.timeSet + booster.durationInMinutes * 60 * 1_000 > Date.now()
-    : false
+  const { data: isBoostActive = false } = useSWR(
+    `booster.${booster.timeSet}.${booster.ratioInPercentage}.${booster.durationInMinutes}`,
+    () => {
+      return booster.timeSet && booster.isActive
+        ? booster.timeSet + booster.durationInMinutes * 60 * 1_000 > Date.now()
+        : false
+    },
+    {
+      refreshInterval: 5_000, // Check if active every 5 seconds
+    }
+  )
 
   return {
     powerups: {

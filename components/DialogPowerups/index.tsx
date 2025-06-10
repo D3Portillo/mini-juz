@@ -49,7 +49,7 @@ export default function DialogPowerups() {
     >
       <button
         onClick={toggleOpen}
-        className="size-8 group bg-[#e0f464] rounded-full flex items-center justify-center"
+        className="size-8 mx-auto group bg-[#e0f464] rounded-full flex items-center justify-center"
       >
         <Image
           alt=""

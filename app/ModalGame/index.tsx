@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils"
 
 import { GiBroom, GiDiceTarget } from "react-icons/gi"
 import { MdError, MdOutlineExitToApp } from "react-icons/md"
+import { FaFireAlt } from "react-icons/fa"
 
 import { useTranslations } from "next-intl"
 import { useAudioMachine } from "@/lib/sounds"
@@ -25,7 +26,7 @@ import { usePowerups } from "@/components/DialogPowerups/atoms"
 import HeartsVisualizer from "./HeartsVisualizer"
 
 const TOTAL_QUESTIONS = 5
-const PER_QUESTION_TIME = 15 // seconds
+const PER_QUESTION_TIME = 120 // seconds
 const DEFAULT_ITEM_STATE = {
   shields: 0,
   broom: {
@@ -68,6 +69,11 @@ export default function ModalGame({
     // request from same topics fresh with swr
     return Date.now()
   }, [open])
+
+  // We want to allow users to claim a boosted reward
+  // if they start a game with the booster active
+  // and, even if the boost goes inactive during the game
+  const boost = useMemo(() => powerups.booster, [open])
 
   const closeModal = () => {
     onOpenChange?.(false)
@@ -113,11 +119,15 @@ export default function ModalGame({
       if (isGameWon) {
         const MAX_JUZ = 3
         const MIN_JUZ = 1
-        onGameWon?.(
+
+        const JUZ_EARNED =
           // 1 JUZ for winning and lost 2 hearts
           // 2 JUZ for losing 1 heart
           // 3 JUZ for winning without losing any heart
           Math.min(MAX_JUZ, Math.max(MIN_JUZ, MAX_JUZ - pointsLostInGame))
+
+        onGameWon?.(
+          JUZ_EARNED * (boost.isActive ? 1 + boost.ratioInPercentage / 100 : 1)
         )
       }
       return closeModal()
@@ -223,8 +233,19 @@ export default function ModalGame({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent id="ModalGame" className="p-5">
-        <nav className="flex justify-between items-center">
+        <nav className="flex gap-5 items-center">
           <HeartsVisualizer hearts={hearts} />
+          <div className="flex-grow" />
+
+          {boost.isActive ? (
+            <div className="flex items-center gap-1 justify-center">
+              <FaFireAlt className="text-sm scale-125 text-juz-orange" />
+              <span className="font-black text-sm scale-105">
+                {boost.ratioInPercentage}%
+              </span>
+            </div>
+          ) : null}
+
           <button onClick={handleForceExit} className="text-2xl">
             <MdOutlineExitToApp />
           </button>

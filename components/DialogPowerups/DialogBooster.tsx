@@ -20,10 +20,11 @@ import {
 import asset_bg from "@/assets/bg.png"
 import { usePowerups } from "./atoms"
 import { executeWorldPayment } from "@/actions/payments"
+import TimeLeftVisualizer from "./TimeLeftVisualizer"
 
 const DEFAULT_MINUTES = 5 // Default duration in minutes
 const DEFAULT_RATIO = 75 // Default boost ratio in percentage
-const GIFT_TIME_IN_MS = 1_000 * 15 // 15 seconds as "gift" for modal actions + game start
+const GIFT_DURATION_IN_SECONDS = 15 // Gift duration in seconds
 
 export default function DialogBooster() {
   const [isOpen, setIsOpen] = useState(false)
@@ -80,16 +81,19 @@ export default function DialogBooster() {
           durationInMinutes: minutes,
           ratioInPercentage: boost,
           isActive: true,
-          timeSet: Date.now() + GIFT_TIME_IN_MS, // Set the current time as the start time
+          // Give a gift of 15 seconds to the user
+          timeSet: Date.now() + GIFT_DURATION_IN_SECONDS * 1000,
         },
       }))
     }
   }
 
+  const DURATION_IN_SECONDS = booster.durationInMinutes * 60
+
   return (
     <ReusableDialog
       title="JUZ Booster"
-      closeOnActionPressed={booster.isActive ? false : isConnected}
+      closeOnActionPressed={booster.isActive ? true : isConnected}
       footNote={
         booster.isActive
           ? undefined
@@ -154,10 +158,17 @@ export default function DialogBooster() {
 
           <hr className="mt-5" />
 
-          <div className="text-sm mt-2 -mb-2 px-1 flex items-center justify-between">
-            <strong className="font-medium text-black">⏰ Time left</strong>
-            <span>4 minutes</span>
-          </div>
+          <TimeLeftVisualizer
+            timeLeftInSeconds={
+              booster.isActive
+                ? booster.timeSet > Date.now()
+                  ? // We are in "gift" period, so we can use the full duration
+                    DURATION_IN_SECONDS + GIFT_DURATION_IN_SECONDS
+                  : DURATION_IN_SECONDS -
+                    Math.floor((Date.now() - booster.timeSet) / 1000)
+                : 0
+            }
+          />
         </Fragment>
       ) : (
         <section>
