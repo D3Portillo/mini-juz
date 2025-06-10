@@ -175,7 +175,7 @@ export default function PageHome() {
 
         <TabsContent asChild value="play">
           <div className="px-4 mb-12">
-            <section className="fixed flex flex-col gap-2 items-end justify-start z-[3] top-[calc(30vh+5rem)] right-3">
+            <section className="fixed flex flex-col gap-2 items-end justify-start z-[3] top-[calc(30vh+3rem)] right-3">
               <ModalQuests
                 trigger={
                   <button className="bg-gradient-to-br from-black/15 to-black/35 shadow-inner rounded-full relative p-0.5 size-10 outline-none drop-shadow-lg backdrop-blur-md border-3 border-black text-white">
