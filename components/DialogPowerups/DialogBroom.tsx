@@ -11,6 +11,7 @@ import { FaMinus, FaPlus } from "react-icons/fa"
 import { GiBroom } from "react-icons/gi"
 
 import { usePowerups } from "./atoms"
+import { trackEvent } from "@/components/posthog"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { executeWorldPayment } from "@/actions/payments"
 
@@ -67,6 +68,11 @@ export default function DialogBroom() {
     if (result !== null) {
       toast.success({
         title: "Brooms setup successful",
+      })
+
+      trackEvent("owned-powerup", {
+        type: "broom",
+        amount: brooms,
       })
 
       setState((prev) => ({

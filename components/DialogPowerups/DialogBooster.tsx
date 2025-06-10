@@ -20,6 +20,8 @@ import {
 import asset_bg from "@/assets/bg.png"
 import { usePowerups } from "./atoms"
 import { executeWorldPayment } from "@/actions/payments"
+import { trackEvent } from "@/components/posthog"
+
 import TimeLeftVisualizer from "./TimeLeftVisualizer"
 
 const DEFAULT_MINUTES = 5 // Default duration in minutes
@@ -73,6 +75,12 @@ export default function DialogBooster() {
     if (result !== null) {
       toast.success({
         title: "Boost setup complete",
+      })
+
+      trackEvent("owned-powerup", {
+        type: "booster",
+        boostPercent: boost,
+        durationMinutes: minutes,
       })
 
       setState((prev) => ({

@@ -12,6 +12,7 @@ type PostHogEvents =
   | "updated-locale" // added
   | "invite-accepted" // added
   | "otc-swap" // added
+  | "owned-powerup" // added
 
 export const trackEvent = (
   event: PostHogEvents,

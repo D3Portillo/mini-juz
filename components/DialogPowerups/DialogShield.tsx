@@ -12,6 +12,7 @@ import { FaShieldHeart } from "react-icons/fa6"
 
 import { usePowerups } from "./atoms"
 import { useWorldAuth } from "@radish-la/world-auth"
+import { trackEvent } from "@/components/posthog"
 import { executeWorldPayment } from "@/actions/payments"
 
 const BONUS_DISCOUNT = 10 // 10% discount for buying 5 or more items
@@ -67,6 +68,11 @@ export default function DialogShield() {
     if (result !== null) {
       toast.success({
         title: "Shields setup successful",
+      })
+
+      trackEvent("owned-powerup", {
+        type: "shield",
+        amount: shields,
       })
 
       setState((prev) => ({
