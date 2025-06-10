@@ -133,7 +133,7 @@ export default function ModalQuests({
 
   const questRewards = useMemo(
     () => shuffleArray(REWARDS),
-    [showClaimingState.quest]
+    [showClaimingState.quest, open]
   )
 
   const currentReward = questRewards[brokeItemIndex]

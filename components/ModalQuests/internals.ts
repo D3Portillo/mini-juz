@@ -6,7 +6,7 @@ export const REWARDS = [
   },
   {
     type: "heart",
-    amount: 1,
+    amount: 2,
     emoji: "💚",
   },
   {
@@ -20,9 +20,9 @@ export const REWARDS = [
     emoji: "🧹",
   },
   {
-    type: "juz",
-    amount: 10,
-    emoji: "🍋",
+    type: "broom",
+    amount: 3,
+    emoji: "🧹",
   },
   {
     type: "shield",
@@ -30,8 +30,18 @@ export const REWARDS = [
     emoji: "🛡️",
   },
   {
+    type: "juz",
+    amount: 5,
+    emoji: "🍋",
+  },
+  {
+    type: "juz",
+    amount: 3,
+    emoji: "🍋",
+  },
+  {
     type: "shield",
-    amount: 1,
+    amount: 2,
     emoji: "🛡️",
   },
 ] as Array<{
