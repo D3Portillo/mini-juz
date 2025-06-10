@@ -27,9 +27,11 @@ export function useOnRouterBack(onRouterBack: (e: PopStateEvent) => void) {
 export function useToggleRouteOnActive({
   slug,
   isActive,
+  onRouterBack,
 }: {
   slug: string
   isActive: boolean
+  onRouterBack?: (e: PopStateEvent) => void
 }) {
   const router = useRouter()
 
@@ -42,6 +44,12 @@ export function useToggleRouteOnActive({
       router.replace(location.pathname, {
         scroll: false,
       })
+    }
+
+    const handleRouteChange = (e: PopStateEvent) => onRouterBack?.(e)
+    window.addEventListener("popstate", handleRouteChange as any)
+    return () => {
+      window.removeEventListener("popstate", handleRouteChange as any)
     }
   }, [isActive, slug])
 }

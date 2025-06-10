@@ -12,6 +12,7 @@ import { getPlayerRank } from "@/actions/game"
 import { atomWithStorage } from "jotai/utils"
 import { ONE_DAY_IN_MS } from "@/lib/constants"
 import { MiniKit } from "@worldcoin/minikit-js"
+import { isToday } from "date-fns"
 
 const atomIsExplainerConfirmed = atomWithStorage(
   "juz.isExplainerConfirmed",
@@ -136,5 +137,33 @@ export const useProfileImage = () => {
     setImage,
     // Do not show localStorage image if user is not connected
     image: isConnected ? localStorageImage || WORLD_IMAGES : WORLD_IMAGES,
+  }
+}
+
+const atomGamesWonToday = atomWithStorage("juz.gamesWonToday", {
+  timestamp: 0,
+  count: 0,
+})
+
+export const useGamesWonToday = () => {
+  const [{ count, timestamp }, setGamesWonToday] = useAtom(atomGamesWonToday)
+  const gamesWon = isToday(timestamp) ? count : 0
+
+  return {
+    gamesWon,
+    timestamp,
+    increment: () => {
+      if (isToday(timestamp)) {
+        return setGamesWonToday((prev) => ({
+          ...prev,
+          count: prev.count + 1,
+        }))
+      }
+
+      setGamesWonToday({
+        timestamp: Date.now(),
+        count: 1,
+      })
+    },
   }
 }

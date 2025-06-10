@@ -26,7 +26,7 @@ import { usePowerups } from "@/components/DialogPowerups/atoms"
 import HeartsVisualizer from "./HeartsVisualizer"
 
 const TOTAL_QUESTIONS = 5
-const PER_QUESTION_TIME = 120 // seconds
+const PER_QUESTION_TIME = 15 // seconds
 const DEFAULT_ITEM_STATE = {
   shields: 0,
   broom: {

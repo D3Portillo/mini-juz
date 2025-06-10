@@ -8,6 +8,8 @@ const ASSETS = {
   bell: "/sound/bell.mp3",
   shield: "/sound/shield.mp3",
   broom: "/sound/broom.mp3",
+  slot: "/sound/slot.mp3",
+  win: "/sound/win.mp3",
 }
 
 type AudioAssets = keyof typeof ASSETS

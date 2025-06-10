@@ -7,7 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 import { useTranslations } from "next-intl"
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { useWorldAuth } from "@radish-la/world-auth"
-import { useAtomExplainerConfirmed, usePlayerHearts } from "@/lib/atoms/user"
+import {
+  useAtomExplainerConfirmed,
+  useGamesWonToday,
+  usePlayerHearts,
+} from "@/lib/atoms/user"
 import { useUserTopics } from "@/lib/atoms/topics"
 import { openHeartsDialog } from "@/lib/utils"
 import { trackEvent } from "@/components/posthog"
@@ -35,10 +39,13 @@ import { JUZ_MULTIPLIER, MANAGE_HEARTS_TRIGGER_ID } from "@/lib/constants"
 import HomeNavigation from "./HomeNavigation"
 import ModalGame from "./ModalGame"
 
-import asset_limoncito from "@/assets/limoncito.png"
 import BannerRewardPools from "@/components/BannerRewardPools"
 import ReusableDialog from "@/components/ReusableDialog"
 import DialogPowerups from "@/components/DialogPowerups"
+import ModalQuests from "@/components/ModalQuests"
+
+import asset_limoncito from "@/assets/limoncito.png"
+import asset_gift from "@/assets/gift.png"
 
 export default function PageHome() {
   const { toast } = useToast()
@@ -52,6 +59,8 @@ export default function PageHome() {
 
   const [showGame, setShowGame] = useState(null as { topic?: string } | null)
   const { isIOS } = useHardwareType()
+
+  const { increment: incrementGamesWonToday } = useGamesWonToday()
   const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
 
   function addPlayedGame() {
@@ -79,6 +88,10 @@ export default function PageHome() {
       incrementGamesWon(address)
       incrPlayerJUZEarned(address, BALANCE)
     }
+
+    // Local storage update game won count
+    incrementGamesWonToday()
+
     toast.success({
       title: t("success.juzEarned", { amount: BALANCE }),
     })
@@ -162,7 +175,25 @@ export default function PageHome() {
 
         <TabsContent asChild value="play">
           <div className="px-4 mb-12">
-            <DialogPowerups />
+            <section className="fixed flex flex-col gap-2 items-end justify-start z-[3] top-[calc(30vh+5rem)] right-3">
+              <ModalQuests
+                trigger={
+                  <button className="bg-gradient-to-br from-black/15 to-black/35 shadow-inner rounded-full relative p-0.5 size-10 outline-none drop-shadow-lg backdrop-blur-md border-3 border-black text-white">
+                    <figure className="absolute -top-1.5 -right-1 size-3.5 bg-[#fd2a9e] border-2 border-black rounded-full" />
+
+                    <figure className="size-full drop-shadow animate-[bounce_2s_infinite]">
+                      <Image
+                        className="size-full scale-[1.15] mt-px"
+                        src={asset_gift}
+                        alt=""
+                      />
+                    </figure>
+                  </button>
+                }
+              />
+
+              <DialogPowerups />
+            </section>
 
             {JUZPoints.isOnchainSynced ? (
               hearts > 0 ? null : (
