@@ -66,8 +66,8 @@ const normalizeJUZEarned = ({
   return Math.max(0, gamePoints > erc20Claimed ? gamePoints - erc20Claimed : 0)
 }
 
-export const getPlayerPoints = (address: Address) => {
-  return redis.get<number>(getJUZEarnedKey(address))
+export const getPlayerPoints = async (address: Address) => {
+  return await redis.get<number>(getJUZEarnedKey(address))
 }
 
 export const isValidPlayer = async (address: Address) => {

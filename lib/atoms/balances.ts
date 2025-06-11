@@ -1,25 +1,10 @@
 "use client"
 
 import useSWR from "swr"
-import { formatEther, parseUnits } from "viem"
+import { formatEther } from "viem"
 import { useWorldAuth } from "@radish-la/world-auth"
 
-import { getPlayerJUZEarned } from "@/actions/game"
 import { ZERO } from "@/lib/constants"
-import { getTotalUserHoldings } from "./holdings"
-
-async function tryFetchEarnedPoints(address: string) {
-  // Moved out the logic to a separate function to handle errors gracefully
-  // This also allows vercel to setup an ID for this action and cache when possible
-  let points = 0
-  try {
-    points = await getPlayerJUZEarned(address)
-  } catch (getPlayerJUZEarnedError) {
-    console.error({ getPlayerJUZEarnedError })
-  }
-
-  return points
-}
 
 export const useAccountBalances = () => {
   const { address } = useWorldAuth()
@@ -29,23 +14,18 @@ export const useAccountBalances = () => {
     error,
     ...query
   } = useSWR(
-    address ? `get.wallet.all.balances.${address}` : null,
+    address ? `addressz.balances.${address}` : null,
     async () => {
       if (!address) return {}
 
-      const [{ JUZ: JUZToken, ...holdings }, JUZPoints] = await Promise.all([
-        getTotalUserHoldings(address),
-        tryFetchEarnedPoints(address),
-      ])
+      const holdings = await fetch(`/api/holdings/${address}`)
+      const payload = (await holdings.json()) as Record<string, string>
 
-      return {
-        ...holdings,
-        JUZToken,
-        JUZPoints: parseUnits(`${JUZPoints}`, 18),
-      } as any
+      return Object.fromEntries(
+        Object.entries(payload).map(([key, value]) => [key, BigInt(value)])
+      )
     },
     {
-      onError: (error) => console.error({ error }),
       refreshInterval: 4_500, // 4.5 seconds
     }
   )
