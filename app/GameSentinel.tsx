@@ -3,6 +3,7 @@
 import { useEffect } from "react"
 import { useIsGameActive } from "@/lib/atoms/game"
 import { usePlayerHearts } from "@/lib/atoms/user"
+import { isAnyModalOpen } from "@/lib/window"
 
 export default function GameSentinel() {
   const [isGameActive, setIsGameActive] = useIsGameActive()
@@ -15,11 +16,8 @@ export default function GameSentinel() {
     if (isGameActive) {
       setTimeout(
         () => {
-          const isGameModalOpen = Boolean(document.getElementById("ModalGame"))
-          console.debug("GameSentinel", { isGameActive, isGameModalOpen })
-
-          // Exit if user is "playing"
-          if (isGameModalOpen) return
+          // Exit if user is in any modal (assuming it's game modal)
+          if (isAnyModalOpen()) return
 
           // Remove heart if game is active and no modal open
           removeHeart()

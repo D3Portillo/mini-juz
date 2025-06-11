@@ -232,7 +232,7 @@ export default function ModalGame({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent id="ModalGame" className="p-5">
+      <DrawerContent className="p-5">
         <nav className="flex gap-5 items-center">
           <HeartsVisualizer hearts={hearts} />
           <div className="flex-grow" />
