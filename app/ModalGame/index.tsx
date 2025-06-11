@@ -174,6 +174,10 @@ export default function ModalGame({
   }, [isError])
 
   const triggerFailure = () => {
+    // Early exit if an error occurred
+    // We won't remove hearts or use items
+    if (isError) return
+
     // Shield can only be used once per game
     const canUseShield = powerups.shields.amount > 0 && usedItems.shields < 1
     if (canUseShield && hearts <= 1) {
