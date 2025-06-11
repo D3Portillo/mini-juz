@@ -16,6 +16,9 @@ export const useAccountGameData = () => {
       if (!address) return 0
       const games = await getPlayerGameData(address)
       return games
+    },
+    {
+      keepPreviousData: true,
     }
   )
 

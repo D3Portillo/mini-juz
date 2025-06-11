@@ -14,7 +14,7 @@ export const useAccountBalances = () => {
     error,
     ...query
   } = useSWR(
-    address ? `addressz.balances.${address}` : null,
+    address ? `address.balances.${address}` : null,
     async () => {
       if (!address) return {}
 
@@ -26,6 +26,8 @@ export const useAccountBalances = () => {
       )
     },
     {
+      keepPreviousData: true,
+      dedupingInterval: 4_500, // 4.5 seconds
       refreshInterval: 4_500, // 4.5 seconds
     }
   )
