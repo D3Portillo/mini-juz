@@ -3,6 +3,7 @@
 import { Fragment, useEffect, useMemo, useState } from "react"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { atomWithStorage } from "jotai/utils"
+import { useTranslations } from "next-intl"
 import { useAtom } from "jotai"
 import { isSameDay } from "date-fns"
 import { cn } from "@/lib/utils"
@@ -47,7 +48,8 @@ export default function ModalQuests({
 }: {
   trigger: JSX.Element | null
 }) {
-  const TITLE = "Daily Quests"
+  const t = useTranslations("ModalQuests")
+  const TITLE = t("title")
   const [open, setOpen] = useState(false)
   const [quests, setQuests] = useAtom(atomQuests)
   const [brokeItemIndex, setBrokeItemIndex] = useState(0)
@@ -98,7 +100,7 @@ export default function ModalQuests({
     if (!address) return signIn()
     if (isDailyGiftClaimed) {
       return toast.error({
-        title: "Free gift already claimed today",
+        title: t("freeDaily.error.claimed"),
       })
     }
 
@@ -110,7 +112,7 @@ export default function ModalQuests({
   function handleClaimTrivia2Games() {
     if (gamesWon < 2) {
       return toast.error({
-        title: "Win the trivia to unlock this quest",
+        title: t("triviaWinner2.error.locked"),
       })
     }
 
@@ -118,7 +120,7 @@ export default function ModalQuests({
 
     if (isTrivia2GamesClaimed) {
       return toast.error({
-        title: "Trivia quest already claimed today",
+        title: t("triviaWinner2.error.claimed"),
       })
     }
 
@@ -176,7 +178,7 @@ export default function ModalQuests({
       }
 
       toast.success({
-        title: "Rewards claimed successfully! 🎉",
+        title: t("success.claimedMessage"),
       })
       playSound("success")
 
@@ -267,8 +269,8 @@ export default function ModalQuests({
 
                 <p className="text-sm mt-4 mx-auto text-center">
                   {isClaimScreen
-                    ? "Tap to claim your reward 🎉"
-                    : "Tap the screen to unlock your reward"}
+                    ? t("tapScreen.tapToClaim")
+                    : t("tapScreen.tapToContinue")}
                 </p>
               </div>
             </div>
@@ -295,16 +297,20 @@ export default function ModalQuests({
                 <div className="w-full">
                   <h2 className="font-medium text-xl">Free Daily Gift</h2>
 
-                  <p className="text-sm opacity-70">
-                    Come back <strong>every day</strong> to claim your free
-                    gift!
-                  </p>
+                  <p
+                    dangerouslySetInnerHTML={{
+                      __html: t.raw("freeDaily.explainer"),
+                    }}
+                    className="text-sm opacity-70"
+                  />
 
                   <LemonButton
                     onClick={handleClaimFreeGift}
                     className="py-3 whitespace-nowrap rounded-full text-base w-full mt-5"
                   >
-                    {isDailyGiftClaimed ? "Claimed ✔️" : "Claim rewards"}
+                    {isDailyGiftClaimed
+                      ? t("states.claimed")
+                      : t("states.active")}
                   </LemonButton>
                 </div>
               </section>
@@ -318,11 +324,10 @@ export default function ModalQuests({
                   <h2 className="font-medium text-xl">Trivia Winner</h2>
 
                   <p className="text-sm opacity-70">
-                    Win the trivia game{" "}
-                    <strong>
-                      {gamesWon < 1 ? "at least 2 times" : "one more time"}
-                    </strong>{" "}
-                    to unlock this quest
+                    {t.rich("triviaWinner2.explainer", {
+                      gamesWon,
+                      strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
                   </p>
 
                   <LemonButton
@@ -330,19 +335,21 @@ export default function ModalQuests({
                     className="py-3 whitespace-nowrap rounded-full text-base w-full mt-5"
                   >
                     {isTrivia2GamesClaimed
-                      ? "Claimed ✔️"
+                      ? t("states.claimed")
                       : gamesWon >= 2
-                      ? "Claim rewards"
-                      : "Locked 🔒"}
+                      ? t("states.active")
+                      : t("states.locked")}
                   </LemonButton>
                 </div>
               </section>
 
               {isAllQuestsClaimed && (
-                <p className="text-sm mt-16 mx-auto text-center">
-                  All quests claimed. <br />
-                  Come back tomorrow for more!
-                </p>
+                <p
+                  dangerouslySetInnerHTML={{
+                    __html: t.raw("allClaimed"),
+                  }}
+                  className="text-sm mt-16 mx-auto text-center"
+                />
               )}
             </div>
           </Fragment>

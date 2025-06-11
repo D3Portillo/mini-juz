@@ -202,5 +202,34 @@
     "copyLink": "Copy invite link",
     "totalInvited": "Total invited",
     "description": "You and your friend get <amount></amount> each when invite is accepted and claimed. And up to <verifiedAmount></verifiedAmount> for verified users!"
+  },
+  "ModalQuests": {
+    "title": "Daily Quests",
+    "tapScreen": {
+      "tapToClaim": "Tap to claim your reward 🎉",
+      "tapToContinue": "Tap the screen to unlock your reward"
+    },
+    "states": {
+      "locked": "Locked 🔒",
+      "claimed": "Claimed ✔️",
+      "active": "Claim rewards"
+    },
+    "success": {
+      "claimedMessage": "Rewards claimed successfully! 🎉"
+    },
+    "freeDaily": {
+      "explainer": "Come back <strong>every day</strong> to claim your free gift!",
+      "error": {
+        "claimed": "Free gift already claimed today"
+      }
+    },
+    "triviaWinner2": {
+      "explainer": "Win the trivia game <strong>{gamesWon, plural, =1 {one more time} other {at least 2 times}}</strong> to unlock this quest",
+      "error": {
+        "claimed": "Quest already claimed today",
+        "locked": "Play the trivia to unlock this quest"
+      }
+    },
+    "allClaimed": "All quests claimed. <br />Come back tomorrow for more!"
   }
 }

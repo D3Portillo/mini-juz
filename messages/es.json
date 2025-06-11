@@ -202,5 +202,34 @@
     "copyLink": "Copiar link",
     "totalInvited": "Amigos invitados",
     "description": "Tú y tu amigo reciben <amount></amount> cada uno cuando se acepta y reclama la invitación. Y hasta <verifiedAmount></verifiedAmount> por usuarios verificados!"
+  },
+  "ModalQuests": {
+    "title": "Misiones Diarias",
+    "tapScreen": {
+      "tapToClaim": "Toca para reclamar tu recompensa 🎉",
+      "tapToContinue": "Toca la pantalla para continuar"
+    },
+    "states": {
+      "locked": "Bloqueada 🔒",
+      "claimed": "Reclamada ✔️",
+      "active": "Reclamar 🎉"
+    },
+    "success": {
+      "claimedMessage": "¡Recompensa reclamada con éxito! 🎉"
+    },
+    "freeDaily": {
+      "explainer": "Ven <strong>todos los días</strong> a reclamar un regalo diario!",
+      "error": {
+        "claimed": "Ya reclamaste tu regalo diario"
+      }
+    },
+    "triviaWinner2": {
+      "explainer": "Gana la trivia <strong>{gamesWon, plural, =1 {una vez más} other {2 veces}}</strong> para desbloquear esta recompensa",
+      "error": {
+        "claimed": "Recompensa ya reclamada hoy",
+        "locked": "Juega la trivia para desbloquear"
+      }
+    },
+    "allClaimed": "Todas las misiones reclamadas. <br />¡Vuelve mañana por más!"
   }
 }
