@@ -27,7 +27,6 @@ export const useAccountBalances = () => {
     },
     {
       keepPreviousData: true,
-      dedupingInterval: 4_500, // 4.5 seconds
       refreshInterval: 4_500, // 4.5 seconds
     }
   )
