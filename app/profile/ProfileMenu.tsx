@@ -6,13 +6,15 @@ import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { useTranslations } from "next-intl"
 
 import { HiDotsHorizontal } from "react-icons/hi"
+import { isErudaDevAddress, useShowErudaInProd } from "@/components/Eruda"
 import MainSelect from "@/components/MainSelect"
 
 export default function ProfileMenu() {
   const t = useTranslations("ProfileMenu")
 
   const { toast } = useToast()
-  const { signOut, user, address } = useWorldAuth()
+  const [, setShowErudaInProd] = useShowErudaInProd()
+  const { signOut, address } = useWorldAuth()
 
   function handleCopyAddress() {
     if (address) {
@@ -45,6 +47,8 @@ export default function ProfileMenu() {
           signOut()
         } else if (value === "view-txs") {
           handleViewTxs()
+        } else if (value === "eruda") {
+          setShowErudaInProd(true)
         } else handleCopyAddress()
       }}
       options={[
@@ -60,6 +64,14 @@ export default function ProfileMenu() {
           label: t("disconnect"),
           value: "disconnect",
         },
+        ...(isErudaDevAddress(address)
+          ? [
+              {
+                label: "Show DevTools",
+                value: "eruda",
+              },
+            ]
+          : []),
       ]}
     >
       <button className="text-xl outline-none p-2">

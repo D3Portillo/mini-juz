@@ -11,7 +11,11 @@ import { getTotalUserHoldings } from "./holdings"
 export const useAccountBalances = () => {
   const { address } = useWorldAuth()
 
-  const { data: balances = {}, ...query } = useSWR(
+  const {
+    data: balances = {},
+    error,
+    ...query
+  } = useSWR(
     address ? `wallet.all.balances.${address}` : null,
     async () => {
       if (!address) return {}
@@ -31,6 +35,8 @@ export const useAccountBalances = () => {
       refreshInterval: 4_500, // 4.5 seconds
     }
   )
+
+  console.debug({ error })
 
   const WLD = balances?.WLD || ZERO
   const JUZToken = balances?.JUZToken || ZERO

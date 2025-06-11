@@ -22,8 +22,8 @@ import { ALCHEMY_RPC } from "@/lib/alchemy"
 export const worldClient = createPublicClient({
   chain: worldchain,
   transport: fallback([
-    http("https://worldchain.drpc.org"),
     http(),
+    http("https://worldchain.drpc.org"),
     http(ALCHEMY_RPC.http),
   ]),
 })
