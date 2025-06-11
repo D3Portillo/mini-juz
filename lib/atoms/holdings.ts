@@ -2,6 +2,7 @@ import {
   type Address,
   createPublicClient,
   erc20Abi,
+  fallback,
   http,
   parseAbi,
 } from "viem"
@@ -16,10 +17,15 @@ import {
   ADDRESS_WORLD_COIN,
   ZERO,
 } from "@/lib/constants"
+import { ALCHEMY_RPC } from "@/lib/alchemy"
 
 export const worldClient = createPublicClient({
   chain: worldchain,
-  transport: http(),
+  transport: fallback([
+    http("https://worldchain.drpc.org"),
+    http(),
+    http(ALCHEMY_RPC.http),
+  ]),
 })
 
 export const ABI_LOCKED_JUZ = parseAbi([

@@ -12,7 +12,7 @@ export const useAccountBalances = () => {
   const { address } = useWorldAuth()
 
   const { data: balances = {}, ...query } = useSWR(
-    address ? `wallet.holdings.${address}` : null,
+    address ? `all.acc.balances.${address}` : null,
     async () => {
       if (!address) return {}
 

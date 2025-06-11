@@ -142,17 +142,6 @@ export default function ModalQuests({
 
   function handleClaimOrBreakItem() {
     if (isClaimScreen) {
-      // Logic to give rewards
-      const { quest } = showClaimingState
-      if (quest) {
-        setQuests({
-          claimedTimestamps: {
-            ...claimedTimestamps,
-            [quest]: Date.now(),
-          },
-        })
-      }
-
       if (currentReward.type === "shield") {
         setState((prev) => ({
           ...prev,
@@ -175,11 +164,23 @@ export default function ModalQuests({
         incrPlayerJUZEarned(address, currentReward.amount)
       }
 
-      playSound("success")
+      const { quest } = showClaimingState
+      if (quest) {
+        // Mark quest as claimed
+        setQuests({
+          claimedTimestamps: {
+            ...claimedTimestamps,
+            [quest]: Date.now(),
+          },
+        })
+      }
+
       toast.success({
         title: "Rewards claimed successfully! 🎉",
       })
+      playSound("success")
 
+      // Reset claiming state
       return resetClaimingState()
     }
     // Increment broken item index to show next reward

@@ -1,19 +1,11 @@
-import { ABI_JUZ_POOLS } from "@/lib/atoms/holdings"
+import { ABI_JUZ_POOLS, worldClient } from "@/lib/atoms/holdings"
 import {
   ADDRESS_DEV,
   ADDRESS_POOL_WLD_ETH,
   ADDRESS_WORLD_COIN,
 } from "@/lib/constants"
-import { createPublicClient, formatEther, isAddress, webSocket } from "viem"
-import { worldchain } from "viem/chains"
+import { formatEther, isAddress } from "viem"
 import { alchemy } from "@/lib/alchemy"
-
-const client = createPublicClient({
-  chain: worldchain,
-  transport: webSocket(
-    "wss://worldchain-mainnet.g.alchemy.com/v2/TydhRO71t-iaLkFdNDoQ_eIcd9TgKv0Q"
-  ),
-})
 
 export async function GET(
   _: Request,
@@ -24,14 +16,14 @@ export async function GET(
     return Response.json({ error: "InvalidAddress" }, { status: 400 })
   }
 
-  const [wld, weth] = await client.readContract({
+  const [wld, weth] = await worldClient.readContract({
     abi: ABI_JUZ_POOLS,
     functionName: "addressDeposits",
     address: ADDRESS_POOL_WLD_ETH,
     args: [address],
   })
 
-  const userShares = await client.readContract({
+  const userShares = await worldClient.readContract({
     abi: ABI_JUZ_POOLS,
     functionName: "addressShares",
     address: ADDRESS_POOL_WLD_ETH,

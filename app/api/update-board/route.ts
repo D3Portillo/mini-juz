@@ -8,6 +8,7 @@ import {
 } from "@/actions/game"
 import { KEY_BATCHED_PARTICIPANTS, KEY_LEADERBOARD } from "@/actions/internals"
 import { getTotalUserHoldings } from "@/lib/atoms/holdings"
+import { ALCHEMY_RPC } from "@/lib/alchemy"
 import { parseUSDC } from "@/lib/tokens"
 
 const redis = Redis.fromEnv()
@@ -35,7 +36,7 @@ export async function GET() {
         participants.map(async ([address, juzPoints]) => {
           const { JUZ, VE_JUZ, lockedJUZ } = await getTotalUserHoldings(
             address as any,
-            "https://worldchain-mainnet.g.alchemy.com/v2/TydhRO71t-iaLkFdNDoQ_eIcd9TgKv0Q"
+            ALCHEMY_RPC.http
           )
 
           // Shorten to 6 decimals
