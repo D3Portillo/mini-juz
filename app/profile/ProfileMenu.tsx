@@ -60,10 +60,6 @@ export default function ProfileMenu() {
           label: t("viewInWorldscan"),
           value: "view-txs",
         },
-        {
-          label: t("disconnect"),
-          value: "disconnect",
-        },
         ...(isErudaDevAddress(address)
           ? [
               {
@@ -72,6 +68,10 @@ export default function ProfileMenu() {
               },
             ]
           : []),
+        {
+          label: t("disconnect"),
+          value: "disconnect",
+        },
       ]}
     >
       <button className="text-xl outline-none p-2">

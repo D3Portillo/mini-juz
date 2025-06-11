@@ -5,7 +5,7 @@ import { useEffect } from "react"
 import { useLocale } from "next-intl"
 
 import { atomWithStorage } from "jotai/utils"
-import { SIX_HOURS_IN_MS } from "@/lib/constants"
+import { ONE_DAY_IN_MS } from "@/lib/constants"
 import { generateTopicList } from "@/actions/words"
 
 const atomUserTopics = atomWithStorage("juz.atomUserTopics", {
@@ -58,8 +58,8 @@ export const useUserTopics = () => {
 
   useEffect(() => {
     clearTimeout(timer)
-    // User topics are updated every 6 hours
-    if (lastUpdated > Date.now() + SIX_HOURS_IN_MS || lastUpdated === 0) {
+    // User topics are updated every 3 days to reduce API calls
+    if (lastUpdated > Date.now() + ONE_DAY_IN_MS * 3 || lastUpdated === 0) {
       timer = setTimeout(fetchTopics, 200)
       // 250ms delay to avoid too many requests
     }

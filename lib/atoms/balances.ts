@@ -8,6 +8,19 @@ import { getPlayerJUZEarned } from "@/actions/game"
 import { ZERO } from "@/lib/constants"
 import { getTotalUserHoldings } from "./holdings"
 
+async function tryFetchEarnedPoints(address: string) {
+  // Moved out the logic to a separate function to handle errors gracefully
+  // This also allows vercel to setup an ID for this action and cache when possible
+  let points = 0
+  try {
+    points = await getPlayerJUZEarned(address)
+  } catch (getPlayerJUZEarnedError) {
+    console.error({ getPlayerJUZEarnedError })
+  }
+
+  return points
+}
+
 export const useAccountBalances = () => {
   const { address } = useWorldAuth()
 
@@ -16,13 +29,13 @@ export const useAccountBalances = () => {
     error,
     ...query
   } = useSWR(
-    address ? `wallet.all.balances.${address}` : null,
+    address ? `get.wallet.all.balances.${address}` : null,
     async () => {
       if (!address) return {}
 
       const [{ JUZ: JUZToken, ...holdings }, JUZPoints] = await Promise.all([
         getTotalUserHoldings(address),
-        getPlayerJUZEarned(address),
+        tryFetchEarnedPoints(address),
       ])
 
       return {
@@ -32,11 +45,10 @@ export const useAccountBalances = () => {
       } as any
     },
     {
+      onError: (error) => console.error({ error }),
       refreshInterval: 4_500, // 4.5 seconds
     }
   )
-
-  console.debug({ error, query, balances })
 
   const WLD = balances?.WLD || ZERO
   const JUZToken = balances?.JUZToken || ZERO
