@@ -36,7 +36,7 @@ export const useAccountBalances = () => {
     }
   )
 
-  console.debug({ error })
+  console.debug({ error, query, balances })
 
   const WLD = balances?.WLD || ZERO
   const JUZToken = balances?.JUZToken || ZERO
