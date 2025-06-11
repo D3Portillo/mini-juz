@@ -359,7 +359,8 @@ export default function PageSwap() {
 
                     <div className="tabular-nums flex-grow">
                       <strong className="tabular-nums">
-                        {shortifyDecimals(amount, 3)} JUZ
+                        {amount < 1e-3 ? "<0.001" : shortifyDecimals(amount, 3)}{" "}
+                        JUZ
                       </strong>
                     </div>
 
