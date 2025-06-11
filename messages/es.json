@@ -226,10 +226,10 @@
     "triviaWinner2": {
       "explainer": "Gana la trivia <strong>{gamesWon, plural, =1 {una vez más} other {2 veces}}</strong> para desbloquear esta recompensa",
       "error": {
-        "claimed": "Recompensa ya reclamada hoy",
+        "claimed": "Ya reclamaste esta recompensa",
         "locked": "Juega la trivia para desbloquear"
       }
     },
-    "allClaimed": "Todas las misiones reclamadas. <br />¡Vuelve mañana por más!"
+    "allClaimed": "Todas las misiones completadas 😎. <br />¡Vuelve mañana por más!"
   }
 }
