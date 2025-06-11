@@ -12,7 +12,7 @@ export const useAccountBalances = () => {
   const { address } = useWorldAuth()
 
   const { data: balances = {}, ...query } = useSWR(
-    address ? `all.acc.balances.${address}` : null,
+    address ? `wallet.all.balances.${address}` : null,
     async () => {
       if (!address) return {}
 
@@ -28,7 +28,6 @@ export const useAccountBalances = () => {
       } as any
     },
     {
-      keepPreviousData: true,
       refreshInterval: 4_500, // 4.5 seconds
     }
   )

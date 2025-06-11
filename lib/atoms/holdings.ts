@@ -100,6 +100,7 @@ export const getTotalUserHoldings = async (
         args: [address as any],
       },
     ],
+    allowFailure: true,
   })
 
   return {
