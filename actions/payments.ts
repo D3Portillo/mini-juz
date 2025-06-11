@@ -27,7 +27,7 @@ export const executeWorldPayment = async ({
   if (!MiniKit.isInstalled()) return null
 
   const uuid = generateUUID()
-  const paymentToken = token === "WLD" ? Tokens.WLD : Tokens.USDCE
+  const paymentToken = token === "WLD" ? Tokens.WLD : Tokens.USDC
 
   const payload: PayCommandInput = {
     reference: uuid,
