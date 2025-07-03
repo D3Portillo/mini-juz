@@ -45,7 +45,9 @@ export default function ReusableDialog({
   if (!enabled) return trigger
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+      {trigger ? (
+        <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+      ) : null}
       <AlertDialogContent className="[&_.size-10]:translate-x-2 [&_[aria-role=header]]:items-start [&_.size-10]:-translate-y-2">
         <AlertDialogHeader aria-role="header">
           <h2 className="text-2xl font-semibold">{title}</h2>

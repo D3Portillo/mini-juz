@@ -26,6 +26,7 @@ import { calculateAPR } from "@/lib/apr"
 import JuzLock, { LockedJuzExplainer } from "./JuzLock"
 import { JUZDistributionModal } from "./JuzDistributionModal"
 import { useWorldAuth } from "@radish-la/world-auth"
+import { useAccountBalances } from "@/lib/atoms/balances"
 import { useTranslations } from "next-intl"
 import { useLockJUZ } from "@/lib/atoms/lock"
 
@@ -43,11 +44,14 @@ export default function PageRewards() {
   const APR = calculateAPR(Date.now() / 1_000)
 
   const [activeTab, setActiveTab] = useState("pools")
+  const [isOpenClaimDisclaimer, setIsOpenClaimDisclaimer] = useState(false)
+
   const { toast } = useToast()
   const router = useRouter()
 
   const { address, signIn } = useWorldAuth()
   const { unlockJUZ } = useLockJUZ()
+  const { VE_JUZ } = useAccountBalances()
 
   const { data: claimable = 0 } = useSWR(
     address ? `juz.earned.${address}` : null,
@@ -82,6 +86,8 @@ export default function PageRewards() {
       return data
     }
   )
+
+  const CLAIMED_VE_JUZ_BN = Number(lockData?.veJUZClaimed || ZERO)
 
   const isLockPeriodEnded = lockData?.unlockTime
     ? Date.now() / 1000 > lockData.unlockTime
@@ -119,22 +125,33 @@ export default function PageRewards() {
     }
   }
 
-  async function recoverJUZLocked() {
-    if (!address) return signIn()
-    const JUZ_LOCKED = lockData?.veJUZClaimed || ZERO
-    if (JUZ_LOCKED <= 0) {
-      return toast.error({
-        title: "Nothing to withdraw",
-      })
-    }
-
-    const tx = await unlockJUZ(JUZ_LOCKED)
+  async function processUnlock() {
+    // Unlock based on holding VE_JUZ
+    const tx = await unlockJUZ(VE_JUZ.balance)
 
     if (tx?.status === "success") {
       toast.success({
         title: t("success.juzRecovered"),
       })
     }
+  }
+
+  async function recoverJUZLocked() {
+    if (!address) return signIn()
+    if (CLAIMED_VE_JUZ_BN <= 0) {
+      return toast.error({
+        title: "Nothing to withdraw",
+      })
+    }
+
+    const IMPACT_THRESHOLD = 0.05 // 5% of the total VE_JUZ balance
+    if (Number(VE_JUZ.balance) < CLAIMED_VE_JUZ_BN * (1 - IMPACT_THRESHOLD)) {
+      // Show disclaimer modal when holding VE_JUZ
+      // is less than 95% of the claimed veJUZ
+      return setIsOpenClaimDisclaimer(true)
+    }
+
+    processUnlock()
   }
 
   const CLAIMABLE = isLockPeriodEnded
@@ -144,6 +161,33 @@ export default function PageRewards() {
   return (
     <main>
       <FixedTopContainer className="border-b border-black/15">
+        <ReusableDialog
+          open={isOpenClaimDisclaimer}
+          onOpenChange={setIsOpenClaimDisclaimer}
+          onClosePressed={processUnlock}
+          closeText="Confirm & Claim"
+          title="Confirm Unlock"
+        >
+          <p>
+            <strong>Balance mismatch.</strong> To claim back all your JUZ you
+            have to return a total governance power of{" "}
+            <strong>
+              {Number(VE_JUZ.formatted).toLocaleString("en-US")} veJUZ.
+            </strong>
+          </p>
+
+          <p>
+            Do you want to continue and claim a portion of{" "}
+            <strong>
+              {shortifyDecimals(
+                (Number(VE_JUZ.balance) * 100) / CLAIMED_VE_JUZ_BN
+              )}
+              %
+            </strong>{" "}
+            instead? <strong>NOTE:</strong> You can always come back later to
+            claim the rest
+          </p>
+        </ReusableDialog>
         <TopBar
           className="[&_.text-lg]:text-left"
           startAdornment={<RouteBackButton />}
