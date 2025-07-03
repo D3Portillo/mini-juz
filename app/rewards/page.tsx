@@ -30,6 +30,7 @@ import { useTranslations } from "next-intl"
 import { useLockJUZ } from "@/lib/atoms/lock"
 
 import { shortifyDecimals } from "@/lib/numbers"
+import { formatDateDifference } from "@/lib/dates"
 
 import FixedTopContainer from "@/components/FixedTopContainer"
 import RewardPool, { APRBadge } from "./RewardPool"
@@ -81,8 +82,6 @@ export default function PageRewards() {
       return data
     }
   )
-
-  // TODO: Add time left for unlock
 
   const isLockPeriodEnded = lockData?.unlockTime
     ? Date.now() / 1000 > lockData.unlockTime
@@ -266,6 +265,19 @@ export default function PageRewards() {
                   </button>
                 </nav>
               </section>
+
+              {
+                // Only show this if the user has locked JUZ
+                // And the lock period is not ended
+                lockData?.unlockTime && !isLockPeriodEnded ? (
+                  <p className="m-5 text-center text-sm">
+                    {t("unlocks")}:{" "}
+                    <span className="tabular-nums">
+                      {formatDateDifference(Number(lockData.unlockTime) * 1000)}
+                    </span>
+                  </p>
+                ) : null
+              }
             </div>
 
             <div className={cn("mb-12", activeTab !== "drops" && "hidden")}>

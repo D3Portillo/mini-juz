@@ -132,6 +132,7 @@
   },
   "Rewards": {
     "title": "Incentivos",
+    "unlocks": "Disponible en",
     "getJUZ": "Obtener JUZ",
     "claim": "Reclamar",
     "earningVeJUZ": "veJUZ ganado",

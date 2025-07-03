@@ -132,6 +132,7 @@
   },
   "Rewards": {
     "title": "Reward boost",
+    "unlocks": "Unlocks",
     "getJUZ": "Get JUZ",
     "claim": "Claim",
     "earningVeJUZ": "Earning veJUZ",
