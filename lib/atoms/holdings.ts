@@ -1,12 +1,13 @@
 import {
   type Address,
   createPublicClient,
-  erc20Abi,
   fallback,
   http,
   parseAbi,
 } from "viem"
 import { worldchain } from "viem/chains"
+import { TokenProvider } from "@holdstation/worldchain-sdk"
+import { Client, Multicall3 } from "@holdstation/worldchain-viem"
 
 import { ABI_DISPENSER, ADDRESS_DISPENSER } from "@/actions/internals"
 
@@ -18,6 +19,10 @@ import {
   ZERO,
 } from "@/lib/constants"
 import { ALCHEMY_RPC } from "@/lib/alchemy"
+import { initializeHoldStation } from "@/app/HoldStationSetup/setup"
+
+// Prepare HoldStation
+initializeHoldStation()
 
 export const worldClient = createPublicClient({
   chain: worldchain,
@@ -60,54 +65,44 @@ export const getClaimedJUZ = async (address: Address) => {
   })
 }
 
-const ERC20_BALANCE = {
-  abi: erc20Abi,
-  functionName: "balanceOf",
-} as const
-
 export const getTotalUserHoldings = async (
   address: Address,
   customRPCURL?: string
 ) => {
-  const client = customRPCURL
+  const publicClient = customRPCURL
     ? createPublicClient({
         transport: http(customRPCURL),
         chain: worldchain,
       })
     : worldClient
 
-  const [WLD, JUZ, VE_JUZ, lockData] = await client.multicall({
-    contracts: [
-      {
-        ...ERC20_BALANCE,
-        address: ADDRESS_WORLD_COIN,
-        args: [address as any],
-      },
-      {
-        ...ERC20_BALANCE,
-        address: ADDRESS_JUZ,
-        args: [address as any],
-      },
-      {
-        ...ERC20_BALANCE,
-        address: ADDRESS_VE_JUZ,
-        args: [address as any],
-      },
-      {
-        abi: ABI_LOCKED_JUZ,
-        functionName: "getLockData",
-        address: ADDRESS_LOCK_CONTRACT,
-        args: [address as any],
-      },
-    ],
-    allowFailure: true,
+  const tokenProvider = new TokenProvider({
+    client: new Client(publicClient as any),
+    multicall3: new Multicall3(publicClient as any),
   })
 
+  const [erc20Balances, lockData] = await Promise.all([
+    tokenProvider.balanceOf({
+      wallet: address,
+      tokens: [ADDRESS_WORLD_COIN, ADDRESS_JUZ, ADDRESS_VE_JUZ],
+    }),
+    worldClient.readContract({
+      abi: ABI_LOCKED_JUZ,
+      functionName: "getLockData",
+      address: ADDRESS_LOCK_CONTRACT,
+      args: [address as any],
+    }),
+  ])
+
+  const WLD = erc20Balances?.[ADDRESS_WORLD_COIN]
+  const JUZ = erc20Balances?.[ADDRESS_JUZ]
+  const VE_JUZ = erc20Balances?.[ADDRESS_VE_JUZ]
+
   return {
-    WLD: WLD?.result || ZERO,
-    VE_JUZ: VE_JUZ?.result || ZERO,
-    JUZ: JUZ?.result || ZERO,
-    lockedJUZ: lockData?.result?.lockedJUZ || ZERO,
+    WLD: WLD || ZERO,
+    VE_JUZ: VE_JUZ || ZERO,
+    JUZ: JUZ || ZERO,
+    lockedJUZ: lockData?.lockedJUZ || ZERO,
   }
 }
 

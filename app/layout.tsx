@@ -48,6 +48,10 @@ const WelcomeModal = dynamic(() => import("./WelcomeModal"), {
   ssr: false,
 })
 
+const HoldStationSetup = dynamic(() => import("./HoldStationSetup"), {
+  ssr: false,
+})
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -63,6 +67,7 @@ export default async function RootLayout({
         <WelcomeModal />
         <WorldToaster duration={2_500} />
         <WorldProvider>
+          <HoldStationSetup />
           <GameSentinel />
           <ErudaProvider>
             <NextIntlClientProvider>
