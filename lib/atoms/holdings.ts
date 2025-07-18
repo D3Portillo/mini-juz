@@ -99,9 +99,9 @@ export const getTotalUserHoldings = async (
   const VE_JUZ = erc20Balances?.[ADDRESS_VE_JUZ]
 
   return {
-    WLD: WLD || ZERO,
-    VE_JUZ: VE_JUZ || ZERO,
-    JUZ: JUZ || ZERO,
+    WLD: BigInt(WLD || ZERO),
+    VE_JUZ: BigInt(VE_JUZ || ZERO),
+    JUZ: BigInt(JUZ || ZERO),
     lockedJUZ: lockData?.lockedJUZ || ZERO,
   }
 }
