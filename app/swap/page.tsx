@@ -222,6 +222,12 @@ export default function PageSwap() {
     }
   }
 
+  const handleSwap = () => {
+    window.open(
+      "https://worldcoin.org/mini-app?app_id=app_0d4b759921490adc1f2bd569fda9b53a&app_mode=mini-app"
+    )
+  }
+
   return (
     <main>
       <FixedTopContainer className="border-b">
@@ -244,17 +250,7 @@ export default function PageSwap() {
           <span className="rounded-full whitespace-nowrap text-sm font-semibold text-center bg-juz-orange/10 border-2 border-juz-orange text-black py-1 px-3">
             ${shortifyDecimals(JUZ_PRICE, 4)} 💰
           </span>
-          <button
-            onClick={() => {
-              window.open(
-                getUnoDeeplinkUrl({
-                  fromToken: ADDRESS_JUZ,
-                  toToken: ADDRESS_WORLD_COIN,
-                })
-              )
-            }}
-            className="pt-1 pb-1.5 text-xl"
-          >
+          <button onClick={handleSwap} className="pt-1 pb-1.5 text-xl">
             <FaGift className="scale-110" />
           </button>
         </nav>
@@ -316,13 +312,24 @@ export default function PageSwap() {
           </label>
         </section>
 
-        <LemonButton
-          onClick={handleConfirmSwap}
-          className="w-full bg-juz-green-lime rounded-full text-base py-3.5 flex gap-4 justify-between items-center"
-        >
-          <span className="text-base">Confirm swap</span>
-          <FaArrowRight className="text-lg" />
-        </LemonButton>
+        <div className="bg-black/5 -mt-2 p-1.5 rounded-2xl">
+          <LemonButton
+            onClick={handleConfirmSwap}
+            className="w-full bg-juz-green-lime rounded-xl text-base py-3.5 flex gap-4 justify-between items-center"
+          >
+            <span className="text-base">Confirm swap</span>
+            <FaArrowRight className="text-lg" />
+          </LemonButton>
+
+          <p
+            role="button"
+            onClick={handleSwap}
+            tabIndex={-1}
+            className="text-sm mt-2 py-1 select-none text-center text-black"
+          >
+            Powered by Holdstation
+          </p>
+        </div>
 
         <div className="min-h-14 grid place-items-center">
           {RECEIVING_JUZ > 0 && (
