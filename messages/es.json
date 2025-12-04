@@ -105,6 +105,7 @@
     "totalJUZ": "JUZ Total",
     "user": "Usuario",
     "updated": "Actualizado",
+    "whaleMessage": "Este jugador ha acumulado más del <amount></amount> del total de JUZ.",
     "refreshMessage": "La tabla de posiciones puede tardar en actualizarse. ¡Gracias por tu paciencia!"
   },
   "DialogHearts": {

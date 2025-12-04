@@ -10,6 +10,7 @@ import {
   AlertDialogTrigger,
   Button,
 } from "@worldcoin/mini-apps-ui-kit-react"
+import { useTranslations } from "next-intl"
 
 export type Props = PropsWithChildren<{
   title: string
@@ -31,7 +32,7 @@ export default function ReusableDialog({
   children,
   trigger,
   onClosePressed,
-  closeText = "Got it",
+  closeText,
   footNote,
   title,
   closeOnActionPressed = true,
@@ -40,9 +41,12 @@ export default function ReusableDialog({
   open,
   onOpenChange,
 }: Props) {
-  const ActionContainer = closeOnActionPressed ? AlertDialogClose : Fragment
-
+  const t = useTranslations("global")
   if (!enabled) return trigger
+
+  const ActionContainer = closeOnActionPressed ? AlertDialogClose : Fragment
+  const CLOSE_TEXT = closeText || t("gotIt")
+
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       {trigger ? (
@@ -74,7 +78,7 @@ export default function ReusableDialog({
             ) : null}
 
             <ActionContainer asChild>
-              <Button onClick={onClosePressed}>{closeText}</Button>
+              <Button onClick={onClosePressed}>{CLOSE_TEXT}</Button>
             </ActionContainer>
           </AlertDialogFooter>
         </div>

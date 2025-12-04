@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation"
 
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { useProfileImage } from "@/lib/atoms/user"
-import { shortifyDecimals } from "@/lib/numbers"
+import { numberToShortWords, shortifyDecimals } from "@/lib/numbers"
 
 import { FaRegLemon } from "react-icons/fa"
 
@@ -79,8 +79,10 @@ export default function HomeNavigation() {
 }
 
 export function JUZCounter({ asLink = false, href = "", ...props }) {
-  const { TotalJUZBalance, JUZPoints } = useAccountBalances()
   const Container = asLink ? Link : "button"
+
+  const { TotalJUZBalance, JUZPoints } = useAccountBalances()
+  const BALANCE = Number(TotalJUZBalance.formatted)
 
   return (
     <Container {...props} href={href} className="flex items-center gap-2">
@@ -92,7 +94,10 @@ export function JUZCounter({ asLink = false, href = "", ...props }) {
         <FaRegLemon className="text-xl" />
       </LemonIcon>
       <span className="text-xl font-semibold">
-        {shortifyDecimals(TotalJUZBalance.formatted, 2)} JUZ
+        {BALANCE < 1_000
+          ? shortifyDecimals(BALANCE, 2)
+          : numberToShortWords(BALANCE)}{" "}
+        JUZ
       </span>
     </Container>
   )

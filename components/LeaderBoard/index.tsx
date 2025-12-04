@@ -7,7 +7,7 @@ import { useLocale, useTranslations } from "next-intl"
 
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { useLeaderboard } from "@/lib/atoms/leaderboard"
-import { shortifyDecimals } from "@/lib/numbers"
+import { numberToShortWords, shortifyDecimals } from "@/lib/numbers"
 import { formatUSDC } from "@/lib/tokens"
 import { getDateFnsLocal } from "@/lib/date-locale"
 
@@ -150,6 +150,8 @@ function PlayerData({
   points: number
 }) {
   const POINTS = Number(formatUSDC(points))
+
+  const t = useTranslations("LeaderBoard")
   const { mote } = useAddressMote(POINTS)
   const { data = null } = useAccountData(address as any)
 
@@ -168,16 +170,20 @@ function PlayerData({
             }
           >
             <p>
-              This player has accumulated more than{" "}
-              <strong className="whitespace-nowrap">
-                {mote.unlockPercentage}%
-              </strong>{" "}
-              of the total supply of JUZ.
+              {t.rich("whaleMessage", {
+                amount: () => (
+                  <strong className="whitespace-nowrap">
+                    {mote.unlockPercentage}%
+                  </strong>
+                ),
+              })}
             </p>
           </ReusableDialog>
         ) : null}
       </div>
-      <div className="w-24 text-end">{shortifyDecimals(POINTS)}</div>
+      <div className="w-24 text-end">
+        {POINTS < 1_000 ? shortifyDecimals(POINTS) : numberToShortWords(POINTS)}
+      </div>
     </div>
   )
 }

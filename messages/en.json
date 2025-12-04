@@ -105,6 +105,7 @@
     "totalJUZ": "Total JUZ",
     "user": "User",
     "updated": "Updated",
+    "whaleMessage": "This player has accumulated more tha <amount></amount> of the total supply of JUZ.",
     "refreshMessage": "Leaderboard can take a while to refresh. Thanks for your patience!"
   },
   "DialogHearts": {
