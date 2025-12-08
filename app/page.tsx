@@ -39,7 +39,6 @@ import { JUZ_MULTIPLIER, MANAGE_HEARTS_TRIGGER_ID } from "@/lib/constants"
 import HomeNavigation from "./HomeNavigation"
 import ModalGame from "./ModalGame"
 
-import BannerRewardPools from "@/components/BannerRewardPools"
 import ReusableDialog from "@/components/ReusableDialog"
 import DialogPowerups from "@/components/DialogPowerups"
 import ModalQuests from "@/components/ModalQuests"
@@ -215,7 +214,7 @@ export default function PageHome() {
               </JUZDistributionModal>
             ) : null}
 
-            <div className="size-full rounded-full mt-12 overflow-clip grid place-items-center">
+            <div className="size-full rounded-full my-12 overflow-clip grid place-items-center">
               <WheelSpin
                 enableSpin={isConnected && hearts > 0 && !isEmpty}
                 onClick={() => {
@@ -235,10 +234,6 @@ export default function PageHome() {
                 items={isEmpty ? ["👋", "😍", "😎"] : gameTopics}
               />
             </div>
-
-            <BannerRewardPools />
-
-            <div className="my-8 w-full border-black border-t-3 rounded-full overflow-hidden" />
 
             {isConfirmed ? (
               <DailyRefill />

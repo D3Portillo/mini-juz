@@ -6,7 +6,7 @@ import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { Fragment, useState } from "react"
 import { useWorldAuth } from "@radish-la/world-auth"
 
-import { FaArrowRight, FaChevronDown, FaGift } from "react-icons/fa"
+import { FaArrowRight, FaChevronDown } from "react-icons/fa"
 
 import RouteBackButton from "@/components/RouteBackButton"
 import LemonButton from "@/components/LemonButton"
@@ -27,14 +27,13 @@ import { MiniKit } from "@worldcoin/minikit-js"
 
 import { trackEvent } from "@/components/posthog"
 import { beautifyAddress } from "@/lib/utils"
-import { getUnoDeeplinkUrl } from "@/lib/deeplinks"
 
 import { useFormattedInputHandler } from "@/lib/input"
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { useWLDPerETH } from "@/app/rewards/internals"
 import { useOroPriceInUSD, useWLDPriceInUSD } from "@/lib/atoms/prices"
 
-import { ADDRESS_JUZ, ADDRESS_WORLD_COIN, ZERO } from "@/lib/constants"
+import { ZERO } from "@/lib/constants"
 
 export default function PageSwap() {
   const { toast } = useToast()
@@ -222,12 +221,6 @@ export default function PageSwap() {
     }
   }
 
-  const handleSwap = () => {
-    window.open(
-      "https://worldcoin.org/mini-app?app_id=app_0d4b759921490adc1f2bd569fda9b53a&app_mode=mini-app"
-    )
-  }
-
   return (
     <main>
       <FixedTopContainer className="border-b">
@@ -250,9 +243,6 @@ export default function PageSwap() {
           <span className="rounded-full whitespace-nowrap text-sm font-semibold text-center bg-juz-orange/10 border-2 border-juz-orange text-black py-1 px-3">
             ${shortifyDecimals(JUZ_PRICE, 4)} 💰
           </span>
-          <button onClick={handleSwap} className="pt-1 pb-1.5 text-xl">
-            <FaGift className="scale-110" />
-          </button>
         </nav>
 
         <section className="border-3 -mt-0.5 p-3 rounded-2xl border-black shadow-3d-lg">
@@ -312,24 +302,13 @@ export default function PageSwap() {
           </label>
         </section>
 
-        <div className="bg-black/5 -mt-2 p-1.5 rounded-2xl">
-          <LemonButton
-            onClick={handleConfirmSwap}
-            className="w-full bg-juz-green-lime rounded-xl text-base py-3.5 flex gap-4 justify-between items-center"
-          >
-            <span className="text-base">Confirm swap</span>
-            <FaArrowRight className="text-lg" />
-          </LemonButton>
-
-          <p
-            role="button"
-            onClick={handleSwap}
-            tabIndex={-1}
-            className="text-sm mt-2 py-1 select-none text-center text-black"
-          >
-            Powered by Holdstation
-          </p>
-        </div>
+        <LemonButton
+          onClick={handleConfirmSwap}
+          className="w-full bg-juz-green-lime rounded-xl text-base py-3.5 flex gap-4 justify-between items-center"
+        >
+          <span className="text-base">Confirm swap</span>
+          <FaArrowRight className="text-lg" />
+        </LemonButton>
 
         <div className="min-h-14 grid place-items-center">
           {RECEIVING_JUZ > 0 && (
@@ -340,16 +319,22 @@ export default function PageSwap() {
           )}
         </div>
 
-        {leaderboard.length > 0 && (
-          <Fragment>
-            <section className="mt-5 flex flex-col">
-              <div className="text-sm font-medium gap-5 border-y py-3.5 whitespace-nowrap flex items-center">
-                <div className="w-20 pl-2">Time</div>
-                <div className="flex-grow text-juz-green">JUZ Balance</div>
-                <div className="w-20">User</div>
-              </div>
+        <Fragment>
+          <section className="mt-5 flex flex-col">
+            <div className="text-sm font-medium gap-5 border-y py-3.5 whitespace-nowrap flex items-center">
+              <div className="w-20 pl-2">Time</div>
+              <div className="flex-grow text-juz-green">JUZ Balance</div>
+              <div className="w-20">User</div>
+            </div>
 
-              {leaderboard.map(({ address, amount, timestamp }) => {
+            {leaderboard.length <= 0 ? (
+              <section className="flex mt-2 flex-col gap-2">
+                <div className="bg-black/5 animate-pulse h-9 rounded-md w-full" />
+                <div className="bg-black/5 animate-pulse delay-100 h-9 rounded-md w-full" />
+                <div className="bg-black/5 animate-pulse delay-200 h-9 rounded-md w-full" />
+              </section>
+            ) : (
+              leaderboard.map(({ address, amount, timestamp }) => {
                 const date = new Date(timestamp)
 
                 return (
@@ -376,13 +361,13 @@ export default function PageSwap() {
                     </div>
                   </div>
                 )
-              })}
-            </section>
-            <p className="max-w-xs mt-10 text-sm mx-auto text-center">
-              Showing latest user transactions
-            </p>
-          </Fragment>
-        )}
+              })
+            )}
+          </section>
+          <p className="max-w-xs mt-10 text-sm mx-auto text-center">
+            Showing latest user transactions
+          </p>
+        </Fragment>
       </div>
     </main>
   )
