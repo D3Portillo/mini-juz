@@ -36,3 +36,9 @@ export const serializeBigint = (v: any): any => {
       : v
   ) as any
 }
+
+export const jsonify = <T>(response: Response | Promise<Response>) => {
+  return response instanceof Response
+    ? (response.json() as Promise<T>)
+    : response.then((r) => r.json() as Promise<T>)
+}

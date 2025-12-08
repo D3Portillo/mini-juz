@@ -1,20 +1,17 @@
 "use client"
 
-import { getLastLeaderboardUpdate, getLeaderBoard } from "@/actions/game"
-import useSWR from "swr"
+import type { Address } from "viem"
+import useSWRImmutable from "swr/immutable"
+import { jsonify } from "../utils"
 
 export const useLeaderboard = () => {
-  const { data, ...query } = useSWR(
-    "juz.leaderboard",
+  const { data, ...query } = useSWRImmutable(
+    `juz.leaderboard`,
     async () => {
-      const [leaderboard, lastUpdateTime] = await Promise.all([
-        getLeaderBoard(),
-        getLastLeaderboardUpdate(),
-      ])
-      return {
-        leaderboard,
-        lastUpdateTime,
-      }
+      return await jsonify<{
+        leaderboard: { address: Address; total: number }[]
+        lastUpdateTime: number
+      }>(fetch(`/api/leaderboard`))
     },
     {
       keepPreviousData: true,
