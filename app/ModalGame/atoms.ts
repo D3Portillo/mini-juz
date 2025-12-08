@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 
 import { atomWithStorage } from "jotai/utils"
 import { atomFamily } from "jotai/utils"
@@ -47,7 +47,7 @@ export const useGameQuestions = (
   const locale = useLocale()
   const { questionHistory, ready } = useQuestionHistory(topic || "")
 
-  const { data, ...query } = useSWR(
+  const { data, ...query } = useSWRImmutable(
     `${cacheKey}.${ready && "ready"}`,
     async (): Promise<
       Awaited<ReturnType<typeof generateQuestionsForTopic>>
@@ -59,11 +59,6 @@ export const useGameQuestions = (
         config.questionCount,
         questionHistory
       )
-    },
-    {
-      // Keep staled data until key changes
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
     }
   )
 

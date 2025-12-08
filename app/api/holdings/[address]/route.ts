@@ -4,6 +4,8 @@ import { isAddress, parseEther } from "viem"
 import { serializeBigint } from "@/lib/utils"
 import { ZERO } from "@/lib/constants"
 
+export const revalidate = 45 // Keep staled for 45 seconds
+
 export async function GET(
   _: Request,
   { params }: { params: { address: string } }

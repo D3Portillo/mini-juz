@@ -3,7 +3,7 @@
 import type { Address } from "viem"
 
 import { useAtom } from "jotai"
-import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 import { useWorldAuth } from "@radish-la/world-auth"
 import { useTranslations } from "next-intl"
 import { useToast } from "@worldcoin/mini-apps-ui-kit-react"
@@ -83,15 +83,17 @@ export const usePlayerHearts = () => {
 }
 
 export const useAccountData = (address: Address | null) => {
-  return useSWR(address ? `juz.data.min.${address}` : null, async () => {
-    if (!address) return null
-    const data = await MiniKit.getUserByAddress(address)
-    return data
-  })
+  return useSWRImmutable(
+    address ? `juz.data.min.${address}` : null,
+    async () => {
+      if (!address) return null
+      return await MiniKit.getUserByAddress(address)
+    }
+  )
 }
 
 export const useGameRank = (address: Address | null) => {
-  const { data = null } = useSWR(
+  const { data = null } = useSWRImmutable(
     address ? `juz.game.rank.${address}` : null,
     async () => {
       if (!address) return null

@@ -1,7 +1,7 @@
 "use client"
 
 import copy from "clipboard-copy"
-import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 
 import {
   AlertDialog,
@@ -43,7 +43,7 @@ export default function DialogInvites({
     mutate,
     isLoading: isFetching,
     isValidating,
-  } = useSWR(address ? `invites.by.${address}` : null, async () => {
+  } = useSWRImmutable(address ? `invites.by.${address}` : null, async () => {
     if (!address) return 0
     return (await getTotalInteractions(address)).invited.length
   })
