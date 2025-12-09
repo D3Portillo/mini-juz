@@ -151,3 +151,7 @@ export const getLastLeaderboardUpdate = async () => {
 export const setLastLeaderboardUpdate = async (timeInSeconds: number) => {
   await redis.set(KEY_LEADERBOARD_UPDATED_TIME, timeInSeconds)
 }
+
+export const getTotalPlayers = async () => {
+  return await redis.zcard(KEY_LEADERBOARD)
+}

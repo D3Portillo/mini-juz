@@ -11,6 +11,7 @@ export const useLeaderboard = () => {
       return await jsonify<{
         leaderboard: { address: Address; total: number }[]
         lastUpdateTime: number
+        totalPlayers: number
       }>(fetch(`/api/leaderboard`))
     },
     {
@@ -22,6 +23,7 @@ export const useLeaderboard = () => {
 
   return {
     data: {
+      totalPlayers: data?.totalPlayers || 0,
       leaderboard: data?.leaderboard || [],
       /** Timestamp in ms */
       lastUpdated: lastUpdated ? Math.floor(lastUpdated * 1000) : Date.now(),

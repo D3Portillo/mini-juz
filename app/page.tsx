@@ -18,14 +18,17 @@ import { trackEvent } from "@/components/posthog"
 
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { useHardwareType } from "@/lib/window"
+import { useLeaderboard } from "@/lib/atoms/leaderboard"
 
 import {
   incrementGamesPlayed,
   incrementGamesWon,
   incrPlayerJUZEarned,
 } from "@/actions/game"
+import { numberToShortWords } from "@/lib/numbers"
 
 import { FaHeart, FaHeartBroken } from "react-icons/fa"
+import { MdPerson } from "react-icons/md"
 
 import WheelSpin from "@/components/WheelSpin"
 import LemonButton from "@/components/LemonButton"
@@ -56,8 +59,11 @@ export default function PageHome() {
   const { address, signIn, isConnected } = useWorldAuth()
   const { JUZPoints } = useAccountBalances()
 
-  const [showGame, setShowGame] = useState(null as { topic?: string } | null)
   const { isIOS } = useHardwareType()
+  const [showGame, setShowGame] = useState(null as { topic?: string } | null)
+  const {
+    data: { totalPlayers },
+  } = useLeaderboard()
 
   const { increment: incrementGamesWonToday } = useGamesWonToday()
   const [isConfirmed, setIsConfirmed] = useAtomExplainerConfirmed()
@@ -146,10 +152,14 @@ export default function PageHome() {
             </TabsTrigger>
 
             <TabsTrigger
-              className="border-b-2 px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
+              className="border-b-2 group px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
               value="leaderboard"
             >
-              Leaderboard
+              Board{" "}
+              <span className="hidden group-data-[state=active]:inline-flex border border-black/5 ml-1 py-0.5 px-1.5 text-xs bg-black/5 rounded-full items-center gap-1">
+                <MdPerson />
+                <span>{numberToShortWords(totalPlayers || 10_000)}</span>
+              </span>
             </TabsTrigger>
 
             <div className="flex-grow" />
