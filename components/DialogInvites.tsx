@@ -20,7 +20,7 @@ import { FaSync } from "react-icons/fa"
 import { BiSolidCopy } from "react-icons/bi"
 
 import { getJUZAppId } from "@/lib/deeplinks"
-import { getTotalInteractions } from "@/actions/invites"
+import { getInviteMetrics } from "@/actions/invites"
 import {
   DEFAULT_INVITE_JUZ,
   JUZ_MULTIPLIER,
@@ -45,7 +45,7 @@ export default function DialogInvites({
     isValidating,
   } = useSWRImmutable(address ? `invites.by.${address}` : null, async () => {
     if (!address) return 0
-    return (await getTotalInteractions(address)).invited.length
+    return (await getInviteMetrics(address)).invited
   })
 
   const isLoading = isFetching || isValidating

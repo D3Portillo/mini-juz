@@ -1,7 +1,7 @@
 "use client"
 
 import { useLayoutEffect, useState } from "react"
-import { claimFriendRewards, getTotalInteractions } from "@/actions/invites"
+import { claimFriendRewards, getInviteMetrics } from "@/actions/invites"
 import { useAccountData } from "@/lib/atoms/user"
 import { beautifyAddress } from "@/lib/utils"
 import { useWorldAuth } from "@radish-la/world-auth"
@@ -19,8 +19,6 @@ import { useSearchParams } from "next/navigation"
 import { useRouter } from "next/navigation"
 import { trackEvent } from "./posthog"
 import { useTranslations } from "next-intl"
-
-const MAX_GIFTS_PER_RECIPIENT = 10 // 100 JUZ
 
 export default function InviteSentinel() {
   const t = useTranslations("InviteSentinel")
@@ -46,12 +44,8 @@ export default function InviteSentinel() {
   async function handleClaimJUZ() {
     if (!address) return signIn()
 
-    const nonce = (await getTotalInteractions(address)).totalInterations
-    if (nonce > MAX_GIFTS_PER_RECIPIENT) {
-      return toast.error({
-        title: t("errors.tooManyGifts"),
-      })
-    }
+    // Check nonce (accepted invites by recipient)
+    const nonce = (await getInviteMetrics(address)).accepted
 
     const message = JSON.stringify({
       sender: inviting,

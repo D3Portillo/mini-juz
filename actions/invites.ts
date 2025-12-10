@@ -3,7 +3,7 @@
 import type { Address, Hash } from "viem"
 import ProtocolKit, { hashSafeMessage } from "@safe-global/protocol-kit"
 import { Redis } from "@upstash/redis"
-import { getPlayerPoints, incrPlayerJUZEarned, isValidPlayer } from "./game"
+import { incrPlayerJUZEarned } from "./game"
 import { worldchain } from "viem/chains"
 import {
   DEFAULT_INVITE_JUZ,
@@ -17,15 +17,15 @@ const redis = Redis.fromEnv()
 const getInviteKey = (sender: Address | "*", recipient: Address | "*") =>
   `${sender}.invited.${recipient}`
 
-export const getTotalInteractions = async (account: Address) => {
+export const getInviteMetrics = async (account: Address) => {
   const [accepted, invited] = await Promise.all([
     redis.keys(getInviteKey("*", account)), // Someone invited me
     redis.keys(getInviteKey(account, "*")), // Invited by me
   ])
 
   return {
-    accepted,
-    invited,
+    accepted: accepted.length,
+    invited: invited.length,
     totalInterations: invited.length + accepted.length,
   }
 }
@@ -95,21 +95,15 @@ export const claimFriendRewards = async ({
     return errorState("AlreadyInvited")
   }
 
-  const recipientPoints = (await getPlayerPoints(recipient)) || 0
-  if (recipientPoints > CLAIMABLE_AMOUNT * 10) {
-    // Allow people to farm at most 10 times the gifted JUZ
-    return errorState("NotFreshRecipient")
-  }
-
-  // Must have played at least one game
-  if (!(await isValidPlayer(sender))) {
-    return errorState("InvalidadSender")
-  }
-
-  // Check nonce
-  const nonce = (await getTotalInteractions(recipient)).totalInterations
+  // Check nonce (total accepted invites so far)
+  const nonce = (await getInviteMetrics(recipient)).accepted
   if (formattedMessage.nonce != nonce) {
     return errorState("InvalidNonce")
+  }
+
+  if (nonce >= 10) {
+    // Cap at 10 invite claims per acc (simple farm protection)
+    return errorState("MaxClaimsReached")
   }
 
   await Promise.all([
