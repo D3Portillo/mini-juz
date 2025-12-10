@@ -96,8 +96,8 @@ export const claimFriendRewards = async ({
   }
 
   const recipientPoints = (await getPlayerPoints(recipient)) || 0
-  if (recipientPoints > CLAIMABLE_AMOUNT * 5) {
-    // Allow people to farm at most 3-4 times the gifted JUZ
+  if (recipientPoints > CLAIMABLE_AMOUNT * 10) {
+    // Allow people to farm at most 10 times the gifted JUZ
     return errorState("NotFreshRecipient")
   }
 
