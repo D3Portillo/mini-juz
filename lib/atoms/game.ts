@@ -2,7 +2,7 @@
 
 import { atomWithStorage } from "jotai/utils"
 import { useAtom } from "jotai"
-import useSWR from "swr"
+import useSWRImmutable from "swr/immutable"
 
 import { useWorldAuth } from "@radish-la/world-auth"
 import { getPlayerGameData } from "@/actions/game"
@@ -10,7 +10,7 @@ import { getPlayerGameData } from "@/actions/game"
 export const useAccountGameData = () => {
   const { address } = useWorldAuth()
 
-  const { data = {} } = useSWR(
+  const { data = {} } = useSWRImmutable(
     address ? `played.games.${address}` : null,
     async () => {
       if (!address) return 0

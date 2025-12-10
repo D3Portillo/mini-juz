@@ -16,7 +16,3 @@ export const completePaymentIntent = async (
   const KEY = getIntentKey(address, uuid)
   await redis.set(KEY, txId || "NO_TX")
 }
-
-export const isValidPaymentIntent = async (address: Address, uuid: string) => {
-  return (await redis.get<number>(getIntentKey(address, uuid))) != null
-}
