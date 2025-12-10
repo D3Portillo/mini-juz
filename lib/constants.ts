@@ -29,5 +29,5 @@ export const ADDRESS_WETH =
 export const ADDRESS_POOL_WLD_ETH = "0x4D1DeC18368B4e7c62e4EbdD8dF22BA938B6a9d4"
 
 export const JUZ_MULTIPLIER = 1 // 2 = 2x JUZ rewards, 3 = 3x JUZ rewards, etc.
-export const DEFAULT_INVITE_JUZ = 10 // Both earn 10 JUZ
-export const VERIFIED_INVITE_JUZ = 25 // Both earn 25 JUZ for verified users
+export const DEFAULT_INVITE_JUZ = 7 // Both earn 7 JUZ
+export const VERIFIED_INVITE_JUZ = 15 // Both earn 15 JUZ for verified users
