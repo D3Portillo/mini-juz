@@ -45,7 +45,7 @@
     "support": "Contact support",
     "totalJUZ": "Total JUZ Balance",
     "inviteYourFriends": "Invite your friends",
-    "lockMyJUZ": "Lock my JUZ",
+    "earnJuz": "Earn JUZ",
     "errors": {
       "fileTooBig": "File greater than 2MB"
     }
@@ -130,6 +130,10 @@
     "generalKnowledge": "General Knowledge",
     "errorText": "Something wrong occurred",
     "loadingText": "Buckle up! We are cooking the trivia for you..."
+  },
+  "RewardPools": {
+    "claimableFees": "Claimable Fees",
+    "description": "Deposit assets. Earn rewards. Compound and enjoy the JUZ of Yield farming."
   },
   "Rewards": {
     "title": "Reward boost",

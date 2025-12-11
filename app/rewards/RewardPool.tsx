@@ -28,8 +28,7 @@ import RewardDialogTrigger from "./RewardDialogTrigger"
 import ViewDepositsDialogTrigger, {
   ID_VIEW_DEPOSITS,
 } from "./ViewDepositsDialogTrigger"
-import DialogWithdraw from "./DialogWithdraw"
-import DialogDeposit from "./DialogDeposit"
+import { useTranslations } from "next-intl"
 
 const OPTIONS_SORT_BY = {
   APR: "APR",
@@ -40,8 +39,8 @@ export default function RewardPool() {
   const { toast } = useToast()
   const [showActive, setShowActive] = useState(true)
   const [showDepositsOnly, setShowDepositsOnly] = useState(false)
-  const [showWithdraw, setShowWithdraw] = useState(false)
-  const [showDeposit, setShowDeposit] = useState(false)
+
+  const t = useTranslations("RewardPools")
 
   const [sortBy, setSortBy] = useState<keyof typeof OPTIONS_SORT_BY>("APR")
 
@@ -88,23 +87,12 @@ export default function RewardPool() {
     }
   }
 
-  function handleShowDeposit() {
-    if (!address) return signIn()
-    setShowDeposit(true)
-  }
-
   useEffect(() => {
     if (!address) {
       // Do not filter when user not connected
       setShowDepositsOnly(false)
     }
   }, [address])
-
-  useEffect(() => {
-    if (showWithdraw || showDeposit) {
-      ;(document.getElementById(ID_VIEW_DEPOSITS) as HTMLButtonElement)?.click()
-    }
-  }, [showWithdraw, showDeposit])
 
   const rawDeposits = deposits?.token0.value || deposits?.token1.value || 0
   const isUserInPool = rawDeposits > 1e13 // 0.00001 WLD or WETH
@@ -115,19 +103,10 @@ export default function RewardPool() {
 
   return (
     <Fragment>
-      {/**
-       *  <DialogWithdraw open={showWithdraw} onOpenChange={setShowWithdraw} />
-      <DialogDeposit open={showDeposit} onOpenChange={setShowDeposit} />
-       */}
-
       <h2 className="font-medium text-xl">Reward Pools</h2>
 
       <div className="flex justify-between items-start gap-7">
-        <p className="mt-2 text-sm max-w-[14rem]">
-          Deposit assets. Earn rewards. Compound and enjoy the JUZ of Yield
-          farming.
-        </p>
-
+        <p className="mt-2 text-sm max-w-[14rem]">{t("description")}</p>
         <ReusableDialog
           title="What are JUZ Pools?"
           trigger={
@@ -145,13 +124,8 @@ export default function RewardPool() {
           </p>
 
           <p>
-            Anyone can earn a share of the fees by calling the compound
-            function.
-          </p>
-
-          <p>
-            Compounder rewards are <strong>cap to 0.5%</strong> from the balance
-            available to compound.
+            Anyone can earn a share of the fees by calling the compound function
+            to earn a small portion of the fees.
           </p>
         </ReusableDialog>
       </div>
@@ -166,7 +140,7 @@ export default function RewardPool() {
         </LemonButton>
 
         <div className="mt-2.5 text-sm">
-          Claimable fees:{" "}
+          {t("claimableFees")}:{" "}
           <strong className="font-medium">
             $
             {compoundRewardData?.totalUSD
@@ -231,7 +205,8 @@ export default function RewardPool() {
               // Early return if propagation is from children
               if ((e.target as HTMLButtonElement).tagName === "BUTTON") return
 
-              handleShowDeposit()
+              // Open View Deposits Dialog
+              document.getElementById(ID_VIEW_DEPOSITS)?.click()
             }}
             className="flex group gap-5 items-center"
           >
@@ -290,13 +265,10 @@ export default function RewardPool() {
             </ReusableDialog>
 
             <div className="flex-grow whitespace-nowrap shrink-0">
-              <ViewDepositsDialogTrigger
-                onIncreasePressed={handleShowDeposit}
-                onWithdrawPressed={() => setShowWithdraw(true)}
-              />
+              <ViewDepositsDialogTrigger />
             </div>
 
-            <RewardDialogTrigger onActionPressed={handleShowDeposit} />
+            <RewardDialogTrigger />
           </nav>
         </div>
       )}

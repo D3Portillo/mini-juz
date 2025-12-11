@@ -45,7 +45,7 @@
     "support": "Soporte",
     "totalJUZ": "Balance total de JUZ",
     "inviteYourFriends": "Invita a tus amigos",
-    "lockMyJUZ": "Generar ganancias",
+    "earnJuz": "Ganar más JUZ",
     "errors": {
       "fileTooBig": "Archivo mayor a 2MB"
     }
@@ -130,6 +130,10 @@
     "generalKnowledge": "Conocimiento",
     "errorText": "Oops. Algo malo ocurrió",
     "loadingText": "¡Prepárate! Estamos cocinando la trivia..."
+  },
+  "RewardPools": {
+    "claimableFees": "Comisión disponible",
+    "description": "Deposita tokens. Gana recompensas. Disfruta del Yield farming con JUZ."
   },
   "Rewards": {
     "title": "Incentivos",
