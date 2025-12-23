@@ -73,7 +73,7 @@ export default function HomeNavigation() {
       )}
 
       <div className="flex-grow" />
-      <JUZCounter asLink href="/rewards" />
+      <JUZCounter />
     </FixedTopContainer>
   )
 }
