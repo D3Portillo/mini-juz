@@ -101,6 +101,14 @@ export default function RewardPool() {
   // leaving as placeholder for now
   const isEmpty = !showActive || (showDepositsOnly && !isUserInPool)
 
+  const explainerContent = Array.from({
+    length: Number(t("explainers.whatArePools.contents.size")),
+  }).map((_, i) =>
+    t(
+      `explainers.whatArePools.contents.${i}` as "explainers.whatArePools.contents.0"
+    )
+  )
+
   return (
     <Fragment>
       <h2 className="font-medium text-xl">Reward Pools</h2>
@@ -108,7 +116,7 @@ export default function RewardPool() {
       <div className="flex justify-between items-start gap-7">
         <p className="mt-2 text-sm max-w-[14rem]">{t("description")}</p>
         <ReusableDialog
-          title="What are JUZ Pools?"
+          title={t("explainers.whatArePools.title")}
           trigger={
             <button className="size-14 group -mt-5 bg-gradient-to-bl from-juz-orange/15 to-juz-orange/3 border-juz-orange/50 border-2 grid place-content-center shrink-0 rounded-2xl">
               <span className="text-2xl transition-all group-hover:-rotate-6 scale-105 group-hover:scale-110">
@@ -117,16 +125,9 @@ export default function RewardPool() {
             </button>
           }
         >
-          <p>
-            JUZ Pools are smart vaults with custom strategies that compound
-            rewards and create liquidity positions in incentivized pools to
-            extract the most yield.
-          </p>
-
-          <p>
-            Anyone can earn a share of the fees by calling the compound function
-            to earn a small portion of the fees.
-          </p>
+          {explainerContent.map((content, index) => (
+            <p key={`explainer-content-${index}`}>{content}</p>
+          ))}
         </ReusableDialog>
       </div>
 

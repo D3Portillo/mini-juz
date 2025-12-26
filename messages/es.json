@@ -133,7 +133,17 @@
   },
   "RewardPools": {
     "claimableFees": "Comisión disponible",
-    "description": "Deposita tokens. Gana recompensas. Disfruta del Yield farming con JUZ."
+    "description": "Deposita tokens. Gana recompensas. Disfruta del Yield farming con JUZ.",
+    "explainers": {
+      "whatArePools": {
+        "title": "¿Qué son las JUZ Pools?",
+        "contents": {
+          "size": "2",
+          "0": "Los Pools de JUZ son smart vaults con estrategias personalizadas que componen recompensas y crean posiciones de liquidez en pools con incentivos para extraer el máximo rendimiento.",
+          "1": "Cualquiera puede ganar una parte de las comisiones llamando a la función \"compound\" para ganar una pequeña porción de los fees."
+        }
+      }
+    }
   },
   "Rewards": {
     "title": "Incentivos",

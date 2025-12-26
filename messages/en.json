@@ -133,7 +133,17 @@
   },
   "RewardPools": {
     "claimableFees": "Claimable Fees",
-    "description": "Deposit assets. Earn rewards. Compound and enjoy the JUZ of Yield farming."
+    "description": "Deposit assets. Earn rewards. Compound and enjoy the JUZ of Yield farming.",
+    "explainers": {
+      "whatArePools": {
+        "title": "What are Reward Pools?",
+        "contents": {
+          "size": "2",
+          "0": "JUZ Pools are smart vaults with custom strategies that compound rewards and create liquidity positions in incentivized pools to extract the most yield.",
+          "1": "Anyone can earn a share of the fees by calling the compound function to earn a small portion of the fees."
+        }
+      }
+    }
   },
   "Rewards": {
     "title": "Reward boost",

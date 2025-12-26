@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 
 import { FaChevronUp } from "react-icons/fa"
 
@@ -13,11 +13,13 @@ import DialogShield from "./DialogShield"
 import DialogBooster from "./DialogBooster"
 
 import asset_thunder from "@/assets/thunder.png"
+import { atom, useAtom } from "jotai"
 
+// Open by default so users can see the powerups
+// and close it if they don't want to use them
+const atomIsOpen = atom(true)
 export default function DialogPowerups() {
-  // Open by default so users can see the powerups
-  // and close it if they don't want to use them
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useAtom(atomIsOpen)
   const toggleOpen = () => setIsOpen((prev) => !prev)
 
   useEffect(() => {
