@@ -53,6 +53,7 @@ export default function ModalQuests({
   const [open, setOpen] = useState(false)
   const [quests, setQuests] = useAtom(atomQuests)
   const [brokeItemIndex, setBrokeItemIndex] = useState(0)
+  const [isClaimInProgress, setIsClaimInProgress] = useState(false)
 
   const { setState } = usePowerups()
   const { setHearts } = usePlayerHearts()
@@ -61,6 +62,7 @@ export default function ModalQuests({
   const [showClaimingState, setShowClaimingState] = useState(
     {} as {
       quest?: keyof typeof quests.claimedTimestamps
+      gamesWonSnapshot?: number
     }
   )
 
@@ -71,6 +73,7 @@ export default function ModalQuests({
   const resetClaimingState = () => {
     setBrokeItemIndex(0)
     setShowClaimingState({})
+    setIsClaimInProgress(false)
   }
 
   useEffect(() => resetClaimingState(), [open])
@@ -126,6 +129,7 @@ export default function ModalQuests({
 
     setShowClaimingState({
       quest: "questTrivia2Games",
+      gamesWonSnapshot: gamesWon, // Store snapshot to prevent race conditions
     })
   }
 
@@ -143,8 +147,29 @@ export default function ModalQuests({
   const isClaimScreen = brokeItemIndex >= TAPS_TO_BROKE_ITEM
 
   function handleClaimOrBreakItem() {
+    if (!address) return signIn()
     if (isClaimScreen) {
-      if (currentReward.type === "shield") {
+      // Prevent double claims
+      if (isClaimInProgress) return
+      setIsClaimInProgress(true)
+
+      const { quest } = showClaimingState
+
+      // We mark quest as claimed FIRST to prevent double claims on crash
+      if (quest) {
+        setQuests({
+          claimedTimestamps: {
+            ...claimedTimestamps,
+            [quest]: Date.now(),
+          },
+        })
+      }
+
+      // Handle JUZ reward - check sign-in but don't interrupt flow
+      if (currentReward.type === "juz") {
+        // Distribute JUZ tokens
+        incrPlayerJUZEarned(address, currentReward.amount)
+      } else if (currentReward.type === "shield") {
         setState((prev) => ({
           ...prev,
           shields: {
@@ -160,21 +185,6 @@ export default function ModalQuests({
         }))
       } else if (currentReward.type === "heart") {
         setHearts((current) => current + currentReward.amount)
-      } else if (currentReward.type === "juz") {
-        if (!address) return signIn()
-        // Force login (this is an edge-case but can happen)
-        incrPlayerJUZEarned(address, currentReward.amount)
-      }
-
-      const { quest } = showClaimingState
-      if (quest) {
-        // Mark quest as claimed
-        setQuests({
-          claimedTimestamps: {
-            ...claimedTimestamps,
-            [quest]: Date.now(),
-          },
-        })
       }
 
       toast.success({
@@ -325,7 +335,7 @@ export default function ModalQuests({
 
                   <p className="text-sm opacity-70">
                     {t.rich("triviaWinner2.explainer", {
-                      gamesWon,
+                      gamesWon: showClaimingState.gamesWonSnapshot ?? gamesWon,
                       strong: (chunks) => <strong>{chunks}</strong>,
                     })}
                   </p>
