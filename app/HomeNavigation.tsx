@@ -12,6 +12,7 @@ import { numberToShortWords, shortifyDecimals } from "@/lib/numbers"
 
 import { FaRegLemon } from "react-icons/fa"
 
+import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
 import LemonIcon from "@/components/LemonIcon"
 import MainSelect from "@/components/MainSelect"
 import FixedTopContainer from "@/components/FixedTopContainer"
@@ -73,7 +74,10 @@ export default function HomeNavigation() {
       )}
 
       <div className="flex-grow" />
-      <JUZCounter />
+
+      <JUZDistributionModal>
+        <JUZCounter />
+      </JUZDistributionModal>
     </FixedTopContainer>
   )
 }

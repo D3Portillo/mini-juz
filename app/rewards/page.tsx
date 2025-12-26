@@ -191,12 +191,12 @@ export default function PageRewards() {
         <TopBar
           className="[&_.text-lg]:text-left"
           startAdornment={<RouteBackButton />}
+          title={t("title")}
           endAdornment={
             <JUZDistributionModal>
               <JUZCounter />
             </JUZDistributionModal>
           }
-          title={t("title")}
         />
       </FixedTopContainer>
 

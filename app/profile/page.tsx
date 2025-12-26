@@ -165,7 +165,7 @@ export default function PageProfile() {
             />
 
             <LemonButton
-              onClick={() => router.push("/rewards")}
+              onClick={() => router.push("/")}
               className="py-3.5 mt-1 flex items-center justify-between rounded-full"
             >
               <span className="text-base">{t("earnJuz")}</span>
