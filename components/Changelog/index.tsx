@@ -5,6 +5,7 @@ import { useLocale } from "next-intl"
 import { atomWithStorage } from "jotai/utils"
 
 import ReusableDialog from "@/components/ReusableDialog"
+import { useIsWelcomeRead } from "@/app/WelcomeModal"
 import { CHANGELOG, ChangeType } from "./changelog"
 
 const atomChangelogViewed = atomWithStorage<string | null>(
@@ -18,13 +19,18 @@ const LATEST_ENTRY = LATEST_ENTRY_KEY
   : null
 
 export default function Changelog() {
+  const [isWelcomeRead] = useIsWelcomeRead()
+
   const locale = useLocale()
   const [viewed, setViewed] = useAtom(atomChangelogViewed)
 
   // Can't show if no changelog entries
   if (!LATEST_ENTRY) return null
 
-  const isOpenChangelog = Boolean(LATEST_ENTRY && viewed !== LATEST_ENTRY_KEY)
+  // Only show if welcome has been read
+  const isOpenChangelog =
+    isWelcomeRead && Boolean(LATEST_ENTRY && viewed !== LATEST_ENTRY_KEY)
+
   return (
     <ReusableDialog
       title={`JUZ — v${LATEST_ENTRY_KEY}`}

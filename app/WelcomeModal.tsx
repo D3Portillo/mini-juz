@@ -8,15 +8,19 @@ import { atomWithStorage } from "jotai/utils"
 import LemonButton from "@/components/LemonButton"
 
 const atomIsWelcomeRead = atomWithStorage("juz.data.isWelcomeRead", false)
+export const useIsWelcomeRead = () => useAtom(atomIsWelcomeRead)
+
 export default function WelcomeModal() {
-  const { toast } = useToast()
   const [isReady, setIsReady] = useState(false)
-  const [isWelcomeRead, setIsWelcomeRead] = useAtom(atomIsWelcomeRead)
+  const [isWelcomeRead, setIsWelcomeRead] = useIsWelcomeRead()
+  const { toast } = useToast()
 
   useEffect(() => setIsReady(true), [])
 
   function handleAccept() {
-    setIsWelcomeRead(true)
+    // Small delay to avoid jank
+    setTimeout(() => setIsWelcomeRead(true), 250)
+
     toast.success({
       title: "Spin the wheel to start playing!",
     })
