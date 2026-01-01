@@ -54,6 +54,7 @@ export default function ModalQuests({
   const [quests, setQuests] = useAtom(atomQuests)
   const [brokeItemIndex, setBrokeItemIndex] = useState(0)
   const [isClaimInProgress, setIsClaimInProgress] = useState(false)
+  const [isItemClaimable, setIsItemClaimable] = useState(false)
 
   const { setState } = usePowerups()
   const { setHearts } = usePlayerHearts()
@@ -74,6 +75,7 @@ export default function ModalQuests({
     setBrokeItemIndex(0)
     setShowClaimingState({})
     setIsClaimInProgress(false)
+    setIsItemClaimable(false)
   }
 
   useEffect(() => resetClaimingState(), [open])
@@ -149,6 +151,9 @@ export default function ModalQuests({
   function handleClaimOrBreakItem() {
     if (!address) return signIn()
     if (isClaimScreen) {
+      // Prevent claiming until the item is allowed to be claimed (short reveal)
+      if (!isItemClaimable) return
+
       // Prevent double claims
       if (isClaimInProgress) return
       setIsClaimInProgress(true)
@@ -213,9 +218,18 @@ export default function ModalQuests({
     }
   }, [isClaimScreen])
 
+  useEffect(() => {
+    setIsItemClaimable(false)
+
+    if (isClaimScreen) {
+      const timer = setTimeout(() => setIsItemClaimable(true), 1_000)
+      return () => clearTimeout(timer)
+    }
+  }, [isClaimScreen])
+
   return (
     <Drawer open={open} onOpenChange={setOpen} height="full">
-      {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
+      {trigger ? <DrawerTrigger asChild>{trigger}</DrawerTrigger> : null}
 
       <DrawerContent>
         <VisuallyHidden>
