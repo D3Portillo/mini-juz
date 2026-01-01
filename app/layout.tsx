@@ -38,7 +38,7 @@ export const viewport: Viewport = {
 }
 
 const ErudaProvider = dynamic(
-  () => import("../components/Eruda").then((r) => r.ErudaProvider),
+  () => import("@/components/Eruda").then((r) => r.ErudaProvider),
   {
     ssr: false,
   }
@@ -49,6 +49,10 @@ const WelcomeModal = dynamic(() => import("./WelcomeModal"), {
 })
 
 const HoldStationSetup = dynamic(() => import("./HoldStationSetup"), {
+  ssr: false,
+})
+
+const Changelog = dynamic(() => import("@/components/Changelog"), {
   ssr: false,
 })
 
@@ -71,6 +75,7 @@ export default async function RootLayout({
           <GameSentinel />
           <ErudaProvider>
             <NextIntlClientProvider>
+              <Changelog />
               <InviteSentinel />
               <MainLayout>{children}</MainLayout>
             </NextIntlClientProvider>
