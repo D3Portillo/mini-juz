@@ -11,7 +11,7 @@ import Image from "next/image"
 import { TopBar, useToast } from "@worldcoin/mini-apps-ui-kit-react"
 import { Tabs, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
-import { FaArrowRight } from "react-icons/fa"
+import { FaArrowRight, FaExternalLinkAlt } from "react-icons/fa"
 
 import { JUZCounter } from "@/app/HomeNavigation"
 import RouteBackButton from "@/components/RouteBackButton"
@@ -38,12 +38,14 @@ import RewardPool, { APRBadge } from "./RewardPool"
 
 import asset_running from "@/assets/running.png"
 import asset_frog from "@/assets/frog.png"
+import { DROPS } from "./drops"
 
+type Sections = "pools" | "lock" | "drops"
 export default function PageRewards() {
   const t = useTranslations("Rewards")
   const APR = calculateAPR(Date.now() / 1_000)
 
-  const [activeTab, setActiveTab] = useState("pools")
+  const [activeTab, setActiveTab] = useState<Sections>("drops")
   const [isOpenClaimDisclaimer, setIsOpenClaimDisclaimer] = useState(false)
 
   const { toast } = useToast()
@@ -70,7 +72,7 @@ export default function PageRewards() {
     },
     {
       refreshInterval: 3_000, // 3 seconds
-    }
+    },
   )
 
   const { data: lockData = null } = useSWR(
@@ -84,7 +86,7 @@ export default function PageRewards() {
         args: [address],
       })
       return data
-    }
+    },
   )
 
   const CLAIMED_VE_JUZ_BN = Number(lockData?.veJUZClaimed || ZERO)
@@ -180,7 +182,7 @@ export default function PageRewards() {
             Do you want to continue and claim a portion of{" "}
             <strong>
               {shortifyDecimals(
-                (Number(VE_JUZ.balance) * 100) / CLAIMED_VE_JUZ_BN
+                (Number(VE_JUZ.balance) * 100) / CLAIMED_VE_JUZ_BN,
               )}
               %
             </strong>{" "}
@@ -200,7 +202,7 @@ export default function PageRewards() {
         />
       </FixedTopContainer>
 
-      <Tabs asChild value={activeTab} onValueChange={setActiveTab}>
+      <Tabs asChild value={activeTab} onValueChange={setActiveTab as any}>
         <Fragment>
           <div className="bg-gradient-to-b from-juz-orange/7 to-juz-orange/0">
             <nav className="px-5 pb-16">
@@ -294,10 +296,10 @@ export default function PageRewards() {
                     {CLAIMABLE <= 0
                       ? "0.000000000"
                       : CLAIMABLE < 1e-9
-                      ? "<0.000000001"
-                      : CLAIMABLE < 1
-                      ? Number(CLAIMABLE).toFixed(9)
-                      : shortifyDecimals(CLAIMABLE, 3)}
+                        ? "<0.000000001"
+                        : CLAIMABLE < 1
+                          ? Number(CLAIMABLE).toFixed(9)
+                          : shortifyDecimals(CLAIMABLE, 3)}
                   </p>
                   <button
                     onClick={
@@ -328,21 +330,45 @@ export default function PageRewards() {
               <h2 className="font-medium text-xl">Lemon Drops</h2>
 
               <div className="flex justify-between items-start gap-7">
-                <p className="mt-2 text-sm max-w-xs">
-                  {t.rich("explainers.drops", {
-                    strong: (children) => (
-                      <strong className="font-medium">{children}</strong>
-                    ),
-                  })}
+                <p className="mt-2 text-sm max-w-[18rem]">
+                  {t("explainers.drops")}
                 </p>
-
-                <figure className="w-32 -mt-3 shrink-0">
+                <figure className="w-28 -mt-3 shrink-0">
                   <Image placeholder="blur" alt="" src={asset_frog} />
                 </figure>
               </div>
 
-              <div className="mt-14 border border-dashed border-black/20 rounded-2xl p-4 text-center text-sm">
-                {t("comingSoon")}
+              <div className="mt-8 space-y-3">
+                {DROPS.map((drop, index) => (
+                  <a
+                    key={`drop-item-${index}`}
+                    href={drop.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block p-2 bg-white rounded-2xl border-3 border-black shadow-3d-bottom hover:shadow-3d-xl transition-shadow"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="size-16 rounded-lg overflow-hidden border-3 border-black shrink-0 bg-gray-100">
+                        <img
+                          alt=""
+                          src={drop.logoImage}
+                          className="size-full object-cover"
+                        />
+                      </div>
+
+                      <div className="grow -space-y-0.5">
+                        <h3 className="font-semibold text-lg">{drop.name}</h3>
+                        <p className="text-sm text-black/60">
+                          {drop.rewardDescription}
+                        </p>
+                      </div>
+
+                      <div className="h-16 p-2">
+                        <FaExternalLinkAlt className="text-base" />
+                      </div>
+                    </div>
+                  </a>
+                ))}
               </div>
             </div>
 
