@@ -7,6 +7,13 @@ export const DROPS = [
   },
 
   {
+    name: "ANI Ads",
+    logoImage: "/drops/ani.png",
+    rewardDescription: "Free USDC",
+    url: "https://world.org/mini-app?app_id=app_41a476ae3a937afc40b5100d5de02e3a&path=%2Finvite%3Fcode%3D0x4c46f6d2314a41915324af999685ac447cbb79d9",
+  },
+
+  {
     name: "Retro Boy",
     logoImage: "/drops/retro-boy.png",
     rewardDescription: "Game NFT",
@@ -14,10 +21,24 @@ export const DROPS = [
   },
 
   {
+    name: "Holdstation",
+    logoImage: "/drops/holdstation.png",
+    rewardDescription: "Airdrop (Partner)",
+    url: "https://world.org/mini-app?app_id=app_0d4b759921490adc1f2bd569fda9b53a&path=/ref/CqSalH",
+  },
+
+  {
     name: "MADS",
     logoImage: "/drops/mads.png",
     rewardDescription: "Free $MADS",
     url: "https://world.org/mini-app?app_id=app_975b833611f09e3ca74dc92ca9a2ff1e&path=%2F%3FreferralCode%3D8d5b3f02&open_out_of_window",
+  },
+
+  {
+    name: "X3X Games",
+    logoImage: "/drops/x3x.png",
+    rewardDescription: "Airdrop",
+    url: "https://worldcoin.org/mini-app?app_id=app_8fa94e7384f9634e6797d6fe132fe35a&path=/?ref=1BD440674",
   },
 
   {
