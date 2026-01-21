@@ -1,6 +1,6 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, type EasingDefinition } from "framer-motion"
 import { cloneElement, isValidElement, Children } from "react"
 
 const breakVariants = {
@@ -13,7 +13,7 @@ const breakVariants = {
     transition: {
       duration: 0.6,
       delay: i * 0.05,
-      ease: "easeOut",
+      ease: "easeOut" as EasingDefinition,
     },
   }),
 }

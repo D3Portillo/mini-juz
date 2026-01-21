@@ -64,7 +64,7 @@ export default function ModalQuests({
     {} as {
       quest?: keyof typeof quests.claimedTimestamps
       gamesWonSnapshot?: number
-    }
+    },
   )
 
   const { playSound } = useAudioMachine(["slot", "win", "success"])
@@ -136,12 +136,12 @@ export default function ModalQuests({
   }
 
   const isAllQuestsClaimed = [isTrivia2GamesClaimed, isDailyGiftClaimed].every(
-    Boolean
+    Boolean,
   )
 
   const questRewards = useMemo(
     () => shuffleArray(REWARDS),
-    [showClaimingState.quest, open]
+    [showClaimingState.quest, open],
   )
 
   const currentReward = questRewards[brokeItemIndex]
@@ -283,11 +283,11 @@ export default function ModalQuests({
                           key={`tap-item-${index}`}
                           className={cn(
                             isBroken ? "bg-white" : "bg-juz-orange",
-                            "size-4 rounded-full border-2 border-black"
+                            "size-4 rounded-full border-2 border-black",
                           )}
                         />
                       )
-                    }
+                    },
                   )}
                 </nav>
 
@@ -361,8 +361,8 @@ export default function ModalQuests({
                     {isTrivia2GamesClaimed
                       ? t("states.claimed")
                       : gamesWon >= 2
-                      ? t("states.active")
-                      : t("states.locked")}
+                        ? t("states.active")
+                        : t("states.locked")}
                   </LemonButton>
                 </div>
               </section>
