@@ -37,4 +37,40 @@ export const CHANGELOG: Record<
       },
     ],
   },
+  "0.1.2": {
+    date: "JAN 22 2025",
+    changes: [
+      {
+        type: "FIX",
+        description: {
+          en: "[PLAY] Fixed trivia game freezing issue on some devices.",
+          es: "[PLAY] Se corrigió un problema que hacía que la trivia se congelara en algunos dispositivos.",
+        },
+      },
+
+      {
+        type: "FEATURE",
+        description: {
+          en: "[DROPS] Earn rewards from community and partner drops.",
+          es: "[DROPS] Gana recompensas en mini apps de la comunidad y partners.",
+        },
+      },
+
+      {
+        type: "FEATURE",
+        description: {
+          en: "Added new quest: Trivia Master.",
+          es: "Se agregó una nueva misión: Trivia Master.",
+        },
+      },
+
+      {
+        type: "IMPROVEMENT",
+        description: {
+          en: "Improved quest reward distribution logic.",
+          es: "Mejorada la lógica de distribución de recompensas de misiones.",
+        },
+      },
+    ],
+  },
 }
