@@ -2,7 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
+html {
+  background-color: white;
+  overflow: hidden;
+}
+
 body {
   background-color: white;
   overflow: hidden;
@@ -10,7 +14,12 @@ body {
 
 * {
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: none;
+}
+
+main[class*="overflow"] {
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 :root {
