@@ -300,10 +300,23 @@ export default function ModalQuests({
               </BreakEffect>
 
               <nav className="flex items-center">
-                <div className="text-7xl animate-zelda-pulse">
+                <div
+                  className={cn(
+                    "text-7xl",
+                    isClaimScreen
+                      ? "animate-[reward-grow_1.2s_ease-out]"
+                      : "animate-zelda-pulse",
+                  )}
+                >
                   {currentReward.emoji}
                 </div>
-                <span className="text-3xl font-bold">
+                <span
+                  className={cn(
+                    "text-3xl font-bold",
+                    isClaimScreen &&
+                      "animate-[reward-grow_1.2s_ease-out_0.2s_both]",
+                  )}
+                >
                   x{currentReward.amount}
                 </span>
               </nav>
