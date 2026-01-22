@@ -230,6 +230,7 @@
       "claimed": "Reclamada ✔️",
       "active": "Reclamar 🎉"
     },
+    "genericError": "Oops. Algo malo ocurrió",
     "success": {
       "claimedMessage": "¡Recompensa reclamada con éxito! 🎉"
     },
@@ -239,8 +240,15 @@
         "claimed": "Ya reclamaste tu regalo diario"
       }
     },
-    "triviaWinner2": {
-      "explainer": "Gana la trivia <strong>{gamesWon, plural, =1 {una vez más} other {2 veces}}</strong> para desbloquear esta recompensa",
+    "triviaWinner1": {
+      "explainer": "Gana la trivia <strong>{gamesWon, plural, =0 {al menos una vez} other {una vez}}</strong> para desbloquear esta recompensa",
+      "error": {
+        "claimed": "Ya reclamaste esta recompensa",
+        "locked": "Juega la trivia para desbloquear"
+      }
+    },
+    "triviaMaster3": {
+      "explainer": "Gana la trivia <strong>{gamesWon, plural, =0 {al menos 3 veces} =1 {2 veces más} =2 {una vez más} other {3 veces}}</strong> para desbloquear esta recompensa",
       "error": {
         "claimed": "Ya reclamaste esta recompensa",
         "locked": "Juega la trivia para desbloquear"

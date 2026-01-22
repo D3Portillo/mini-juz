@@ -37,7 +37,8 @@ type QuestTime = number | null
 const atomQuests = atomWithStorage("juz.mini.quests", {
   claimedTimestamps: {
     daily: null as QuestTime,
-    questTrivia2Games: null as QuestTime,
+    questTrivia1Game: null as QuestTime,
+    questTrivia3Games: null as QuestTime,
   },
 })
 
@@ -96,13 +97,19 @@ export default function ModalQuests({
       ? false
       : isSameDay(new Date(claimedTimestamps.daily), new Date())
 
-  const isTrivia2GamesClaimed =
-    claimedTimestamps.questTrivia2Games === null
+  const isTrivia1GameClaimed =
+    claimedTimestamps.questTrivia1Game === null
       ? false
-      : isSameDay(new Date(claimedTimestamps.questTrivia2Games), new Date())
+      : isSameDay(new Date(claimedTimestamps.questTrivia1Game), new Date())
+
+  const isTrivia3GamesClaimed =
+    claimedTimestamps.questTrivia3Games === null
+      ? false
+      : isSameDay(new Date(claimedTimestamps.questTrivia3Games), new Date())
 
   function handleClaimFreeGift() {
     if (!address) return signIn()
+
     if (isDailyGiftClaimed) {
       return toast.error({
         title: t("freeDaily.error.claimed"),
@@ -114,30 +121,53 @@ export default function ModalQuests({
     })
   }
 
-  function handleClaimTrivia2Games() {
-    if (gamesWon < 2) {
+  function handleClaimTrivia1Game() {
+    if (gamesWon < 1) {
       return toast.error({
-        title: t("triviaWinner2.error.locked"),
+        title: t("triviaWinner1.error.locked"),
       })
     }
 
     if (!address) return signIn()
 
-    if (isTrivia2GamesClaimed) {
+    if (isTrivia1GameClaimed) {
       return toast.error({
-        title: t("triviaWinner2.error.claimed"),
+        title: t("triviaWinner1.error.claimed"),
       })
     }
 
     setShowClaimingState({
-      quest: "questTrivia2Games",
+      quest: "questTrivia1Game",
       gamesWonSnapshot: gamesWon, // Store snapshot to prevent race conditions
     })
   }
 
-  const isAllQuestsClaimed = [isTrivia2GamesClaimed, isDailyGiftClaimed].every(
-    Boolean,
-  )
+  function handleClaimTrivia3Games() {
+    if (gamesWon < 3) {
+      return toast.error({
+        title: t("triviaMaster3.error.locked"),
+      })
+    }
+
+    if (!address) return signIn()
+
+    if (isTrivia3GamesClaimed) {
+      return toast.error({
+        title: t("triviaMaster3.error.claimed"),
+      })
+    }
+
+    setShowClaimingState({
+      quest: "questTrivia3Games",
+      gamesWonSnapshot: gamesWon, // Store snapshot to prevent race conditions
+    })
+  }
+
+  const isAllQuestsClaimed = [
+    isDailyGiftClaimed,
+    isTrivia1GameClaimed,
+    isTrivia3GamesClaimed,
+  ].every(Boolean)
 
   const questRewards = useMemo(
     () => shuffleArray(REWARDS),
@@ -148,7 +178,7 @@ export default function ModalQuests({
   const prevReward = questRewards[brokeItemIndex - 1] || null
   const isClaimScreen = brokeItemIndex >= TAPS_TO_BROKE_ITEM
 
-  function handleClaimOrBreakItem() {
+  async function handleClaimOrBreakItem() {
     if (!address) return signIn()
     if (isClaimScreen) {
       // Prevent claiming until the item is allowed to be claimed (short reveal)
@@ -160,55 +190,65 @@ export default function ModalQuests({
 
       const { quest } = showClaimingState
 
-      // We mark quest as claimed FIRST to prevent double claims on crash
-      if (quest) {
-        setQuests({
-          claimedTimestamps: {
-            ...claimedTimestamps,
-            [quest]: Date.now(),
-          },
+      try {
+        // Distribute rewards FIRST before marking as claimed
+        if (currentReward.type === "juz") {
+          // Distribute JUZ tokens - this is async and can fail
+          await incrPlayerJUZEarned(address, currentReward.amount)
+        } else if (currentReward.type === "shield") {
+          setState((prev) => ({
+            ...prev,
+            shields: {
+              amount: prev.shields.amount + currentReward.amount,
+            },
+          }))
+        } else if (currentReward.type === "broom") {
+          setState((prev) => ({
+            ...prev,
+            broom: {
+              amount: prev.broom.amount + currentReward.amount,
+            },
+          }))
+        } else if (currentReward.type === "heart") {
+          setHearts((current) => current + currentReward.amount)
+        }
+
+        // Only mark quest as claimed AFTER successful reward distribution
+        if (quest) {
+          setQuests({
+            claimedTimestamps: {
+              ...claimedTimestamps,
+              [quest]: Date.now(),
+            },
+          })
+        }
+
+        toast.success({
+          title: t("success.claimedMessage"),
         })
-      }
+        playSound("success")
 
-      // Handle JUZ reward - check sign-in but don't interrupt flow
-      if (currentReward.type === "juz") {
-        // Distribute JUZ tokens
-        incrPlayerJUZEarned(address, currentReward.amount)
-      } else if (currentReward.type === "shield") {
-        setState((prev) => ({
-          ...prev,
-          shields: {
-            amount: prev.shields.amount + currentReward.amount,
-          },
-        }))
-      } else if (currentReward.type === "broom") {
-        setState((prev) => ({
-          ...prev,
-          broom: {
-            amount: prev.broom.amount + currentReward.amount,
-          },
-        }))
-      } else if (currentReward.type === "heart") {
-        setHearts((current) => current + currentReward.amount)
+        // Reset claiming state
+        resetClaimingState()
+      } catch (error) {
+        // If reward distribution fails, don't mark as claimed and show error
+        console.error({ error })
+        toast.error({
+          title: t("genericError"),
+        })
+        setIsClaimInProgress(false)
       }
+    } else {
+      // Increment broken item index to show next reward
+      setBrokeItemIndex((i) => i + 1)
+      playSound("slot")
 
-      toast.success({
-        title: t("success.claimedMessage"),
+      // Send haptic feedback
+      MiniKit.commands.sendHapticFeedback({
+        style: "medium",
+        hapticsType: "impact",
       })
-      playSound("success")
-
-      // Reset claiming state
-      return resetClaimingState()
     }
-    // Increment broken item index to show next reward
-    setBrokeItemIndex((i) => i + 1)
-    playSound("slot")
-
-    // Send haptic feedback
-    MiniKit.commands.sendHapticFeedback({
-      style: "medium",
-      hapticsType: "impact",
-    })
   }
 
   useEffect(() => {
@@ -348,19 +388,47 @@ export default function ModalQuests({
                   <h2 className="font-medium text-xl">Trivia Winner</h2>
 
                   <p className="text-sm opacity-70">
-                    {t.rich("triviaWinner2.explainer", {
+                    {t.rich("triviaWinner1.explainer", {
                       gamesWon: showClaimingState.gamesWonSnapshot ?? gamesWon,
                       strong: (chunks) => <strong>{chunks}</strong>,
                     })}
                   </p>
 
                   <LemonButton
-                    onClick={handleClaimTrivia2Games}
+                    onClick={handleClaimTrivia1Game}
                     className="py-3 whitespace-nowrap rounded-full text-base w-full mt-5"
                   >
-                    {isTrivia2GamesClaimed
+                    {isTrivia1GameClaimed
                       ? t("states.claimed")
-                      : gamesWon >= 2
+                      : gamesWon >= 1
+                        ? t("states.active")
+                        : t("states.locked")}
+                  </LemonButton>
+                </div>
+              </section>
+
+              <section className="p-4 flex gap-6 rounded-2xl border-2 border-black shadow-3d-lg">
+                <figure className="border-2 flex items-center justify-center overflow-hidden shrink-0 size-24 border-black shadow-3d bg-gradient-to-tr from-juz-green-lime to-juz-green-ish rounded-full">
+                  <div className="text-6xl">😎</div>
+                </figure>
+
+                <div className="w-full">
+                  <h2 className="font-medium text-xl">Trivia Master</h2>
+
+                  <p className="text-sm opacity-70">
+                    {t.rich("triviaMaster3.explainer", {
+                      gamesWon: showClaimingState.gamesWonSnapshot ?? gamesWon,
+                      strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                  </p>
+
+                  <LemonButton
+                    onClick={handleClaimTrivia3Games}
+                    className="py-3 whitespace-nowrap rounded-full text-base w-full mt-5"
+                  >
+                    {isTrivia3GamesClaimed
+                      ? t("states.claimed")
+                      : gamesWon >= 3
                         ? t("states.active")
                         : t("states.locked")}
                   </LemonButton>

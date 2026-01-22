@@ -230,6 +230,7 @@
       "claimed": "Claimed ✔️",
       "active": "Claim rewards"
     },
+    "genericError": "Oops. Something wrong ocurred",
     "success": {
       "claimedMessage": "Rewards claimed successfully! 🎉"
     },
@@ -239,8 +240,15 @@
         "claimed": "Free gift already claimed today"
       }
     },
-    "triviaWinner2": {
-      "explainer": "Win the trivia game <strong>{gamesWon, plural, =1 {one more time} other {at least 2 times}}</strong> to unlock this quest",
+    "triviaWinner1": {
+      "explainer": "Win the trivia game <strong>{gamesWon, plural, =0 {at least once} other {one time}}</strong> to unlock this quest",
+      "error": {
+        "claimed": "Quest already claimed today",
+        "locked": "Play the trivia to unlock this quest"
+      }
+    },
+    "triviaMaster3": {
+      "explainer": "Win the trivia game <strong>{gamesWon, plural, =0 {at least 3 times} =1 {2 more times} =2 {one more time} other {3 times}}</strong> to unlock this quest",
       "error": {
         "claimed": "Quest already claimed today",
         "locked": "Play the trivia to unlock this quest"
