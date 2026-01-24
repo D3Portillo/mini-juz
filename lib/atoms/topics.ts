@@ -63,14 +63,13 @@ export const useUserTopics = () => {
   useEffect(() => {
     clearTimeout(timerForLocaleUpdate)
     // Fetch new topics when changing language
-    if (locale != topicsLocale) {
+    if (locale !== topicsLocale && topicsLocale !== "") {
       timerForLocaleUpdate = setTimeout(() => {
         setData({
           locale,
-          lastUpdated: Date.now(),
+          lastUpdated: 0, // Reset to trigger fetch in other effect
           topics: [], // Force loading state in Spinning Wheel
         })
-        fetchTopics()
       }, 200)
     }
   }, [locale, topicsLocale])
@@ -78,7 +77,10 @@ export const useUserTopics = () => {
   useEffect(() => {
     clearTimeout(timer)
     // User topics are updated every 3 days to reduce API calls
-    if (lastUpdated > Date.now() + ONE_DAY_IN_MS * 3 || lastUpdated === 0) {
+    const isStale =
+      Date.now() - lastUpdated > ONE_DAY_IN_MS * 3 || lastUpdated === 0
+
+    if (isStale) {
       timer = setTimeout(fetchTopics, 200)
       // 250ms delay to avoid too many requests
     }
