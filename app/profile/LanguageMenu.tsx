@@ -21,25 +21,21 @@ export default function LanguageMenu({ trigger }: { trigger: JSX.Element }) {
     <MainSelect
       value="NONE" // Dummy value to trigger the select
       showSelectedItem={false}
-      onValueChange={(value) => {
-        // EN->en, ES->es
-        setLocale(value.toLowerCase() as any)
-      }}
-      options={
-        locale === "es"
-          ? [
-              {
-                label: t("english"),
-                value: "EN",
-              },
-            ]
-          : [
-              {
-                label: t("spanish"),
-                value: "ES",
-              },
-            ]
-      }
+      onValueChange={setLocale as any}
+      options={[
+        {
+          label: t("english"),
+          value: "en",
+        },
+        {
+          label: t("spanish"),
+          value: "es",
+        },
+        {
+          label: t("portuguese"),
+          value: "pt",
+        },
+      ].filter((option) => option.value !== locale)}
     >
       {trigger}
     </MainSelect>

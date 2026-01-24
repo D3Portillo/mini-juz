@@ -1,5 +1,6 @@
 "use server"
 
+import type { TopicLanguage } from "@/actions/words"
 import { getModelForTask } from "@/lib/openai"
 import { generateObject } from "ai"
 import { z } from "zod"
@@ -10,15 +11,15 @@ const QuestionListSchema = z.object({
     z.object({
       question: z.string(),
       options: z.array(z.string()),
-    })
+    }),
   ),
 })
 
 export const generateQuestionsForTopic = async (
-  lang: "English" | "Spanish",
+  lang: TopicLanguage,
   topic: string,
   amount: number,
-  history: string[] = []
+  history: string[] = [],
 ) => {
   const { object } = await generateObject({
     model: getModelForTask(),

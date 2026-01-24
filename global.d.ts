@@ -3,7 +3,7 @@ import { formats } from "@/i18n/request"
 
 import messages from "./messages/en.json"
 
-const locales = ["en", "es"] as const
+const locales = ["en", "es", "pt"] as const
 
 declare module "next-intl" {
   interface AppConfig {

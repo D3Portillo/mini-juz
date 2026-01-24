@@ -8,9 +8,10 @@ const TopicsSchema = z.object({
   topics: z.array(z.string()),
 })
 
+export type TopicLanguage = "English" | "Spanish" | "Portuguese"
 export const generateTopicList = async (
-  lang: "English" | "Spanish",
-  opts?: { omitted?: string[] }
+  lang: TopicLanguage,
+  opts?: { omitted?: string[] },
 ) => {
   const { object } = await generateObject({
     model: getModelForTask(),

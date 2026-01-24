@@ -4,9 +4,9 @@ import { useAtom } from "jotai"
 import { useEffect } from "react"
 import { useLocale } from "next-intl"
 
+import { generateTopicList, type TopicLanguage } from "@/actions/words"
 import { atomWithStorage } from "jotai/utils"
 import { ONE_DAY_IN_MS } from "@/lib/constants"
-import { generateTopicList } from "@/actions/words"
 
 const atomUserTopics = atomWithStorage("juz.atomUserTopics", {
   topics: [] as string[],
@@ -16,6 +16,19 @@ const atomUserTopics = atomWithStorage("juz.atomUserTopics", {
 
 let timer: NodeJS.Timeout | undefined
 let timerForLocaleUpdate: NodeJS.Timeout | undefined
+
+export const formatLocaleToTopicLanguage = (locale: string): TopicLanguage => {
+  switch (locale) {
+    case "es":
+      return "Spanish"
+    case "pt":
+      return "Portuguese"
+    case "en":
+    default:
+      return "English"
+  }
+}
+
 export const useUserTopics = () => {
   const locale = useLocale()
   const [{ lastUpdated, topics = [], locale: topicsLocale }, setData] =
@@ -25,13 +38,13 @@ export const useUserTopics = () => {
     console.debug("Fetching fresh topics")
 
     const newTopics = await generateTopicList(
-      locale === "es" ? "Spanish" : "English",
+      formatLocaleToTopicLanguage(locale),
       {
         omitted: topics.filter(() => {
           // Russian roulette to remove 30% of the topics
           return Math.random() > 0.7
         }),
-      }
+      },
     )
 
     setData({

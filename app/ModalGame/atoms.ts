@@ -9,12 +9,13 @@ import { useAtom } from "jotai"
 import { useLocale } from "next-intl"
 
 import { generateQuestionsForTopic } from "@/actions/questions"
+import { formatLocaleToTopicLanguage } from "@/lib/atoms/topics"
 
 const familyAtomHistory = atomFamily((topic: string | null) =>
   atomWithStorage(
     `juz.topic.history.${topic ? topic.toLowerCase() : "VOID"}`,
-    [] as string[]
-  )
+    [] as string[],
+  ),
 )
 
 export const useQuestionHistory = (topic: string | null) => {
@@ -41,7 +42,7 @@ export const useGameQuestions = (
   config: {
     topic?: string
     questionCount: number
-  }
+  },
 ) => {
   const topic = config?.topic
   const locale = useLocale()
@@ -54,12 +55,12 @@ export const useGameQuestions = (
     > => {
       if (!topic || !ready) return {} as any
       return await generateQuestionsForTopic(
-        locale === "es" ? "Spanish" : "English",
+        formatLocaleToTopicLanguage(locale),
         topic,
         config.questionCount,
-        questionHistory
+        questionHistory,
       )
-    }
+    },
   )
 
   return {

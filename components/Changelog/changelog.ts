@@ -19,6 +19,7 @@ export const CHANGELOG: Record<
         description: {
           en: "[QUESTS] Solve issues with no-reward states and edge cases.",
           es: "[QUESTS] Se resolvieron problemas con recompensas no otorgadas.",
+          pt: " [QUESTS] Resolvidos problemas com estados sem recompensas.",
         },
       },
       {
@@ -26,6 +27,7 @@ export const CHANGELOG: Record<
         description: {
           en: "[APP] Fixed minor issues. Performance improvements.",
           es: "[APP] Se corrigieron errores menores. Mejoras de rendimiento.",
+          pt: "[APP] Corrigidos problemas menores. Melhorias de desempenho.",
         },
       },
       {
@@ -33,6 +35,7 @@ export const CHANGELOG: Record<
         description: {
           en: "Extended invites reward count",
           es: "Se incrementó el total de recompensas por invitación.",
+          pt: "Contagem de recompensas por convite estendida",
         },
       },
     ],
@@ -45,6 +48,7 @@ export const CHANGELOG: Record<
         description: {
           en: "[PLAY] Fixed trivia game freezing issue on some devices.",
           es: "[PLAY] Se corrigió un problema que hacía que la trivia se congelara en algunos dispositivos.",
+          pt: "[PLAY] Corrigido problema de congelamento do jogo de trivia em alguns dispositivos.",
         },
       },
 
@@ -53,6 +57,7 @@ export const CHANGELOG: Record<
         description: {
           en: "[DROPS] Earn rewards from community and partner drops.",
           es: "[DROPS] Gana recompensas en mini apps de la comunidad y partners.",
+          pt: "[DROPS] Ganhe recompensas em mini apps da comunidade e parceiros.",
         },
       },
 
@@ -61,6 +66,7 @@ export const CHANGELOG: Record<
         description: {
           en: "Added new quest: Trivia Master.",
           es: "Se agregó una nueva misión: Trivia Master.",
+          pt: "Nova missão adicionada: Mestre da Trivia.",
         },
       },
 
@@ -69,6 +75,7 @@ export const CHANGELOG: Record<
         description: {
           en: "Improved quest reward distribution logic.",
           es: "Mejorada la lógica de distribución de recompensas de misiones.",
+          pt: "Lógica de distribuição de recompensas de missões aprimorada.",
         },
       },
     ],

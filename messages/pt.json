@@ -1,0 +1,260 @@
+{
+  "global": {
+    "not-connected": "Não conectado",
+    "connected": "Conectado",
+    "english": "English",
+    "spanish": "Español",
+    "portuguese": "Português",
+    "friend": "Amigo",
+    "locked": "Bloqueado",
+    "gotIt": "Entendido",
+    "letsGo": "Vamos",
+    "connectWallet": "Conectar carteira"
+  },
+  "HomeNavigation": {
+    "disconnect": "Desconectar",
+    "manageProfile": "Gerenciar perfil"
+  },
+  "Home": {
+    "play": "Jogar",
+    "claimNow": "Resgatar",
+    "limeBoostTemplate": "Por tempo limitado, você pode ganhar <multiplier>vezes</multiplier> mais JUZ no jogo de trivia e convidando amigos!",
+    "errors": {
+      "noHeartsLeft": "😢 Sem corações para jogar",
+      "connect": "Conecte sua carteira para continuar"
+    },
+    "success": {
+      "juzAvailable": "🍋 Token JUZ disponível",
+      "juzEarned": "Demais! {amount} JUZ ganhos"
+    },
+    "dailyRefill": {
+      "title": "Recarga diária de corações",
+      "content": "Receba uma recarga completa de corações a cada 24 horas. Chegue ao topo e ganhe recompensas por ser o jogador mais afiado do <strong>World!</strong>"
+    },
+    "howToPlay": {
+      "title": "Como jogar?",
+      "content": "Gire a roleta, receba temas diários aleatórios, jogue trivia e ganhe JUZ!"
+    },
+    "timeToRefill": "Tempo para recarregar",
+    "refillNow": "Recarregar agora"
+  },
+  "Profile": {
+    "title": "Gerenciar perfil",
+    "gamesPlayed": "Jogos disputados",
+    "gamesWon": "Jogos vencidos",
+    "joinCommunity": "Entrar na comunidade",
+    "support": "Contato com suporte",
+    "totalJUZ": "Saldo total de JUZ",
+    "inviteYourFriends": "Convide amigos",
+    "earnJuz": "Ganhe JUZ",
+    "errors": {
+      "fileTooBig": "Arquivo maior que 2MB"
+    }
+  },
+  "ProfileMenu": {
+    "clipboardCopied": "Copiado para a área de transferência",
+    "disconnect": "Desconectar",
+    "viewInWorldscan": "Ver no Worldscan",
+    "copyAddress": "Copiar endereço",
+    "errors": {
+      "noAddress": "Nenhum endereço encontrado"
+    }
+  },
+  "BottomNavigation": {
+    "play": "Jogar",
+    "profile": "Perfil",
+    "market": "Mercado",
+    "rewards": "Recompensas"
+  },
+  "Market": {
+    "title": "Melhore seu perfil",
+    "errors": {
+      "maxHearts": "Limite de corações atingido",
+      "noBalance": "Saldo de JUZ insuficiente"
+    },
+    "success": {
+      "purchagedHearts": "Pacote de corações comprado",
+      "juzBought": "Vida longa ao Mestre do JUZ"
+    },
+    "templates": {
+      "buyJUZ": "<amount></amount> para o seu saldo",
+      "confirmBuyJUZ": "Confirme para comprar {amount} JUZ no Mini App JUZ",
+      "heartPointsExplainer": "Compre um pacote com {amount} corações. Eles serão adicionados ao seu total atual.",
+      "buyHearts": "Confirme a compra de um pacote com {amount} corações no Mini App JUZ"
+    },
+    "exchangeFor": "Trocar por",
+    "buyFor": "Comprar por"
+  },
+  "JUZDistributionModal": {
+    "title": "Distribuição de JUZ",
+    "claimTokens": "Resgatar tokens",
+    "claimAvailable": "Você tem tokens JUZ para resgatar",
+    "errors": {
+      "waitabit": "Espere um pouco antes de resgatar novamente"
+    },
+    "success": {
+      "claimed": "Uhul. {amount} JUZ resgatados!"
+    },
+    "explainers": {
+      "points": "Trivia ganha + {isIOS, select, true {outros saldos} other {Tokens ERC20}}",
+      "locked": "Saldo bloqueado em pools",
+      "earned": "Recompensas obtidas ao bloquear JUZ"
+    }
+  },
+  "LeaderBoard": {
+    "you": "Você",
+    "totalJUZ": "JUZ total",
+    "user": "Jogador",
+    "updated": "Atualizado",
+    "whaleMessage": "Este jogador acumulou mais de <amount></amount> do supply total de JUZ.",
+    "refreshMessage": "O placar pode demorar a atualizar. Obrigado pela paciência!"
+  },
+  "DialogHearts": {
+    "title": "Gerenciar corações",
+    "explainers": {
+      "full": "Corações são usados para jogar trivia. Ao errar uma pergunta, você perde um coração.",
+      "regular": "Os corações recarregam de graça a cada 24 horas. Ou faça uma recarga instantânea com WLD."
+    },
+    "success": {
+      "refilled": "Uhul! Corações recarregados"
+    },
+    "buyRefillMessage": "Confirme para recarregar um total de {hearts} corações no Mini App JUZ",
+    "claimFree": "Recarregar grátis",
+    "refillNow": "Recarregar agora",
+    "heartCount": "Seus corações ({hearts})"
+  },
+  "ModalGame": {
+    "retry": "Tentar novamente",
+    "continue": "Continuar",
+    "progress": "Progresso",
+    "timeLeft": "Tempo restante",
+    "generalKnowledge": "Conhecimentos gerais",
+    "errorText": "Algo deu errado",
+    "loadingText": "Segura firme! Estamos preparando a trivia para você..."
+  },
+  "RewardPools": {
+    "claimableFees": "Taxas disponíveis",
+    "description": "Deposite ativos. Ganhe recompensas. Faça yield farming com JUZ.",
+    "explainers": {
+      "whatArePools": {
+        "title": "O que são as Reward Pools?",
+        "contents": {
+          "size": "2",
+          "0": "As JUZ Pools são cofres inteligentes com estratégias que compõem recompensas e criam posições de liquidez em pools incentivados para extrair o máximo rendimento.",
+          "1": "Qualquer pessoa pode ganhar parte das taxas chamando a função de compound e recebendo uma pequena fração dos fees."
+        }
+      }
+    }
+  },
+  "Rewards": {
+    "title": "Impulso de recompensas",
+    "unlocks": "Desbloqueios",
+    "getJUZ": "Obter JUZ",
+    "claim": "Reclamar",
+    "earningVeJUZ": "Ganhando veJUZ",
+    "aprBreakdown": "Detalhe do APR",
+    "errors": {
+      "balanceToLow": "Saldo muito baixo",
+      "noClaims": "Nada para reclamar"
+    },
+    "success": {
+      "claimed": "veJUZ reclamado!",
+      "juzRecovered": "JUZ recuperado!"
+    },
+    "juzAvailable": "JUZ disponível",
+    "unlocked": "Desbloqueado 🔓",
+    "comingSoon": "Em breve ⚡",
+    "explainers": {
+      "apr": "APR calculado pelo supply atual de veJUZ e o montante de JUZ bloqueado no pool. Esse valor pode variar ao longo do tempo.",
+      "locking": "Ganhe <trigger>veJUZ</trigger> ao bloquear JUZ por um período. No futuro, veJUZ servirá para governança, acesso a pools de recompensa e airdrops.",
+      "drops": "Ganhe recompensas únicas de outras comunidades por fazer parte do ecossistema JUZ. Novos drops chegando!"
+    }
+  },
+  "JuzLock": {
+    "title": "Bloqueie JUZ. Ganhe veJUZ 🍋",
+    "confirmLock": "Confirmar e bloquear",
+    "lockAmount": "Quantidade",
+    "lockDuration": "Duração",
+    "errors": {
+      "validAmount": "Insira uma quantidade válida"
+    },
+    "byLocking": "Ao bloquear",
+    "for": "por",
+    "youWillReceiveEstimated": "você receberá um estimado de <Estimate></Estimate>",
+    "periods": {
+      "2W": "2 semanas",
+      "1M": "1 mês",
+      "3M": "3 meses",
+      "6M": "6 meses",
+      "1Y": "1 ano"
+    },
+    "explainers": {
+      "veJUZ": {
+        "title": "O que é veJUZ?",
+        "contents": {
+          "size": "2",
+          "0": "Vote-Escrowed JUZ (<strong>veJUZ</strong>) é o token do protocolo obtido ao bloquear JUZ por um período. Quanto maior o tempo, maior o potencial de ganho.",
+          "1": "O <strong>veJUZ</strong> soma ao seu saldo total de JUZ e poderá ser usado para votar, acessar pools e receber recompensas."
+        }
+      }
+    },
+    "success": {
+      "locked": "JUZ bloqueado com sucesso"
+    }
+  },
+  "InviteSentinel": {
+    "title": "🎁 Presente disponível",
+    "claim": "Resgatar 10 JUZ",
+    "success": {
+      "claimed": "JUZ resgatado!"
+    },
+    "errors": {
+      "tooManyGifts": "Presentes demais recebidos",
+      "somethingWentWrong": "Algo deu errado"
+    },
+    "inviteMessage": "<inviting></inviting> enviou um presente para você entrar no mini game de trivia JUZ."
+  },
+  "DialogInvites": {
+    "title": "Convide seus amigos",
+    "copyLink": "Copiar link",
+    "totalInvited": "Total de convidados",
+    "description": "Você e seu amigo recebem <amount></amount> cada quando o convite é aceito e resgatado. E até <verifiedAmount></verifiedAmount> para verificados!"
+  },
+  "ModalQuests": {
+    "title": "Missões diárias",
+    "tapScreen": {
+      "tapToClaim": "Toque para resgatar sua recompensa 🎉",
+      "tapToContinue": "Toque na tela para continuar"
+    },
+    "states": {
+      "locked": "Bloqueada 🔒",
+      "claimed": "Resgatada ✔️",
+      "active": "Resgatar recompensa"
+    },
+    "genericError": "Ops. Algo deu errado",
+    "success": {
+      "claimedMessage": "Recompensas resgatadas com sucesso! 🎉"
+    },
+    "freeDaily": {
+      "explainer": "Volte <strong>todos os dias</strong> para garantir seu presente grátis!",
+      "error": {
+        "claimed": "Presente diário já resgatado"
+      }
+    },
+    "triviaWinner1": {
+      "explainer": "Ganhe a trivia <strong>{gamesWon, plural, =0 {pelo menos uma vez} other {uma vez}}</strong> para desbloquear esta missão",
+      "error": {
+        "claimed": "Missão já resgatada hoje",
+        "locked": "Jogue a trivia para desbloquear"
+      }
+    },
+    "triviaMaster3": {
+      "explainer": "Ganhe a trivia <strong>{gamesWon, plural, =0 {pelo menos 3 vezes} =1 {mais 2 vezes} =2 {mais 1 vez} other {3 vezes}}</strong> para desbloquear esta missão",
+      "error": {
+        "claimed": "Missão já resgatada hoje",
+        "locked": "Jogue a trivia para desbloquear"
+      }
+    },
+    "allClaimed": "Todas as missões concluídas. <br />Volte amanhã para mais!"
+  }
+}
