@@ -23,6 +23,8 @@ export const formatLocaleToTopicLanguage = (locale: string): TopicLanguage => {
       return "Spanish"
     case "pt":
       return "Portuguese"
+    case "fil":
+      return "Filipino"
     case "en":
     default:
       return "English"

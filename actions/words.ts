@@ -8,7 +8,7 @@ const TopicsSchema = z.object({
   topics: z.array(z.string()),
 })
 
-export type TopicLanguage = "English" | "Spanish" | "Portuguese"
+export type TopicLanguage = "English" | "Spanish" | "Portuguese" | "Filipino"
 export const generateTopicList = async (
   lang: TopicLanguage,
   opts?: { omitted?: string[] },

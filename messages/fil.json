@@ -1,0 +1,261 @@
+{
+  "global": {
+    "not-connected": "Hindi nakakonekta",
+    "connected": "Nakakonekta",
+    "english": "English",
+    "spanish": "Español",
+    "portuguese": "Português",
+    "filipino": "Filipino",
+    "friend": "Kaibigan",
+    "locked": "Naka-lock",
+    "gotIt": "Sige!",
+    "letsGo": "Tara na",
+    "connectWallet": "Ikonekta ang wallet"
+  },
+  "HomeNavigation": {
+    "disconnect": "I-disconnect",
+    "manageProfile": "Pamahalaan ang profile"
+  },
+  "Home": {
+    "play": "Maglaro",
+    "claimNow": "I-claim ngayon",
+    "limeBoostTemplate": "Sa limitadong oras, maaari kang kumita ng <multiplier>beses</multiplier> pang JUZ sa trivia game at sa pag-imbita ng mga kaibigan!",
+    "errors": {
+      "noHeartsLeft": "😢 Wala ka nang puso para maglaro",
+      "connect": "Ikonekta ang iyong wallet para magpatuloy"
+    },
+    "success": {
+      "juzAvailable": "🍋 May available na JUZ Token",
+      "juzEarned": "Ang galing! {amount} JUZ ang napanalunan"
+    },
+    "dailyRefill": {
+      "title": "Araw-araw na refill ng puso",
+      "content": "Kumpletong refill kada 24 oras. Umangat sa leaderboard at kumita ng rewards bilang pinakamatalinong manlalaro sa <strong>World!</strong>"
+    },
+    "howToPlay": {
+      "title": "Paano maglaro?",
+      "content": "Paikutin ang roleta, tumanggap ng araw-araw na paksa, maglaro ng trivia at kumita ng JUZ!"
+    },
+    "timeToRefill": "Oras bago mag-refill",
+    "refillNow": "Mag-refill ngayon"
+  },
+  "Profile": {
+    "title": "Pamahalaan ang Profile",
+    "gamesPlayed": "Mga larong nalaro",
+    "gamesWon": "Mga larong napanalunan",
+    "joinCommunity": "Sumali sa Komunidad",
+    "support": "Kontakin ang suporta",
+    "totalJUZ": "Kabuuang balanse ng JUZ",
+    "inviteYourFriends": "Imbitahan ang mga kaibigan",
+    "earnJuz": "Kumita ng JUZ",
+    "errors": {
+      "fileTooBig": "Lampas 2MB ang file"
+    }
+  },
+  "ProfileMenu": {
+    "clipboardCopied": "Nakopya sa clipboard",
+    "disconnect": "I-disconnect",
+    "viewInWorldscan": "Tingnan sa Worldscan",
+    "copyAddress": "Kopyahin ang address",
+    "errors": {
+      "noAddress": "Walang nakitang address"
+    }
+  },
+  "BottomNavigation": {
+    "play": "Maglaro",
+    "profile": "Profile",
+    "market": "Merkado",
+    "rewards": "Mga gantimpala"
+  },
+  "Market": {
+    "title": "I-level up ang profile",
+    "errors": {
+      "maxHearts": "Naabot na ang limitasyon ng puso",
+      "noBalance": "Kulang ang balanse ng JUZ"
+    },
+    "success": {
+      "purchagedHearts": "Nabili ang pack ng puso",
+      "juzBought": "Mabuhay ang Master ng JUZ"
+    },
+    "templates": {
+      "buyJUZ": "<amount></amount> sa iyong balanse",
+      "confirmBuyJUZ": "Kumpirmahin ang pagbili ng {amount} JUZ sa JUZ Mini App",
+      "heartPointsExplainer": "Bumili ng pack na may {amount} puso. Idadagdag ang mga ito sa kasalukuyan mong puntos.",
+      "buyHearts": "Kumpirmahin ang pagbili ng pack na {amount} puso sa JUZ Mini App"
+    },
+    "exchangeFor": "Ipalit para sa",
+    "buyFor": "Bilhin sa"
+  },
+  "JUZDistributionModal": {
+    "title": "Pagkakahati ng JUZ",
+    "claimTokens": "I-claim ang mga token",
+    "claimAvailable": "May mga token ng JUZ kang puwedeng i-claim",
+    "errors": {
+      "waitabit": "Maghintay sandali bago muling mag-claim"
+    },
+    "success": {
+      "claimed": "Yehey. {amount} JUZ na-claim!"
+    },
+    "explainers": {
+      "points": "Trivia na napanalunan + {isIOS, select, true {ibang hawak} other {ERC20 Tokens}}",
+      "locked": "Balanseng naka-lock sa pools",
+      "earned": "Mga gantimpalang nakuha sa pag-lock ng JUZ"
+    }
+  },
+  "LeaderBoard": {
+    "you": "Ikaw",
+    "totalJUZ": "Kabuuang JUZ",
+    "user": "Manlalaro",
+    "updated": "Na-update",
+    "whaleMessage": "Ang player na ito ay may higit sa <amount></amount> ng kabuuang supply ng JUZ.",
+    "refreshMessage": "Maaaring magtagal bago mag-refresh ang leaderboard. Salamat sa pasensya!"
+  },
+  "DialogHearts": {
+    "title": "Pamahalaan ang mga puso",
+    "explainers": {
+      "full": "Ginagamit ang mga puso para sa trivia. Kapag nagkamali ka, nababawas ang isang puso.",
+      "regular": "Libreng nagre-refill ang mga puso tuwing 24 oras. Maaari ka ring mag-instant refill gamit ang WLD."
+    },
+    "success": {
+      "refilled": "Yehey! Napunuan ang mga puso"
+    },
+    "buyRefillMessage": "Kumpirmahin ang pag-refill ng kabuuang {hearts} puso sa JUZ Mini App",
+    "claimFree": "I-claim ang libreng refill",
+    "refillNow": "Mag-refill ngayon",
+    "heartCount": "Iyong mga puso ({hearts})"
+  },
+  "ModalGame": {
+    "retry": "Ulitin",
+    "continue": "Magpatuloy",
+    "progress": "Progreso",
+    "timeLeft": "Natitirang oras",
+    "generalKnowledge": "Pangkalahatang kaalaman",
+    "errorText": "May nangyaring mali",
+    "loadingText": "Humanda! Ipiniprepara namin ang trivia para sa iyo..."
+  },
+  "RewardPools": {
+    "claimableFees": "Makukuhang bayad",
+    "description": "Mag-deposito ng assets. Kumita ng rewards. Enjoy ang yield farming gamit ang JUZ.",
+    "explainers": {
+      "whatArePools": {
+        "title": "Ano ang Reward Pools?",
+        "contents": {
+          "size": "2",
+          "0": "Ang mga JUZ Pool ay smart vaults na may sariling estratehiya para mag-compound ng rewards at gumawa ng liquidity positions sa incentivized pools para sa pinakamataas na yield.",
+          "1": "Sinuman ay maaaring kumita ng parte ng fees sa pamamagitan ng pag-call ng compound function at tumanggap ng maliit na bahagi ng bayad."
+        }
+      }
+    }
+  },
+  "Rewards": {
+    "title": "Reward boost",
+    "unlocks": "Mga unlock",
+    "getJUZ": "Kumuha ng JUZ",
+    "claim": "I-claim",
+    "earningVeJUZ": "Kumakamit ng veJUZ",
+    "aprBreakdown": "APR breakdown",
+    "errors": {
+      "balanceToLow": "Masyadong mababa ang balanse",
+      "noClaims": "Walang maaaring i-claim"
+    },
+    "success": {
+      "claimed": "Na-claim ang veJUZ!",
+      "juzRecovered": "Nabawi ang JUZ!"
+    },
+    "juzAvailable": "Available na JUZ",
+    "unlocked": "Na-unlock 🔓",
+    "comingSoon": "Malapit na ⚡",
+    "explainers": {
+      "apr": "Ang APR ay batay sa kasalukuyang supply ng veJUZ at dami ng JUZ na naka-lock sa pool. Nagbabago ito sa paglipas ng panahon.",
+      "locking": "Kumita ng <trigger>veJUZ</trigger> sa pagla-lock ng JUZ nang ilang panahon. Sa hinaharap, magagamit ang veJUZ para sa governance, reward pools, at airdrops.",
+      "drops": "Kumita ng kakaibang rewards mula sa iba pang komunidad sa pagsali sa JUZ ecosystem. May paparating pang drops!"
+    }
+  },
+  "JuzLock": {
+    "title": "I-lock ang JUZ. Kumuha ng veJUZ 🍋",
+    "confirmLock": "Kumpirmahin at i-lock",
+    "lockAmount": "Halaga",
+    "lockDuration": "Tagal",
+    "errors": {
+      "validAmount": "Maglagay ng wastong halaga"
+    },
+    "byLocking": "Sa pagla-lock ng",
+    "for": "sa loob ng",
+    "youWillReceiveEstimated": "makatatanggap ka ng tinatayang <Estimate></Estimate>",
+    "periods": {
+      "2W": "2 Linggo",
+      "1M": "1 Buwan",
+      "3M": "3 Buwan",
+      "6M": "6 Buwan",
+      "1Y": "1 Taon"
+    },
+    "explainers": {
+      "veJUZ": {
+        "title": "Ano ang veJUZ?",
+        "contents": {
+          "size": "2",
+          "0": "Ang Vote-Escrowed JUZ (<strong>veJUZ</strong>) ay token ng protocol na nakukuha kapag nagla-lock ka ng JUZ. Mas mahaba ang lock, mas mataas ang potensyal na kita.",
+          "1": "Idinadagdag ang <strong>veJUZ</strong> sa kabuuang balanse mo ng JUZ at magagamit sa pagboto, pag-access ng pools, at pagkuha ng rewards."
+        }
+      }
+    },
+    "success": {
+      "locked": "Matagumpay na na-lock ang JUZ"
+    }
+  },
+  "InviteSentinel": {
+    "title": "🎁 May gift na available",
+    "claim": "I-claim ang 10 JUZ",
+    "success": {
+      "claimed": "Na-claim ang JUZ!"
+    },
+    "errors": {
+      "tooManyGifts": "Sobra na ang natanggap na regalo",
+      "somethingWentWrong": "May mali na nangyari"
+    },
+    "inviteMessage": "Nagpadala sa iyo si <inviting></inviting> ng regalo para sumali sa JUZ trivia mini game."
+  },
+  "DialogInvites": {
+    "title": "Imbitahan ang iyong mga kaibigan",
+    "copyLink": "Kopyahin ang link",
+    "totalInvited": "Kabuuang naimbitahan",
+    "description": "Ikaw at ang kaibigan mo ay makakakuha ng tig-<amount></amount> kapag tinanggap at na-claim ang imbitasyon. Hanggang <verifiedAmount></verifiedAmount> para sa verified users!"
+  },
+  "ModalQuests": {
+    "title": "Araw-araw na Quests",
+    "tapScreen": {
+      "tapToClaim": "Tapikin para i-claim ang reward 🎉",
+      "tapToContinue": "Tapikin ang screen para magpatuloy"
+    },
+    "states": {
+      "locked": "Naka-lock 🔒",
+      "claimed": "Na-claim ✔️",
+      "active": "I-claim ang reward"
+    },
+    "genericError": "Oops. May mali na nangyari",
+    "success": {
+      "claimedMessage": "Matagumpay na na-claim ang mga reward! 🎉"
+    },
+    "freeDaily": {
+      "explainer": "Bumalik <strong>araw-araw</strong> para kunin ang libreng regalo!",
+      "error": {
+        "claimed": "Na-claim mo na ang libreng gift ngayon"
+      }
+    },
+    "triviaWinner1": {
+      "explainer": "Manalo sa trivia <strong>{gamesWon, plural, =0 {kahit isang beses} other {isang beses}}</strong> para ma-unlock ang quest na ito",
+      "error": {
+        "claimed": "Na-claim mo na ang quest na ito ngayon",
+        "locked": "Maglaro ng trivia para ma-unlock"
+      }
+    },
+    "triviaMaster3": {
+      "explainer": "Manalo sa trivia <strong>{gamesWon, plural, =0 {kahit 3 beses} =1 {kulang pa ng 2 beses} =2 {kulang pa ng 1 beses} other {3 beses}}</strong> para ma-unlock ang quest na ito",
+      "error": {
+        "claimed": "Na-claim mo na ang quest na ito ngayon",
+        "locked": "Maglaro ng trivia para ma-unlock"
+      }
+    },
+    "allClaimed": "Na-claim na ang lahat ng quests. <br />Bumalik bukas para sa iba pa!"
+  }
+}

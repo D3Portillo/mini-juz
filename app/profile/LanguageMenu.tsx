@@ -35,6 +35,10 @@ export default function LanguageMenu({ trigger }: { trigger: JSX.Element }) {
           label: t("portuguese"),
           value: "pt",
         },
+        {
+          label: t("filipino"),
+          value: "fil",
+        },
       ].filter((option) => option.value !== locale)}
     >
       {trigger}

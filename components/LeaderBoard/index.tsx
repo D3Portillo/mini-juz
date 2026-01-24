@@ -1,15 +1,15 @@
 "use client"
 
-import { Fragment } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { useWorldAuth } from "@radish-la/world-auth"
-import { formatDistanceToNow } from "date-fns"
+import { formatDistanceToNow, type Locale as DateFnsLocale } from "date-fns"
 import { useLocale, useTranslations } from "next-intl"
 
 import { useAccountBalances } from "@/lib/atoms/balances"
 import { useLeaderboard } from "@/lib/atoms/leaderboard"
 import { numberToShortWords, shortifyDecimals } from "@/lib/numbers"
 import { formatUSDC } from "@/lib/tokens"
-import { getDateFnsLocal } from "@/lib/date-locale"
+import { loadDateFnsLocale } from "@/lib/date-locale"
 
 import ReusableDialog from "@/components/ReusableDialog"
 import { JUZDistributionModal } from "@/app/rewards/JuzDistributionModal"
@@ -23,6 +23,13 @@ import { useAddressMote } from "@/lib/motes"
 export default function LeaderBoard() {
   const locale = useLocale()
   const t = useTranslations("LeaderBoard")
+  const [dateFnsLocale, setDateFnsLocale] = useState<
+    DateFnsLocale | undefined
+  >()
+
+  useEffect(() => {
+    loadDateFnsLocale(locale).then(setDateFnsLocale)
+  }, [locale])
 
   const { user, isConnected } = useWorldAuth()
   const { TotalJUZBalance } = useAccountBalances()
@@ -38,7 +45,7 @@ export default function LeaderBoard() {
   const isEmpty = leaderboard.length <= 0
 
   const { mote: connectedUserMote } = useAddressMote(
-    Number(TotalJUZBalance.formatted)
+    Number(TotalJUZBalance.formatted),
   )
 
   return (
@@ -71,7 +78,7 @@ export default function LeaderBoard() {
               <strong className="font-medium">
                 {formatDistanceToNow(lastUpdated, {
                   addSuffix: true,
-                  locale: getDateFnsLocal(locale),
+                  locale: dateFnsLocale,
                   includeSeconds: false,
                 })}
               </strong>
