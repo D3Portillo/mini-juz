@@ -12,10 +12,6 @@
     "letsGo": "Let's go",
     "connectWallet": "Connect Wallet"
   },
-  "HomeNavigation": {
-    "disconnect": "Disconnect",
-    "manageProfile": "Manage Profile"
-  },
   "Home": {
     "play": "Play",
     "claimNow": "Claim now",

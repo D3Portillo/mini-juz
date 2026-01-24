@@ -55,7 +55,7 @@ export default function PageHome() {
   const tglobal = useTranslations("global")
 
   const { hearts } = usePlayerHearts()
-  const { gameTopics, shuffleTopics, isEmpty } = useUserTopics()
+  const { gameTopics, shuffleTopics, isReady } = useUserTopics()
   const { address, signIn, isConnected } = useWorldAuth()
   const { JUZPoints } = useAccountBalances()
 
@@ -226,7 +226,7 @@ export default function PageHome() {
 
             <div className="size-full rounded-full my-12 overflow-clip grid place-items-center">
               <WheelSpin
-                enableSpin={isConnected && hearts > 0 && !isEmpty}
+                enableSpin={isConnected && hearts > 0 && isReady}
                 onClick={() => {
                   if (!isConnected) return signIn()
                   if (hearts <= 0) openHeartsDialog()
@@ -241,7 +241,7 @@ export default function PageHome() {
                   setTimeout(shuffleTopics, 250)
                 }}
                 size="min(calc(95vw - 2rem), 24rem)"
-                items={isEmpty ? ["👋", "😍", "😎"] : gameTopics}
+                items={isReady ? gameTopics : ["👋", "😍", "😎"]}
               />
             </div>
 
