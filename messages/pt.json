@@ -148,7 +148,7 @@
     }
   },
   "Rewards": {
-    "title": "Impulso de recompensas",
+    "title": "Recompensas",
     "unlocks": "Desbloqueios",
     "getJUZ": "Obter JUZ",
     "claim": "Reclamar",
@@ -257,5 +257,14 @@
       }
     },
     "allClaimed": "Todas as missões concluídas. <br />Volte amanhã para mais!"
+  },
+  "Swap": {
+    "showingLatestPurchases": "Mostrando as últimas transações",
+    "user": "Usuário",
+    "time": "Hora",
+    "juzBalance": "Saldo de JUZ",
+    "confirmSwap": "Confirmar troca",
+    "balance": "Saldo",
+    "receivingText": "Você vai receber"
   }
 }

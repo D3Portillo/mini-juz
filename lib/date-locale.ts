@@ -18,8 +18,8 @@ export async function loadDateFnsLocale(
   if (!loader) return undefined
 
   try {
-    const module = await loader()
-    const dateFnsLocale = module[locale] || module.default
+    const mod = await loader()
+    const dateFnsLocale = mod[locale] || mod.default
     if (dateFnsLocale) cache.set(locale, dateFnsLocale)
     return dateFnsLocale
   } catch (error) {

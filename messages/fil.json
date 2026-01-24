@@ -65,10 +65,10 @@
     "play": "Maglaro",
     "profile": "Profile",
     "market": "Merkado",
-    "rewards": "Mga gantimpala"
+    "rewards": "Gantimpala"
   },
   "Market": {
-    "title": "I-level up ang profile",
+    "title": "Level-up",
     "errors": {
       "maxHearts": "Naabot na ang limitasyon ng puso",
       "noBalance": "Kulang ang balanse ng JUZ"
@@ -104,7 +104,7 @@
   },
   "LeaderBoard": {
     "you": "Ikaw",
-    "totalJUZ": "Kabuuang JUZ",
+    "totalJUZ": "JUZ",
     "user": "Manlalaro",
     "updated": "Na-update",
     "whaleMessage": "Ang player na ito ay may higit sa <amount></amount> ng kabuuang supply ng JUZ.",
@@ -257,5 +257,14 @@
       }
     },
     "allClaimed": "Na-claim na ang lahat ng quests. <br />Bumalik bukas para sa iba pa!"
+  },
+  "Swap": {
+    "showingLatestPurchases": "Pinapakita ang pinakabagong mga transaksyon ng user",
+    "user": "User",
+    "time": "Time",
+    "juzBalance": "JUZ Balance",
+    "confirmSwap": "Kumpirmahin ang Swap",
+    "balance": "Balance",
+    "receivingText": "Iyo nang matatanggap"
   }
 }

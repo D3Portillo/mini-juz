@@ -34,8 +34,10 @@ import { useWLDPerETH } from "@/app/rewards/internals"
 import { useOroPriceInUSD, useWLDPriceInUSD } from "@/lib/atoms/prices"
 
 import { ZERO } from "@/lib/constants"
+import { useTranslations } from "next-intl"
 
 export default function PageSwap() {
+  const t = useTranslations("Swap")
   const { toast } = useToast()
   const { signIn, address } = useWorldAuth()
 
@@ -99,8 +101,8 @@ export default function PageSwap() {
     {
       keepPreviousData: true,
       revalidateOnFocus: false,
-      refreshInterval: 3_500, // 3.5 seconds
-    }
+      refreshInterval: 10_000, // 10 seconds
+    },
   )
 
   const { data: leaderboard = [] } = useSWR<
@@ -117,8 +119,8 @@ export default function PageSwap() {
     },
     {
       keepPreviousData: true,
-      refreshInterval: 7_500, // 7.5 seconds
-    }
+      refreshInterval: 10_000, // 10 seconds
+    },
   )
 
   const JUZ_PRICE = Number(queryResult?.juzPrice || "0.0138")
@@ -127,10 +129,10 @@ export default function PageSwap() {
     payingToken.value === ALL_TOKENS.WLD.value
       ? WLD.formatted
       : payingToken.value === ALL_TOKENS.WETH.value
-      ? queryResult?.wethBalance?.formatted || "0"
-      : payingToken.value === ALL_TOKENS.ORO.value
-      ? queryResult?.oroBalance?.formatted || "0"
-      : queryResult?.usdceBalance || "0"
+        ? queryResult?.wethBalance?.formatted || "0"
+        : payingToken.value === ALL_TOKENS.ORO.value
+          ? queryResult?.oroBalance?.formatted || "0"
+          : queryResult?.usdceBalance || "0"
 
   function handleMax() {
     handler.setValue(shortifyDecimals(BALANCE, 5))
@@ -145,8 +147,8 @@ export default function PageSwap() {
     return token === ALL_TOKENS.WLD.value
       ? Number(amount) * (wldPriceInUSD / JUZ_PRICE)
       : token === ALL_TOKENS.WETH.value // WETH Calculation
-      ? Number(amount) * wldPerETH * (wldPriceInUSD / JUZ_PRICE)
-      : Number(amount) / JUZ_PRICE
+        ? Number(amount) * wldPerETH * (wldPriceInUSD / JUZ_PRICE)
+        : Number(amount) / JUZ_PRICE
   }
 
   const RECEIVING_JUZ = calculateJUZFromToken(payingToken.value, handler.value)
@@ -267,7 +269,7 @@ export default function PageSwap() {
             </MainSelect>
 
             <div className="whitespace-nowrap">
-              Balance:{" "}
+              {t("balance")}:{" "}
               <strong>
                 {shortifyDecimals(BALANCE, 4)} {payingToken.label}
               </strong>
@@ -286,7 +288,7 @@ export default function PageSwap() {
                 1 {payingToken.label} ={" "}
                 <strong className="text-juz-green">
                   {shortifyDecimals(
-                    calculateJUZFromToken(payingToken.value, "1")
+                    calculateJUZFromToken(payingToken.value, "1"),
                   )}{" "}
                   JUZ
                 </strong>
@@ -306,14 +308,14 @@ export default function PageSwap() {
           onClick={handleConfirmSwap}
           className="w-full bg-juz-green-lime rounded-xl text-base py-3.5 flex gap-4 justify-between items-center"
         >
-          <span className="text-base">Confirm swap</span>
+          <span className="text-base">{t("confirmSwap")}</span>
           <FaArrowRight className="text-lg" />
         </LemonButton>
 
         <div className="min-h-14 grid place-items-center">
           {RECEIVING_JUZ > 0 && (
             <div className="max-w-md mx-auto text-center text-sm">
-              You will receive{" "}
+              {t("receivingText")}{" "}
               <strong>{shortifyDecimals(RECEIVING_JUZ, 5)} JUZ</strong>
             </div>
           )}
@@ -322,9 +324,9 @@ export default function PageSwap() {
         <Fragment>
           <section className="mt-5 flex flex-col">
             <div className="text-sm font-medium gap-5 border-y py-3.5 whitespace-nowrap flex items-center">
-              <div className="w-20 pl-2">Time</div>
-              <div className="flex-grow text-juz-green">JUZ Balance</div>
-              <div className="w-20">User</div>
+              <div className="w-20 pl-2">{t("time")}</div>
+              <div className="flex-grow text-juz-green">{t("juzBalance")}</div>
+              <div className="w-20">{t("user")}</div>
             </div>
 
             {leaderboard.length <= 0 ? (
@@ -365,7 +367,7 @@ export default function PageSwap() {
             )}
           </section>
           <p className="max-w-xs mt-10 text-sm mx-auto text-center">
-            Showing latest user transactions
+            {t("showingLatestPurchases")}
           </p>
         </Fragment>
       </div>

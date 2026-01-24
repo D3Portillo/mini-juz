@@ -1,5 +1,7 @@
 "use client"
 
+import type { AppLocales } from "@/global"
+
 import { useAtom } from "jotai"
 import { useEffect } from "react"
 import { useLocale } from "next-intl"
@@ -17,7 +19,9 @@ const atomUserTopics = atomWithStorage("juz.atomUserTopics", {
 let timer: NodeJS.Timeout | undefined
 let timerForLocaleUpdate: NodeJS.Timeout | undefined
 
-export const formatLocaleToTopicLanguage = (locale: string): TopicLanguage => {
+export const formatLocaleToTopicLanguage = (
+  locale: AppLocales,
+): TopicLanguage => {
   switch (locale) {
     case "es":
       return "Spanish"

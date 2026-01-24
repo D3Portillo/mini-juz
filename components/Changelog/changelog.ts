@@ -1,10 +1,10 @@
-import { locales } from "@/global"
+import type { AppLocales } from "@/global"
 
 export type ChangeType = "FEATURE" | "FIX" | "IMPROVEMENT"
 
 interface Change {
   type: ChangeType
-  description: Record<(typeof locales)[number], string>
+  description: Record<AppLocales, string>
 }
 
 export const CHANGELOG: Record<
@@ -83,6 +83,30 @@ export const CHANGELOG: Record<
           es: "Mejorada la lógica de distribución de recompensas de misiones.",
           pt: "Lógica de distribuição de recompensas de missões aprimorada.",
           fil: "Pinahusay ang lohika ng pamamahagi ng gantimpala sa quest.",
+        },
+      },
+    ],
+  },
+  "0.1.3": {
+    date: "JAN 24 2025",
+    changes: [
+      {
+        type: "FEATURE",
+        description: {
+          en: "[LANG] Added support for Portuguese and Filipino languages.",
+          es: "[LANG] Se agregó soporte para los idiomas portugués y filipino.",
+          pt: "[LANG] Adicionado suporte para os idiomas português e filipino.",
+          fil: "[LANG] Idinagdag ang suporta para sa mga wikang Portuges at Filipino.",
+        },
+      },
+
+      {
+        type: "IMPROVEMENT",
+        description: {
+          en: "Add missing translated content across the app.",
+          es: "Se agregó contenido traducido faltante en toda la app.",
+          pt: "Adicionado conteúdo traduzido ausente em todo o app.",
+          fil: "Idinagdag ang nawawalang isinalin na nilalaman sa buong app.",
         },
       },
     ],

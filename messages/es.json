@@ -257,5 +257,14 @@
       }
     },
     "allClaimed": "Todas las misiones completadas 😎. <br />¡Vuelve mañana por más!"
+  },
+  "Swap": {
+    "showingLatestPurchases": "Mostrando las últimas transacciones",
+    "user": "Usuario",
+    "time": "Hora",
+    "juzBalance": "JUZ Balance",
+    "confirmSwap": "Continuar",
+    "balance": "Balance",
+    "receivingText": "Vas a recibir"
   }
 }

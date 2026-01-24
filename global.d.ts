@@ -4,6 +4,7 @@ import { formats } from "@/i18n/request"
 import messages from "./messages/en.json"
 
 const locales = ["en", "es", "pt", "fil"] as const
+export type AppLocales = (typeof locales)[number]
 
 declare module "next-intl" {
   interface AppConfig {

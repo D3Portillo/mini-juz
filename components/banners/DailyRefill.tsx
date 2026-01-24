@@ -36,7 +36,7 @@ export default function DailyRefill() {
           {canBeRefilled ? (
             <button
               onClick={openHeartsDialog}
-              className="bg-black h-14 flex items-center justify-center gap-3 px-5 rounded-lg text-white"
+              className="bg-black whitespace-nowrap h-14 flex items-center justify-center gap-3 px-5 rounded-lg text-white"
             >
               <strong className="font-semibold">{t("refillNow")}</strong>
               <FaArrowRight />
@@ -71,6 +71,6 @@ function formatCountdown(secondsLeft: number): string {
   const seconds = secondsLeft % 60
   return `${String(hours).padStart(2, "0")}h ${String(minutes).padStart(
     2,
-    "0"
+    "0",
   )}m ${String(seconds).padStart(2, "0")}s`
 }

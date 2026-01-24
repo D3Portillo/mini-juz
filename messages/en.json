@@ -257,5 +257,14 @@
       }
     },
     "allClaimed": "All quests claimed. <br />Come back tomorrow for more!"
+  },
+  "Swap": {
+    "showingLatestPurchases": "Showing latest user transactions",
+    "user": "User",
+    "time": "Time",
+    "juzBalance": "JUZ Balance",
+    "confirmSwap": "Confirm Swap",
+    "balance": "Balance",
+    "receivingText": "You will receive"
   }
 }
