@@ -8,8 +8,8 @@ export default function LemonIcon({
   return (
     <figure
       className={cn(
-        "size-10 shadow-3d border-2 text-black border-black rounded-full relative grid place-items-center",
-        className
+        "size-10 shrink-0 shadow-3d border-2 text-black border-black rounded-full relative grid place-items-center",
+        className,
       )}
     >
       <div className="absolute z-1 inset-0 grid place-items-center">

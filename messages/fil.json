@@ -14,7 +14,7 @@
   },
   "Home": {
     "play": "Maglaro",
-    "claimNow": "I-claim ngayon",
+    "claimNow": "Claim na",
     "limeBoostTemplate": "Sa limitadong oras, maaari kang kumita ng <multiplier>beses</multiplier> pang JUZ sa trivia game at sa pag-imbita ng mga kaibigan!",
     "errors": {
       "noHeartsLeft": "😢 Wala ka nang puso para maglaro",
@@ -38,7 +38,7 @@
   "Profile": {
     "title": "Pamahalaan ang Profile",
     "gamesPlayed": "Mga larong nalaro",
-    "gamesWon": "Mga larong napanalunan",
+    "gamesWon": "Mga panalo",
     "joinCommunity": "Sumali sa Komunidad",
     "support": "Kontakin ang suporta",
     "totalJUZ": "Kabuuang balanse ng JUZ",
@@ -50,7 +50,7 @@
   },
   "ProfileMenu": {
     "clipboardCopied": "Nakopya sa clipboard",
-    "disconnect": "I-disconnect",
+    "disconnect": "Idiskonekta",
     "viewInWorldscan": "Tingnan sa Worldscan",
     "copyAddress": "Kopyahin ang address",
     "errors": {
@@ -84,7 +84,7 @@
   },
   "JUZDistributionModal": {
     "title": "Pagkakahati ng JUZ",
-    "claimTokens": "I-claim ang mga token",
+    "claimTokens": "Claim token",
     "claimAvailable": "May mga token ng JUZ kang puwedeng i-claim",
     "errors": {
       "waitabit": "Maghintay sandali bago muling mag-claim"
