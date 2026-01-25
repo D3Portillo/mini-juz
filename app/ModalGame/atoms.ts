@@ -1,40 +1,89 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import useSWRImmutable from "swr/immutable"
-
-import { atomWithStorage } from "jotai/utils"
-import { atomFamily } from "jotai/utils"
-import { useAtom } from "jotai"
 import { useLocale } from "next-intl"
+import { create } from "zustand"
+import { persist } from "zustand/middleware"
 
-import { generateQuestionsForTopic } from "@/actions/questions"
+import { generateQuestionsForTopic, type TopicStats } from "@/actions/questions"
 import { formatLocaleToTopicLanguage } from "@/lib/atoms/topics"
 
-const familyAtomHistory = atomFamily((topic: string | null) =>
-  atomWithStorage(
-    `juz.topic.history.${topic ? topic.toLowerCase() : "VOID"}`,
-    [] as string[],
+type HistoryStore = {
+  history: Record<string, string[]>
+  addQuestion: (key: string, question: string) => void
+}
+
+type StatsStore = {
+  stats: Record<string, TopicStats>
+  recordGame: (key: string, won: boolean) => void
+}
+
+const useHistoryStore = create<HistoryStore>()(
+  persist(
+    (set) => ({
+      history: {},
+      addQuestion: (key, question) =>
+        set((state) => ({
+          history: {
+            ...state.history,
+            [key]: [
+              ...(state.history[key] || []).filter((q) => q !== question),
+              question,
+            ]
+              // Take the last 15 questions only
+              .slice(-15),
+          },
+        })),
+    }),
+    { name: "juz.topic.history" },
+  ),
+)
+
+const useStatsStore = create<StatsStore>()(
+  persist(
+    (set) => ({
+      stats: {},
+      recordGame: (key, won) =>
+        set((state) => {
+          const current = state.stats[key] || { gamesPlayed: 0, gamesWon: 0 }
+          return {
+            stats: {
+              ...state.stats,
+              [key]: {
+                gamesPlayed: current.gamesPlayed + 1,
+                gamesWon: current.gamesWon + (won ? 1 : 0),
+              },
+            },
+          }
+        }),
+    }),
+    { name: "juz.topic.stats" },
   ),
 )
 
 export const useQuestionHistory = (topic: string | null) => {
   const locale = useLocale()
-  const [ready, setReady] = useState(false)
-  const [questionHistory, setHistory] = useAtom(familyAtomHistory(topic))
+  const historyKey =
+    topic && locale ? `${locale}.${topic.toLowerCase()}` : "VOID"
 
-  const addQuestion = (question: string) => {
-    setHistory((prev) => {
-      const filtered = prev.filter((q) => q !== question)
-      return [...filtered, question].slice(-15) // Keep latest 15 questions
-    })
-  }
+  const { history, addQuestion: add } = useHistoryStore()
+  const questionHistory = history[historyKey] || []
 
-  useEffect(() => {
-    setReady(Boolean(topic && locale))
-  }, [topic, locale])
+  const addQuestion = (question: string) => add(historyKey, question)
 
-  return { questionHistory, ready, addQuestion }
+  return { questionHistory, addQuestion }
+}
+
+export const useTopicStats = (topic: string | null) => {
+  const locale = useLocale()
+  const statsKey = topic && locale ? `${locale}.${topic.toLowerCase()}` : "VOID"
+
+  const { stats, recordGame: record } = useStatsStore()
+  const topicStats = stats[statsKey] || { gamesPlayed: 0, gamesWon: 0 }
+
+  const recordGame = (won: boolean) => record(statsKey, won)
+
+  return { stats: topicStats, recordGame }
 }
 
 export const useGameQuestions = (
@@ -46,19 +95,21 @@ export const useGameQuestions = (
 ) => {
   const topic = config?.topic
   const locale = useLocale()
-  const { questionHistory, ready } = useQuestionHistory(topic || "")
+  const { questionHistory } = useQuestionHistory(topic || "")
+  const { stats } = useTopicStats(topic || null)
 
   const { data, ...query } = useSWRImmutable(
-    `${cacheKey}.${ready && "ready"}`,
+    cacheKey,
     async (): Promise<
       Awaited<ReturnType<typeof generateQuestionsForTopic>>
     > => {
-      if (!topic || !ready) return {} as any
+      if (!topic) return {} as any
       return await generateQuestionsForTopic(
         formatLocaleToTopicLanguage(locale),
         topic,
         config.questionCount,
         questionHistory,
+        stats,
       )
     },
   )

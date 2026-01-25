@@ -20,7 +20,7 @@ import { FaFireAlt } from "react-icons/fa"
 import { useTranslations } from "next-intl"
 import { useAudioMachine } from "@/lib/sounds"
 import { useIsGameActive } from "@/lib/atoms/game"
-import { useGameQuestions, useQuestionHistory } from "./atoms"
+import { useGameQuestions, useQuestionHistory, useTopicStats } from "./atoms"
 
 import { usePowerups } from "@/components/DialogPowerups/atoms"
 import HeartsVisualizer from "./HeartsVisualizer"
@@ -46,6 +46,7 @@ export default function ModalGame({
   const t = useTranslations("ModalGame")
 
   const { addQuestion } = useQuestionHistory(topic || null)
+  const { recordGame } = useTopicStats(topic || null)
   const { hearts, removeHeart } = usePlayerHearts()
   const { playSound } = useAudioMachine([
     "success",
@@ -94,7 +95,7 @@ export default function ModalGame({
     {
       questionCount: TOTAL_QUESTIONS,
       topic,
-    }
+    },
   )
 
   const isLoading = isFetching || isValidating
@@ -116,6 +117,9 @@ export default function ModalGame({
       const pointsLostInGame = gameStartHeartCount - hearts
       const isGameWon = pointsLostInGame < 3 // Won if lost less than 2 hearts
 
+      // Record game result
+      recordGame(isGameWon)
+
       if (isGameWon) {
         const MAX_JUZ = 3
         const MIN_JUZ = 1
@@ -127,7 +131,7 @@ export default function ModalGame({
           Math.min(MAX_JUZ, Math.max(MIN_JUZ, MAX_JUZ - pointsLostInGame))
 
         onGameWon?.(
-          JUZ_EARNED * (boost.isActive ? 1 + boost.ratioInPercentage / 100 : 1)
+          JUZ_EARNED * (boost.isActive ? 1 + boost.ratioInPercentage / 100 : 1),
         )
       }
       return closeModal()
@@ -322,7 +326,7 @@ export default function ModalGame({
                     isCorrectAnswer &&
                       "bg-gradient-to-bl from-juz-green-ish to-juz-green-lime",
                     isWrongOption &&
-                      "bg-gradient-to-bl from-juz-red/20 to-red-50"
+                      "bg-gradient-to-bl from-juz-red/20 to-red-50",
                   )}
                 >
                   {option}
@@ -341,7 +345,7 @@ export default function ModalGame({
                 <GiBroom
                   className={cn(
                     "text-xl scale-105 translate-x-0.5",
-                    powerups.broom.amount ? "text-yellow-200" : "text-white/80"
+                    powerups.broom.amount ? "text-yellow-200" : "text-white/80",
                   )}
                 />
               </button>

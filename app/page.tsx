@@ -226,10 +226,10 @@ export default function PageHome() {
 
             <div className="size-full rounded-full my-12 overflow-clip grid place-items-center">
               <WheelSpin
-                enableSpin={isConnected && hearts > 0 && isReady}
+                enableSpin//={isConnected && hearts > 0 && isReady}
                 onClick={() => {
-                  if (!isConnected) return signIn()
-                  if (hearts <= 0) openHeartsDialog()
+                 // if (!isConnected) return signIn()
+                  //if (hearts <= 0) openHeartsDialog()
                 }}
                 onItemSelected={(topic) => {
                   trackEvent("topic-selected", {

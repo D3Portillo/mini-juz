@@ -15,32 +15,69 @@ const QuestionListSchema = z.object({
   ),
 })
 
+export type TopicStats = {
+  gamesPlayed: number
+  gamesWon: number
+}
+
+const DIFFICULTY_MAP = {
+  1: "easy",
+  2: "easy",
+  3: "medium",
+  4: "medium",
+  5: "hard",
+} as const
+
 export const generateQuestionsForTopic = async (
   lang: TopicLanguage,
   topic: string,
   amount: number,
   history: string[] = [],
+  stats?: TopicStats,
 ) => {
+  const winRate = stats?.gamesPlayed
+    ? Math.round((stats.gamesWon / stats.gamesPlayed) * 100)
+    : 0
+
+  const difficultyPrompt = Array.from({ length: amount }, (_, i) => {
+    const questionNum = i + 1
+    const difficulty =
+      DIFFICULTY_MAP[questionNum as keyof typeof DIFFICULTY_MAP] || "medium"
+    return `Question ${questionNum}: ${difficulty} difficulty`
+  }).join("\n")
+
   const { object } = await generateObject({
     model: getModelForTask(),
     schema: QuestionListSchema,
     prompt: `
-Generate a list of ${amount} questions about "${topic}".
-- Each question should have 3 options.
-- Correct option should be in the list of options.
-- There can only be 1 (ONE) correct option.
-- The correct option should be the first element in the list.
-- The questions should be fun and interesting - for trivia or quiz games.
-- The questions should be in ${lang}.
-- Options should be in ${lang}.
-- Options should be in the format: ["option1", "option2", "option3"]
-- Options should be short: 6 words max.
+Generate ${amount} questions about "${topic}" with varying difficulty.
+
+User Context:
+- Games played in this topic: ${stats?.gamesPlayed || 0}
+- Win rate: ${winRate}%
+${winRate > 75 ? "- This user is experienced, make questions more challenging" : ""}
+
+Difficulty Progression:
+${difficultyPrompt}
+
+Rules:
+- Each question must have exactly 3 options
+- There must be ONE (only 1) correct option, other 2 are incorrect
+- Correct option MUST be the first element in the array
+- Questions should be engaging and educational
+- All content in ${lang}
+- Options max 6 words each
+
+About repeated correct answers:
+Example Question: What animal is black and white?
+- Correct Answer: Panda
+- Incorrect Answers: Skunk, Donkey (must freaking ai will say - Zebra, but it's wrong, both Panda and Zebra are black and white, byatch!)
 
 ${
   history.length > 0
     ? `
 --------------
-Please avoid asking the following questions:
+Avoid asking the following questions or variations of them, as the user has seen them recently:
 ${history.map((q, i) => `${i + 1}. ${q}\n`)}
 
 And avoid permutations in this question list - Like I don't want shit to be:
