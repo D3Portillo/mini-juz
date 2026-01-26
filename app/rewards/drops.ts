@@ -14,6 +14,13 @@ export const DROPS = [
   },
 
   {
+    name: "TBOO",
+    logoImage: "/drops/tboo.png",
+    rewardDescription: "WLD Prize",
+    url: "https://world.org/mini-app?app_id=app_03e7bd0ee4091bb677444b35410a0220&path=/invite/TBOO-8S0P",
+  },
+
+  {
     name: "Retro Boy",
     logoImage: "/drops/retro-boy.png",
     rewardDescription: "Game NFT",

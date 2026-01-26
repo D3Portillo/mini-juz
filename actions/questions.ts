@@ -43,7 +43,7 @@ export const generateQuestionsForTopic = async (
     const questionNum = i + 1
     const difficulty =
       DIFFICULTY_MAP[questionNum as keyof typeof DIFFICULTY_MAP] || "medium"
-    return `Question ${questionNum}: ${difficulty} difficulty`
+    return `- Question ${questionNum}: ${difficulty} difficulty`
   }).join("\n")
 
   const { object } = await generateObject({
