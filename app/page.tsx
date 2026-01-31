@@ -256,7 +256,7 @@ export default function PageHome() {
               />
             </div>
 
-            <AdSquared className="rounded-xl mb-4 bg-juz-orange/5 border-2 border-juz-orange overflow-hidden" />
+            <AdSquared />
 
             {isConfirmed ? (
               <DailyRefill />

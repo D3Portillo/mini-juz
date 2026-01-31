@@ -58,12 +58,15 @@ export default function AdSquared({ className }: { className?: string }) {
   }, [])
 
   return (
-    <div
-      id={CONTAINER_ID}
-      className={cn(
-        "p-1 hidden w-full bg-black/3 animate-in fade-in",
-        className,
-      )}
-    />
+    <div className="relative w-full">
+      <div className="text-black flex justify-end p-1 text-xs">
+        <span className="opacity-60">Ad</span>
+      </div>
+
+      <div
+        id={CONTAINER_ID}
+        className={cn("hidden w-full animate-in fade-in", className)}
+      />
+    </div>
   )
 }

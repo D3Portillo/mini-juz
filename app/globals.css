@@ -136,3 +136,7 @@ ol.fixed.top-6 {
 #navite-ad-container [class*="__bn"] {
   max-width: none !important;
 }
+
+#navite-ad-container [class*="__img-containe"] {
+  border-radius: 1rem !important;
+}
