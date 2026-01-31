@@ -66,6 +66,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <head>
+        <link rel="preconnect" href="https://www.highperformanceformat.com" />
         <meta name="google-adsense-account" content="ca-pub-9947700832589189" />
       </head>
       <body

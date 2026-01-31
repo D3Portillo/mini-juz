@@ -24,11 +24,10 @@ export default function AdMachine({
     const container = document.getElementById("ad-machine")
     if (!container) return
 
-    // Create container div
+    // Initial ad setup + unique container
     const ad = document.createElement("div")
     ad.style = "width:100%;height:100%;"
     ad.id = "ad-" + Date.now()
-    container.replaceChildren(ad)
 
     // Set options with unique container
     ;(window as any).atOptions = {
@@ -36,31 +35,24 @@ export default function AdMachine({
       format: "iframe",
       height: HEIGHT,
       width: WIDTH,
-      async: true,
-      container: ad.id, // Each call gets unique container
       params: {},
-    }
-
-    const SCRIPT_ID = "adshi"
-    // Remove previous script if any
-    const prevScript = document.getElementById(SCRIPT_ID)
-    if (prevScript) {
-      prevScript.remove()
     }
 
     // Load the script (or re-execute if already loaded)
     const script = document.createElement("script")
-    script.id = SCRIPT_ID
-    script.src = `/api/ad-proxy?key=${KEY}`
+    script.src = `https://www.highperformanceformat.com/${KEY}/invoke.js`
     script.onerror = (error) => {
       console.debug({ error })
       container.classList.add("hidden")
     }
 
-    document.body.appendChild(script)
+    // Render add
+    ad.appendChild(script)
+    container.replaceChildren(ad)
 
+    // Wait for iframe to load and adjust styles
+    const getIframe = () => container.querySelector("iframe")
     const observer = new MutationObserver(() => {
-      const getIframe = () => container.querySelector("iframe")
       getIframe()?.addEventListener("load", async () => {
         // Wait a sec for the ad to render
         await new Promise((resolve) => setTimeout(resolve, 250))
@@ -74,7 +66,6 @@ export default function AdMachine({
         const img = iframeDoc?.body?.querySelector("img")
         if (img) {
           img.style = STYLE
-
           container.classList.remove("hidden")
         }
       })
