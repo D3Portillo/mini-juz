@@ -41,7 +41,7 @@ const ErudaProvider = dynamic(
   () => import("@/components/Eruda").then((r) => r.ErudaProvider),
   {
     ssr: false,
-  }
+  },
 )
 
 const WelcomeModal = dynamic(() => import("./WelcomeModal"), {
@@ -65,6 +65,9 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
+      <head>
+        <meta name="google-adsense-account" content="ca-pub-9947700832589189" />
+      </head>
       <body
         className={`${fontRubik.variable} ${fontSora.variable} ${fontRubik.className} antialiased`}
       >
