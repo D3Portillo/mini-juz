@@ -47,7 +47,7 @@ export default function AdMachine({
     }
 
     // Render add
-    ad.appendChild(script)
+    ad.replaceChildren(script)
     container.replaceChildren(ad)
 
     // Wait for iframe to load and adjust styles
