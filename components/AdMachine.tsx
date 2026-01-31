@@ -51,13 +51,19 @@ export default function AdMachine({
     // Load the script (or re-execute if already loaded)
     const script = document.createElement("script")
     script.id = SCRIPT_ID
-    script.src = `https://www.highperformanceformat.com/${KEY}/invoke.js`
+    script.src = `/api/ad-proxy?key=${KEY}`
+    script.onerror = (error) => {
+      console.debug({ error })
+      container.classList.add("hidden")
+    }
+
     document.body.appendChild(script)
 
     const observer = new MutationObserver(() => {
       const getIframe = () => container.querySelector("iframe")
       getIframe()?.addEventListener("load", async () => {
-        await new Promise((r) => setTimeout(r, 150)) // Wait a bit for content to load
+        // Wait a sec for the ad to render
+        await new Promise((resolve) => setTimeout(resolve, 250))
         const iframe = getIframe()
         const iframeDoc = iframe?.contentDocument
         if (!iframeDoc) return
