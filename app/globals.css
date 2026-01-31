@@ -128,3 +128,11 @@ ol.fixed.top-6 {
     opacity: 1;
   }
 }
+
+#navite-ad-container [class*="__cancel-btn"] {
+  display: none !important;
+}
+
+#navite-ad-container [class*="__bn"] {
+  max-width: none !important;
+}

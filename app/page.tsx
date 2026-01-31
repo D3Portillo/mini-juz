@@ -46,6 +46,7 @@ import ModalGame from "./ModalGame"
 import ReusableDialog from "@/components/ReusableDialog"
 import asset_limoncito from "@/assets/limoncito.png"
 import asset_gift from "@/assets/gift.png"
+import AdSquared from "@/components/AdSquared"
 
 const AdMachine = dynamic(() => import("@/components/AdMachine"), {
   ssr: false,
@@ -255,10 +256,7 @@ export default function PageHome() {
               />
             </div>
 
-            <AdMachine
-              className="rounded-lg mb-4 bg-juz-orange/5 border-2 border-juz-orange overflow-hidden"
-              size="320x50"
-            />
+            <AdSquared className="rounded-xl mb-4 bg-juz-orange/5 border-2 border-juz-orange overflow-hidden" />
 
             {isConfirmed ? (
               <DailyRefill />
