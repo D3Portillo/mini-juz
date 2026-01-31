@@ -9,7 +9,10 @@ export async function GET(request: Request) {
 
     const response = await fetch(scriptUrl, {
       headers: {
-        "User-Agent": request.headers.get("user-agent") || "Mozilla/5.0",
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Referer: "http://localhost:3000",
+        Origin: "http://localhost:3000",
       },
     })
 
@@ -17,7 +20,7 @@ export async function GET(request: Request) {
     const script = await response.text()
     return new Response(script, {
       headers: {
-        "Content-Type": "application/javascript",
+        "Content-Type": "text/javascript",
         "Cache-Control": "public, max-age=3600", // Cache for 1 hour
       },
     })
