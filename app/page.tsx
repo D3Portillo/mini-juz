@@ -1,7 +1,8 @@
 "use client"
 
-import Image from "next/image"
 import { useState } from "react"
+import Image from "next/image"
+import dynamic from "next/dynamic"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs"
 
 import { useTranslations } from "next-intl"
@@ -43,11 +44,20 @@ import HomeNavigation from "./HomeNavigation"
 import ModalGame from "./ModalGame"
 
 import ReusableDialog from "@/components/ReusableDialog"
-import DialogPowerups from "@/components/DialogPowerups"
-import ModalQuests from "@/components/ModalQuests"
-
 import asset_limoncito from "@/assets/limoncito.png"
 import asset_gift from "@/assets/gift.png"
+
+const AdMachine = dynamic(() => import("@/components/AdMachine"), {
+  ssr: false,
+})
+
+const ModalQuests = dynamic(() => import("@/components/ModalQuests"), {
+  ssr: false,
+})
+
+const DialogPowerups = dynamic(() => import("@/components/DialogPowerups"), {
+  ssr: false,
+})
 
 export default function PageHome() {
   const { toast } = useToast()
@@ -244,6 +254,11 @@ export default function PageHome() {
                 items={isReady ? gameTopics : ["👋", "😍", "😎"]}
               />
             </div>
+
+            <AdMachine
+              className="rounded-lg mb-4 bg-juz-orange/5 border-2 border-juz-orange overflow-hidden"
+              size="320x50"
+            />
 
             {isConfirmed ? (
               <DailyRefill />
