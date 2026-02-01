@@ -59,8 +59,15 @@ export default function AdSquared({ className }: { className?: string }) {
 
   return (
     <div className="relative w-full">
-      <div className="text-black flex justify-end p-2 text-xs">
-        <span className="opacity-60">Ad</span>
+      <div className="text-black flex justify-end text-xs">
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://www.effectivegatecpm.com/xkwvfag1?key=eb961c0b7a18270e849230b4ae6ba76b"
+          className="opacity-60 p-2"
+        >
+          Ad
+        </a>
       </div>
 
       <div

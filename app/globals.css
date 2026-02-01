@@ -129,10 +129,6 @@ ol.fixed.top-6 {
   }
 }
 
-#navite-ad-container [class*="__cancel-btn"] {
-  display: none !important;
-}
-
 #navite-ad-container [class*="__bn"] {
   max-width: none !important;
 }
@@ -141,6 +137,18 @@ ol.fixed.top-6 {
   border-radius: 1rem !important;
 }
 
+#navite-ad-container [class*="__cancel-btn"] {
+  display: none !important;
+}
+
 #navite-ad-container [class*="__bn-container"] {
   padding: 0.5rem !important;
+}
+
+#navite-ad-container [class*="__link"] {
+  z-index: 0 !important;
+}
+
+#navite-ad-container [class*="__title"] {
+  pointer-events: none !important;
 }
