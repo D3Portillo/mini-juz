@@ -10,6 +10,7 @@ const KEYS: Record<Sizes, string> = {
   "320x50": "944aa9d47c9e32db2760f1ba7251f28c",
 }
 
+const AD_CONTAINER_ID = "ad-machine"
 export default function AdMachine({
   size = "300x250",
   className,
@@ -21,7 +22,7 @@ export default function AdMachine({
   const [WIDTH, HEIGHT] = size.split("x").map(Number)
 
   useEffect(() => {
-    const container = document.getElementById("ad-machine")
+    const container = document.getElementById(AD_CONTAINER_ID)
     if (!container) return
 
     // Initial ad setup + unique container
@@ -55,6 +56,7 @@ export default function AdMachine({
       if (img) {
         // Ad found - show container
         container.classList.remove("hidden")
+        observer.disconnect() // Stop observing once ad is found
       }
     })
 
@@ -64,11 +66,11 @@ export default function AdMachine({
 
   return (
     <div
-      id="ad-machine"
       style={{
         aspectRatio: `${WIDTH} / ${HEIGHT}`,
         width: "100%",
       }}
+      id={AD_CONTAINER_ID}
       className={cn(
         "hidden overflow-hidden [&_img]:!w-full bg-black/3 animate-in fade-in",
         className,

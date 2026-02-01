@@ -163,7 +163,7 @@ export default function PageHome() {
             </TabsTrigger>
 
             <TabsTrigger
-              className="border-b-2 group px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
+              className="border-b-2 whitespace-nowrap group px-6 py-3 border-transparent data-[state=active]:border-black font-semibold"
               value="leaderboard"
             >
               Board{" "}

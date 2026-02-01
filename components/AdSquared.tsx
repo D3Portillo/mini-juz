@@ -3,7 +3,9 @@
 import { cn } from "@/lib/utils"
 import { useEffect } from "react"
 
+const AD_THROTTLE_MS = 2_500 // 2.5s
 const CONTAINER_ID = "navite-ad-container"
+const LAST_RENDER_KEY = "juz.adsquared.lastrender"
 
 const findAdArray = () => {
   if (typeof window === "undefined") return null
@@ -23,6 +25,16 @@ export default function AdSquared({ className }: { className?: string }) {
   useEffect(() => {
     const container = document.getElementById(CONTAINER_ID)
     if (!container) return
+
+    // Reset state
+    container.classList.add("hidden")
+    container.replaceChildren()
+
+    const lastRender = parseInt(localStorage.getItem(LAST_RENDER_KEY) || "0")
+    if (Date.now() - lastRender < AD_THROTTLE_MS) {
+      return // Throttle showing ads too frequently
+    }
+
     const adArrayKey = findAdArray()
     if (adArrayKey) {
       // Reset shown ads to allow re-paint
@@ -30,7 +42,6 @@ export default function AdSquared({ className }: { className?: string }) {
     }
 
     const script = document.createElement("script")
-    script.async = true
     script.onerror = (error) => {
       console.debug({ error })
       container.classList.add("hidden")
@@ -43,16 +54,34 @@ export default function AdSquared({ className }: { className?: string }) {
     ad.id = "container-0c07767ebda0cb710ddae952ae8aa5b3"
     container.replaceChildren(ad, script)
 
+    let debounceTimer: NodeJS.Timeout
+
     const observer = new MutationObserver(() => {
-      const img = container.querySelector('[class*="__img-container"] > div')
-      if (img) {
-        // Ad found - show container
-        container.classList.remove("hidden")
-      }
+      console.debug("[AdSquared] Mutation observed")
+
+      // Clear-up previous timer
+      clearTimeout(debounceTimer)
+
+      // Wait 300ms from last mutation
+      debounceTimer = setTimeout(() => {
+        const img = container.querySelector('[class*="__img-container"] > div')
+        if (img) {
+          // Ad found - show container
+
+          localStorage.setItem(LAST_RENDER_KEY, Date.now().toString())
+          container.classList.remove("hidden")
+          observer.disconnect() // Stop observing once ad is found
+        }
+      }, 300)
     })
 
-    observer.observe(container, { childList: true, subtree: true })
+    observer.observe(container, {
+      childList: true,
+      subtree: true,
+    })
+
     return () => {
+      clearTimeout(debounceTimer)
       observer.disconnect()
     }
   }, [])
