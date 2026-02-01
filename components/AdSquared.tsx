@@ -59,7 +59,7 @@ export default function AdSquared({ className }: { className?: string }) {
 
   return (
     <div className="relative w-full">
-      <div className="text-black flex justify-end p-1 text-xs">
+      <div className="text-black flex justify-end p-2 text-xs">
         <span className="opacity-60">Ad</span>
       </div>
 

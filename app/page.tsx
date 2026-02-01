@@ -256,7 +256,7 @@ export default function PageHome() {
               />
             </div>
 
-            <AdSquared />
+            <AdSquared className="mb-4" />
 
             {isConfirmed ? (
               <DailyRefill />
