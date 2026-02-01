@@ -32,7 +32,7 @@ export default function AdMachine({
     // Set options with unique container
     ;(window as any).atOptions = {
       key: KEY,
-      format: "iframe",
+      format: "js",
       height: HEIGHT,
       width: WIDTH,
       params: {},
@@ -50,25 +50,12 @@ export default function AdMachine({
     ad.replaceChildren(script)
     container.replaceChildren(ad)
 
-    // Wait for iframe to load and adjust styles
-    const getIframe = () => container.querySelector("iframe")
     const observer = new MutationObserver(() => {
-      getIframe()?.addEventListener("load", async () => {
-        // Wait a sec for the ad to render
-        await new Promise((resolve) => setTimeout(resolve, 250))
-        const iframe = getIframe()
-        const iframeDoc = iframe?.contentDocument
-        if (!iframeDoc) return
-
-        const STYLE = "width:100%; height:100%"
-
-        iframe.style = STYLE
-        const img = iframeDoc?.body?.querySelector("img")
-        if (img) {
-          img.style = STYLE
-          container.classList.remove("hidden")
-        }
-      })
+      const img = container.querySelector("img")
+      if (img) {
+        // Ad found - show container
+        container.classList.remove("hidden")
+      }
     })
 
     observer.observe(container, { childList: true, subtree: true })
@@ -82,7 +69,10 @@ export default function AdMachine({
         aspectRatio: `${WIDTH} / ${HEIGHT}`,
         width: "100%",
       }}
-      className={cn("hidden bg-black/3 animate-in fade-in", className)}
+      className={cn(
+        "hidden overflow-hidden [&_img]:!w-full bg-black/3 animate-in fade-in",
+        className,
+      )}
     />
   )
 }

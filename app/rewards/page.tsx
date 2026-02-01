@@ -3,6 +3,7 @@
 import { Fragment, useState } from "react"
 import { useRouter } from "next/navigation"
 import { MiniKit } from "@worldcoin/minikit-js"
+import dynamic from "next/dynamic"
 
 import useSWR from "swr"
 import { formatEther } from "viem"
@@ -16,7 +17,6 @@ import { FaArrowRight, FaExternalLinkAlt } from "react-icons/fa"
 import { JUZCounter } from "@/app/HomeNavigation"
 import RouteBackButton from "@/components/RouteBackButton"
 import LemonButton from "@/components/LemonButton"
-import ReusableDialog from "@/components/ReusableDialog"
 import { ABI_LOCKED_JUZ, worldClient } from "@/lib/atoms/holdings"
 
 import { ADDRESS_LOCK_CONTRACT, ZERO } from "@/lib/constants"
@@ -39,6 +39,14 @@ import RewardPool, { APRBadge } from "./RewardPool"
 import asset_running from "@/assets/running.png"
 import asset_frog from "@/assets/frog.png"
 import { DROPS } from "./drops"
+
+const ReusableDialog = dynamic(() => import("@/components/ReusableDialog"), {
+  ssr: false,
+})
+
+const AdMachine = dynamic(() => import("@/components/AdMachine"), {
+  ssr: false,
+})
 
 type Sections = "pools" | "lock" | "drops"
 export default function PageRewards() {
@@ -339,6 +347,11 @@ export default function PageRewards() {
               </div>
 
               <div className="mt-8 space-y-3">
+                <AdMachine
+                  className="rounded-xl border-3 border-black shadow-3d-bottom"
+                  size="320x50"
+                />
+
                 {DROPS.map((drop, index) => (
                   <a
                     key={`drop-item-${index}`}
