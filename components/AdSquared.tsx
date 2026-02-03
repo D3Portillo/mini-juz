@@ -7,6 +7,10 @@ const AD_THROTTLE_MS = 2_500 // 2.5s
 const CONTAINER_ID = "navite-ad-container"
 const LAST_RENDER_KEY = "juz.adsquared.lastrender"
 
+// Ad Config
+const UNIT_CODE = "0c07767ebda0cb710ddae952ae8aa5b3"
+const PLACEMENT_CODE = "pl28615357"
+
 const findAdArray = () => {
   if (typeof window === "undefined") return null
   for (let key in window) {
@@ -26,6 +30,13 @@ export default function AdSquared({ className }: { className?: string }) {
     const container = document.getElementById(CONTAINER_ID)
     if (!container) return
 
+    const isAdPresent = () =>
+      // Look for ad image container
+      container.querySelector('[class*="__img-container"] > div')
+
+    // Nothing to do
+    if (isAdPresent()) return
+
     // Reset state
     container.classList.add("hidden")
     container.replaceChildren()
@@ -41,17 +52,46 @@ export default function AdSquared({ className }: { className?: string }) {
       ;(window as any)[adArrayKey] = []
     }
 
+    const originalCall = window.addEventListener
+    window.addEventListener = function (
+      type: string,
+      listener: EventListenerOrEventListenerObject,
+      options?: boolean | AddEventListenerOptions,
+    ) {
+      if (type === "popstate") {
+        console.debug("[AdSquared] Blocked")
+        return
+      }
+      return originalCall.call(this, type, listener, options)
+    }
+
+    const originalPushState = history.pushState
+    history.pushState = function () {
+      console.debug("[AdSquared] pushState blocked")
+    }
+
+    function resetOriginalHandlers() {
+      // Restore original event handlers
+      window.addEventListener = originalCall
+      history.pushState = originalPushState
+    }
+
     const script = document.createElement("script")
     script.onerror = (error) => {
-      console.debug({ error })
+      resetOriginalHandlers()
+
+      console.debug("[AdSquared] Script failed", { error })
       container.classList.add("hidden")
     }
 
-    script.src =
-      "https://pl28615357.effectivegatecpm.com/0c07767ebda0cb710ddae952ae8aa5b3/invoke.js"
+    script.onload = () => {
+      resetOriginalHandlers()
+      console.debug("[AdSquared] Script loaded")
+    }
 
+    script.src = `https://${PLACEMENT_CODE}.effectivegatecpm.com/${UNIT_CODE}/invoke.js`
     const ad = document.createElement("div")
-    ad.id = "container-0c07767ebda0cb710ddae952ae8aa5b3"
+    ad.id = `container-${UNIT_CODE}`
     container.replaceChildren(ad, script)
 
     let debounceTimer: NodeJS.Timeout
@@ -62,12 +102,9 @@ export default function AdSquared({ className }: { className?: string }) {
       // Clear-up previous timer
       clearTimeout(debounceTimer)
 
-      // Wait 300ms from last mutation
+      // Wait some time since last mutation
       debounceTimer = setTimeout(() => {
-        const img = container.querySelector('[class*="__img-container"] > div')
-        if (img) {
-          // Ad found - show container
-
+        if (isAdPresent()) {
           localStorage.setItem(LAST_RENDER_KEY, Date.now().toString())
           container.classList.remove("hidden")
           observer.disconnect() // Stop observing once ad is found
@@ -81,6 +118,7 @@ export default function AdSquared({ className }: { className?: string }) {
     })
 
     return () => {
+      resetOriginalHandlers()
       clearTimeout(debounceTimer)
       observer.disconnect()
     }
@@ -99,9 +137,43 @@ export default function AdSquared({ className }: { className?: string }) {
         </a>
       </div>
 
+      {/* Global styles to override ad appearance */}
+      {/* Holding all together here to make it easy to re-use :p */}
+      <style global>
+        {`
+          #${CONTAINER_ID} [class*="__bn"] {
+            max-width: none !important;
+          }
+
+          #${CONTAINER_ID} [class*="__img-container"] {
+            border-radius: 1rem !important;
+          }
+
+          #${CONTAINER_ID} [class*="__cancel-btn"] {
+            display: none !important;
+          }
+
+          #${CONTAINER_ID} [class*="__bn-container"] {
+            padding: 0.5rem !important;
+          }
+
+          #${CONTAINER_ID} [class*="__link"] {
+            z-index: 0 !important;
+          }
+
+          #${CONTAINER_ID} [class*="__title"] {
+            pointer-events: none !important;
+          }
+
+          #${CONTAINER_ID} [class*="__stand"] {
+            flex-flow: nowrap !important;
+          }
+        `}
+      </style>
+
       <div
         id={CONTAINER_ID}
-        className={cn("hidden w-full animate-in fade-in", className)}
+        className={cn("hidden AdSquared w-full animate-in fade-in", className)}
       />
     </div>
   )
